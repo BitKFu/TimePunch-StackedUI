@@ -1,0 +1,40 @@
+﻿<Page x:Class="TimePunch.StackedUI.Demo.Views.Demo3View"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:TimePunch.StackedUI.Demo.Views"
+      xmlns:extensions="clr-namespace:TimePunch.StackedUI.Extensions;assembly=TimePunch-WPF-StackedUI"
+      mc:Ignorable="d" 
+      DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=Demo3ViewModel}"
+      extensions:StackedFrameExtension.FrameKey="Demo3View"
+      d:DesignHeight="450" d:DesignWidth="800" MinWidth="100"
+      Title="Letzte Seite">
+
+    <Border BorderBrush="Chartreuse" BorderThickness="1">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <Button Content="Next" 
+                    Grid.Row="0" 
+                    Grid.Column="1" 
+                    Margin="12"
+                    Command="{Binding NextCommand}"
+                    Width="100"></Button>
+            <Button Content="Last" 
+                    Grid.Row="1" 
+                    Grid.Column="1" 
+                    Margin="12"
+                    Command="{Binding LastCommand}"></Button>
+        </Grid>
+    </Border>
+</Page>

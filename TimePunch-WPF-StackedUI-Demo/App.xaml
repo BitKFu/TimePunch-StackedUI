@@ -1,0 +1,10 @@
+﻿<Application x:Class="TimePunch_WPF_StackedUI_Demo.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:TimePunch_WPF_StackedUI_Demo"
+             xmlns:core="clr-namespace:TimePunch.StackedUI.Demo.Core"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+         <core:DemoViewModelLocator x:Key="ViewModelLocator"/>
+    </Application.Resources>
+</Application>
