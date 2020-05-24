@@ -39,7 +39,7 @@ namespace TimePunch.StackedUI
         {
             var splitter = new GridSplitter
             {
-                ShowsPreview = true,
+                ShowsPreview = false,
                 ResizeDirection = GridResizeDirection.Columns,
                 ResizeBehavior = GridResizeBehavior.PreviousAndNext,
                 HorizontalAlignment = HorizontalAlignment.Stretch

@@ -6,9 +6,33 @@
              xmlns:local="clr-namespace:TimePunch.StackedUI"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
-        <Grid Name="StackPanel">
-            
-        </Grid>
-    </ScrollViewer>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="5"></ColumnDefinition>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <!-- The scroll viewer with the content pages -->
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" 
+                      VerticalScrollBarVisibility="Disabled"
+                      Grid.Column="0">
+            <Grid Name="StackPanel">
+
+            </Grid>
+        </ScrollViewer>
+
+        <!-- Grid Splitter shown, if the property panel is visible -->
+        <GridSplitter Grid.Column="1" 
+                      HorizontalAlignment="Stretch"
+                      ResizeDirection="Columns" 
+                      ResizeBehavior="PreviousAndNext"
+                      Visibility="{Binding ElementName=PropertyPanel, Path=Visibility}"
+                      ></GridSplitter>
+
+        <Grid Grid.Column="2"
+              Visibility="Collapsed"
+              Name="PropertyPanel" Width="100"></Grid>
+    </Grid>
+
 </UserControl>
