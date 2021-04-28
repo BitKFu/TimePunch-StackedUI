@@ -13,6 +13,8 @@ namespace TimePunch.StackedUI.Controller
         public StackedController(IEventAggregator eventAggregator) 
             : base(eventAggregator)
         {
+            if (eventAggregator == null) 
+                throw new ArgumentNullException(nameof(eventAggregator));
         }
 
         /// <summary>

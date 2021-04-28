@@ -4,9 +4,9 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:TimePunch.StackedUI.Demo.Views"
-      xmlns:extensions="clr-namespace:TimePunch.StackedUI.Extensions;assembly=TimePunch-WPF-StackedUI"
+      xmlns:extensions1="clr-namespace:TimePunch.StackedUI.Extensions;assembly=TpStackedUI"
       mc:Ignorable="d"
-      extensions:StackedFrameExtension.FrameKey="StartView"
+      extensions1:StackedFrameExtension.FrameKey="StartView"
       DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=StartViewModel}"
       d:DesignHeight="450" d:DesignWidth="800"
       Title="StartView">

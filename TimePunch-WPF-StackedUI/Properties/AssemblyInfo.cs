@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("TimePunch-WPF-StackedUI")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("HP Inc.")]
+[assembly: AssemblyCompany("TimePunch KG")]
 [assembly: AssemblyProduct("TimePunch-WPF-StackedUI")]
-[assembly: AssemblyCopyright("Copyright © HP Inc. 2018")]
+[assembly: AssemblyCopyright("(c) TimePunch KG")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

@@ -4,10 +4,10 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:TimePunch.StackedUI.Demo.Views"
-      xmlns:extensions="clr-namespace:TimePunch.StackedUI.Extensions;assembly=TimePunch-WPF-StackedUI"
+      xmlns:extensions1="clr-namespace:TimePunch.StackedUI.Extensions;assembly=TpStackedUI"
       mc:Ignorable="d" 
       DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=Demo2ViewModel}"
-      extensions:StackedFrameExtension.FrameKey="Demo2View"
+      extensions1:StackedFrameExtension.FrameKey="Demo2View"
       d:DesignHeight="450" d:DesignWidth="800" MinWidth="100"
       Title="Demo2View">
 
