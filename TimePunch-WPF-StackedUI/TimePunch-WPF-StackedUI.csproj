@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <None Remove="StackedFrame.xaml" />
+    <None Remove="StackedUIResources.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -32,7 +33,7 @@
 
   <ItemGroup>
     <Page Include="StackedFrame.xaml">
-      <Generator>XamlIntelliSenseFileGenerator</Generator>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
 
@@ -41,6 +42,12 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="System.Xaml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
     <Reference Include="WindowsBase" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Include="StackedUIResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
 </Project>

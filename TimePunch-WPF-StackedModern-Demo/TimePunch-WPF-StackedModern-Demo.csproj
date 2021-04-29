@@ -1,0 +1,53 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net472</TargetFramework>
+    <RootNamespace>TimePunch_WPF_StackedModern_Demo</RootNamespace>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net472" Version="1.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="ModernWpfUI" Version="0.9.4" />
+    <PackageReference Include="TimePunch-MVVM" Version="0.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TimePunch-WPF-StackedUI\TimePunch-WPF-StackedUI.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Views\Demo1View.xaml.cs">
+      <DependentUpon>Demo1View.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Demo2View.xaml.cs">
+      <DependentUpon>Demo2View.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Demo3View.xaml.cs">
+      <DependentUpon>Demo3View.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\StartView.xaml.cs">
+      <DependentUpon>StartView.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\Demo1View.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\Demo2View.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\Demo3View.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\StartView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+
+</Project>

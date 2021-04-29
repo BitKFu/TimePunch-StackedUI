@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows.Controls;
 using TimePunch.MVVM.Controller;
 using TimePunch.MVVM.EventAggregation;
@@ -27,11 +28,19 @@ namespace TimePunch.StackedUI.Controller
         /// <summary>
         /// Used to navigate to a new Frame, e.g. add a frame with a new page
         /// </summary>
-        public void AddPage(Page page, bool isResizable = true, bool isModal = true)
+        public Frame? AddPage(Page page, bool isResizable = true, bool isModal = true, Frame? baseFrame = null)
         {
+            // if a base frame is set, go back to it
+            if (baseFrame != null)
+            {
+                while(StackedFrame.TopFrame != baseFrame)
+                    EventAggregator.PublishMessage(new GoBackPageNavigationRequest());
+            }
+
+            // Check if the frame is already created
             var frameKey = StackedFrameExtension.GetFrameKey(page);
             if (StackedFrame.Contains(frameKey))
-                return;
+                return null;
 
             // if the page is modal, than disable the previous one
             if (isModal)
@@ -40,12 +49,30 @@ namespace TimePunch.StackedUI.Controller
             // update the breadcrumb navigation
             page.Loaded += (s, e) => EventAggregator.PublishMessage(new UpdateBreadCrumbNavigation(StackedFrame.BreadCrumbNavigation));
 
+            if (isResizable && StackedFrame.TopFrame != null)
+                StackedFrame.AddSplitter();
+
             // add the new page
-            var frame = new Frame {Content = page};
+            var frame = CreateFrame();
+            frame.Content= page;
             StackedFrame.AddFrame(frame, page.MinWidth);
 
-            if (isResizable)
-                StackedFrame.AddSplitter();
+            return frame;
+        }
+
+        public void GoBackTo(Frame? baseFrame)
+        {
+            while (StackedFrame.TopFrame != baseFrame)
+                EventAggregator.PublishMessage(new GoBackPageNavigationRequest());
+        }
+
+        /// <summary>
+        /// Creates a new frame
+        /// </summary>
+        /// <returns></returns>
+        protected virtual Frame CreateFrame()
+        {
+            return new Frame();
         }
 
         #endregion

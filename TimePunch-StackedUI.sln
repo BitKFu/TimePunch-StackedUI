@@ -1,9 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2036
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31205.134
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimePunch-WPF-StackedUI", "TimePunch-WPF-StackedUI\TimePunch-WPF-StackedUI.csproj", "{269FCE80-75B4-4901-8DF4-7660F03F7D52}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimePunch-WPF-StackedUI", "TimePunch-WPF-StackedUI\TimePunch-WPF-StackedUI.csproj", "{269FCE80-75B4-4901-8DF4-7660F03F7D52}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimePunch-WPF-StackedModern-Demo", "TimePunch-WPF-StackedModern-Demo\TimePunch-WPF-StackedModern-Demo.csproj", "{68FEEAE5-84FC-4D67-8A0C-9B954E31B6BD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Framework", "Framework", "{3726F6D9-D27A-4966-BE85-B65CFE1B4DF8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demo", "Demo", "{E2A33218-2806-4002-AF2C-FF071BE93FD8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimePunch-WPF-StackedUI-Demo", "TimePunch-WPF-StackedUI-Demo\TimePunch-WPF-StackedUI-Demo.csproj", "{3BBABB37-EA6A-495E-812E-9762F98C207B}"
 EndProject
@@ -17,6 +23,10 @@ Global
 		{269FCE80-75B4-4901-8DF4-7660F03F7D52}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{269FCE80-75B4-4901-8DF4-7660F03F7D52}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{269FCE80-75B4-4901-8DF4-7660F03F7D52}.Release|Any CPU.Build.0 = Release|Any CPU
+		{68FEEAE5-84FC-4D67-8A0C-9B954E31B6BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68FEEAE5-84FC-4D67-8A0C-9B954E31B6BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68FEEAE5-84FC-4D67-8A0C-9B954E31B6BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68FEEAE5-84FC-4D67-8A0C-9B954E31B6BD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3BBABB37-EA6A-495E-812E-9762F98C207B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3BBABB37-EA6A-495E-812E-9762F98C207B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3BBABB37-EA6A-495E-812E-9762F98C207B}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -24,6 +34,11 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{269FCE80-75B4-4901-8DF4-7660F03F7D52} = {3726F6D9-D27A-4966-BE85-B65CFE1B4DF8}
+		{68FEEAE5-84FC-4D67-8A0C-9B954E31B6BD} = {E2A33218-2806-4002-AF2C-FF071BE93FD8}
+		{3BBABB37-EA6A-495E-812E-9762F98C207B} = {E2A33218-2806-4002-AF2C-FF071BE93FD8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C510319A-4D69-4A98-9716-62C9D2F8B03E}

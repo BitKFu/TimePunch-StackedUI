@@ -18,22 +18,46 @@ namespace TimePunch.StackedUI
         public StackedFrame()
         {
             InitializeComponent();
+        }
 
-            // add an empty column
-            StackPanel.ColumnDefinitions.Add(new ColumnDefinition());
+        /// <summary>
+        /// This method sets only the last column definition to star width
+        /// </summary>
+        private void AdjustColumnWidths()
+        {
+            for (int i = 0; i < StackPanel.ColumnDefinitions.Count; i++)
+            {
+                var last = i == StackPanel.ColumnDefinitions.Count - 1;
+                
+                if (!last && StackPanel.ColumnDefinitions[i].Width.IsStar)
+                    StackPanel.ColumnDefinitions[i].Width = GridLength.Auto;
+                else
+                {
+                    if (last && StackPanel.ColumnDefinitions[i].Width.IsAuto)
+                        StackPanel.ColumnDefinitions[i].Width = new GridLength(1, GridUnitType.Star);
+                }
+            }
+            ScrollViewer.ScrollToRightEnd();
         }
 
         public void AddFrame(Frame frame, double minWidth)
         {
             // add a new column
-            var column = StackPanel.ColumnDefinitions.Count - 1;
+            var column = StackPanel.ColumnDefinitions.Count;
             StackPanel.ColumnDefinitions.Insert(column, new ColumnDefinition(){Width = GridLength.Auto, MinWidth = minWidth});
             Grid.SetColumn(frame, column);
 
             // push the frame to the new column
             frameStack.Push(frame);
             StackPanel.Children.Add(frame);
+
+            AdjustColumnWidths();
         }
+
+        /// <summary>
+        /// returns the Top frame of the stack
+        /// </summary>
+        public Frame? TopFrame => frameStack.Any() ? frameStack.Peek() : null;
 
         public void AddSplitter()
         {
@@ -42,11 +66,12 @@ namespace TimePunch.StackedUI
                 ShowsPreview = false,
                 ResizeDirection = GridResizeDirection.Columns,
                 ResizeBehavior = GridResizeBehavior.PreviousAndNext,
-                HorizontalAlignment = HorizontalAlignment.Stretch
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                Margin = new Thickness(0,0,0,20)
             };
 
-            // add the splitter
-            var column = StackPanel.ColumnDefinitions.Count - 1;
+            // add the splitter 
+            var column = StackPanel.ColumnDefinitions.Count;
             StackPanel.ColumnDefinitions.Insert(column, new ColumnDefinition() { Width = new GridLength(5) });
             Grid.SetColumn(splitter, column);
 
@@ -68,14 +93,17 @@ namespace TimePunch.StackedUI
             StackPanel.ColumnDefinitions.RemoveAt(column);  // remove the columne
 
             // remove the splitter if there is one
-            if (splitters.ContainsKey(removedFrame))
+            var removedSplitter = TopFrame;
+            if (removedSplitter != null && splitters.ContainsKey(removedSplitter))
             {
-                var splitter = splitters[removedFrame];         // get the splitter to remove
+                var splitter = splitters[removedSplitter];         // get the splitter to remove
                 column = Grid.GetColumn(splitter);              // get the column in grid to remove
                 StackPanel.Children.Remove(splitter);           // remove the splitter
-                splitters.Remove(removedFrame);                 // remove the splitter / frame binding
+                splitters.Remove(removedSplitter);                 // remove the splitter / frame binding
                 StackPanel.ColumnDefinitions.RemoveAt(column);  // remove the columne
             }
+
+            AdjustColumnWidths();
         }
 
         public void DisableTop()
@@ -86,6 +114,9 @@ namespace TimePunch.StackedUI
         }
         public void EnableTop()
         {
+            if (!frameStack.Any())
+                return;
+
             var topFrame = frameStack.Peek();
             if (topFrame != null)
                 topFrame.IsHitTestVisible = true;

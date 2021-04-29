@@ -22,9 +22,6 @@ namespace TimePunch.StackedUI.Extensions
 
         public static string GetFrameKey(DependencyObject dp)
         {
-            if (dp == null)
-                return null;
-
             return (string)dp.GetValue(FrameKeyProperty);
         }
 

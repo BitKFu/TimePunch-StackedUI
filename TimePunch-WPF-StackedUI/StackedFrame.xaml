@@ -16,6 +16,7 @@
         <!-- The scroll viewer with the content pages -->
         <ScrollViewer HorizontalScrollBarVisibility="Auto" 
                       VerticalScrollBarVisibility="Disabled"
+                      x:Name="ScrollViewer"
                       Grid.Column="0">
             <Grid Name="StackPanel">
 
