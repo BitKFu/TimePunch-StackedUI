@@ -12,8 +12,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ModernWpf.Controls;
+using TimePunch.MVVM.Events;
 using TimePunch.StackedUI.Demo.Core;
 using TimePunch.StackedUI.Demo.Events;
+using TimePunch.StackedUI.Events;
 
 namespace TimePunch_WPF_StackedModern_Demo
 {
@@ -27,11 +30,29 @@ namespace TimePunch_WPF_StackedModern_Demo
             InitializeComponent();
 
             Loaded += OnLoaded;
+            SetBinding(TitleBar.IsBackButtonVisibleProperty,
+                new Binding { Path = new PropertyPath(TimePunch.StackedUI.StackedFrame.CanGoBackProperty), Source = StackedFrame});
         }
 
+        /// <summary>
+        /// Bind the stacked frame to the controller
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
             DemoKernel.Instance.Controller.StackedFrame = StackedFrame;
+            DemoKernel.Instance.EventAggregator.PublishMessage(new NavigateToStartView());
+        }
+
+        /// <summary>
+        /// Go one page back
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnBackRequested(object sender, BackRequestedEventArgs e)
+        {
+            DemoKernel.Instance.EventAggregator.PublishMessage(new GoBackPageNavigationRequest());
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ using TimePunch.MVVM.ViewModels;
 using TimePunch.StackedUI.Demo.Core;
 using TimePunch.StackedUI.Demo.Events;
 using TimePunch.StackedUI.Events;
+using TimePunch.StackedUI.Model;
 
 namespace TimePunch.StackedUI.Demo.ViewModels
 {
@@ -21,6 +23,16 @@ namespace TimePunch.StackedUI.Demo.ViewModels
         {
             NextCommand = RegisterCommand(ExecuteNextCommand, CanExecuteNextCommand, true);
             LastCommand = RegisterCommand(ExecuteLastCommand, CanExecuteLastCommand, true);
+
+            MenuItems.Add(new MenuItemModel()
+            {
+                Header = "File",
+                MenuItems = new ObservableCollection<MenuItemModel>()
+                {
+                    new MenuItemModel(){Header = "Open"},
+                    new MenuItemModel(){Header = "Close"},
+                }
+            });
         }
 
         #endregion

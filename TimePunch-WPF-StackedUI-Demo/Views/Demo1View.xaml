@@ -30,11 +30,6 @@
                 Margin="12"
                 Command="{Binding NextCommand}"
                 Width="100"></Button>
-        <Button Content="Last" 
-                Grid.Row="1" 
-                Grid.Column="1" 
-                Margin="12"
-                Command="{Binding LastCommand}"></Button>
     </Grid>
     </Border>
 </Page>

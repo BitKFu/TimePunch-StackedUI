@@ -7,7 +7,6 @@ namespace TimePunch.StackedUI.Demo.Core
         private static Demo1ViewModel backingDemo1ViewModel;
         private static Demo2ViewModel backingDemo2ViewModel;
         private static Demo3ViewModel backingDemo3ViewModel;
-        private static StartViewModel backingStartViewModel;
         private static MainWindowViewModel backingMainWindowViewModel;
 
         public static Demo1ViewModel Demo1ViewModel
@@ -40,17 +39,6 @@ namespace TimePunch.StackedUI.Demo.Core
                 backingDemo3ViewModel = new Demo3ViewModel();
                 backingDemo3ViewModel.Initialize();
                 return backingDemo3ViewModel;
-            }
-        }
-
-        public static StartViewModel StartViewModel
-        {
-            get
-            {
-                backingStartViewModel?.Dispose();
-                backingStartViewModel = new StartViewModel();
-                backingStartViewModel.Initialize();
-                return backingStartViewModel;
             }
         }
 

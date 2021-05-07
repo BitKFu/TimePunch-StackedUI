@@ -12,6 +12,24 @@ namespace TimePunch.StackedUI.Controls
     [ContentProperty(nameof(Content))]
     public class PageControl : Control
     {
+        #region Property CanGoBack
+
+        public static readonly DependencyProperty MenuProperty =
+            DependencyProperty.RegisterAttached("Menu", typeof(Menu), typeof(PageControl), new PropertyMetadata(null));
+
+        /// <summary>
+        /// Gets or sets the CanGoBack.
+        /// </summary>
+        /// <value>The CanGoBack.</value>
+        public Menu Menu
+        {
+            get => (Menu)GetValue(MenuProperty);
+            set => SetValue(MenuProperty, value);
+        }
+
+        #endregion
+
+
         #region Content
 
         public static readonly DependencyProperty ContentProperty =

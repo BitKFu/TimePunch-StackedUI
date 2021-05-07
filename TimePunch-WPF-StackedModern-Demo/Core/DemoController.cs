@@ -16,9 +16,8 @@ namespace TimePunch.StackedUI.Demo.Core
        , IHandleMessage<NavigateToDemo1View>
        ,IHandleMessage<NavigateToDemo2View>
        ,IHandleMessage<NavigateToDemo3View>
-       ,IHandleMessage<NavigateToStartView>
     {
-        private Frame baseFrame;
+        private Page basePage;
 
         public DemoController() 
             : base(DemoKernel.Instance.EventAggregator)
@@ -29,20 +28,8 @@ namespace TimePunch.StackedUI.Demo.Core
 
         public void Handle(NavigateToDemo1View message)
         {
-            GoBackTo(baseFrame);
-            AddPage(new Demo1View(), true, false, baseFrame);
-        }
-
-        #endregion
-
-        #region Implementation of IHandleMessage<NavigateToStartView>
-
-        public void Handle(NavigateToStartView message)
-        {
-            var startView = new StartView();
-            (startView.DataContext as ViewModelBase).InitializePage(null);
-
-            baseFrame = AddPage(startView);
+            while (StackedFrame.TopFrame != null) StackedFrame.GoBack();
+            AddPage(new Demo1View(), basePage);
         }
 
         #endregion
@@ -51,7 +38,7 @@ namespace TimePunch.StackedUI.Demo.Core
 
         public void Handle(NavigateToDemo2View message)
         {
-            AddPage(new Demo2View(), true, false, baseFrame);
+            AddPage(new Demo2View());
         }
 
         #endregion

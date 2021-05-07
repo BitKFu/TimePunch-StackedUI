@@ -28,14 +28,11 @@ namespace TimePunch.StackedUI.Controller
         /// <summary>
         /// Used to navigate to a new Frame, e.g. add a frame with a new page
         /// </summary>
-        public Frame? AddPage(Page page, bool isResizable = true, bool isModal = true, Frame? baseFrame = null)
+        public Page AddPage(Page page, Page? basePage = null, bool isResizable = true, bool isModal = true)
         {
             // if a base frame is set, go back to it
-            if (baseFrame != null)
-            {
-                while(StackedFrame.TopFrame != baseFrame)
-                    EventAggregator.PublishMessage(new GoBackPageNavigationRequest());
-            }
+            if (basePage != null)
+                EventAggregator.PublishMessage(new GoBackPageNavigationRequest(basePage));
 
             // Check if the frame is already created
             var frameKey = StackedFrameExtension.GetFrameKey(page);
@@ -46,24 +43,14 @@ namespace TimePunch.StackedUI.Controller
             if (isModal)
                 StackedFrame.DisableTop();
 
-            // update the breadcrumb navigation
-            page.Loaded += (s, e) => EventAggregator.PublishMessage(new UpdateBreadCrumbNavigation(StackedFrame.BreadCrumbNavigation));
-
             if (isResizable && StackedFrame.TopFrame != null)
                 StackedFrame.AddSplitter();
 
             // add the new page
             var frame = CreateFrame();
-            frame.Content= page;
-            StackedFrame.AddFrame(frame, page.MinWidth);
-
-            return frame;
-        }
-
-        public void GoBackTo(Frame? baseFrame)
-        {
-            while (StackedFrame.TopFrame != baseFrame)
-                EventAggregator.PublishMessage(new GoBackPageNavigationRequest());
+            StackedFrame.AddFrame(EventAggregator, frame, page);
+            
+            return page;
         }
 
         /// <summary>
@@ -82,11 +69,16 @@ namespace TimePunch.StackedUI.Controller
         public virtual void Handle(GoBackPageNavigationRequest message)
         {
             // Remove the top frame
-            StackedFrame.GoBack();
-            StackedFrame.EnableTop();
+            if (message.ToPage == null)
+                StackedFrame.GoBack();
+            else
+            {
+                // ReSharper disable once PossibleUnintendedReferenceComparison
+                while (StackedFrame.TopFrame != null && StackedFrame.TopFrame.Content != message.ToPage)
+                    StackedFrame.GoBack();
+            }
 
-            // update the breadcrumb navigation
-            EventAggregator.PublishMessage(new UpdateBreadCrumbNavigation(StackedFrame.BreadCrumbNavigation));
+            StackedFrame.EnableTop();
         }
 
         #endregion

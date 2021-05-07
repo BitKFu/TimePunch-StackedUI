@@ -60,12 +60,10 @@
     <Compile Include="Events\NavigateToDemo1View.cs" />
     <Compile Include="Events\NavigateToDemo3View.cs" />
     <Compile Include="Events\NavigateToDemo2View.cs" />
-    <Compile Include="Events\NavigateToStartView.cs" />
     <Compile Include="ViewModels\Demo1ViewModel.cs" />
     <Compile Include="ViewModels\Demo3ViewModel.cs" />
     <Compile Include="ViewModels\Demo2ViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
-    <Compile Include="ViewModels\StartViewModel.cs" />
     <Compile Include="Views\Demo1View.xaml.cs">
       <DependentUpon>Demo1View.xaml</DependentUpon>
     </Compile>
@@ -74,9 +72,6 @@
     </Compile>
     <Compile Include="Views\Demo2View.xaml.cs">
       <DependentUpon>Demo2View.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\StartView.xaml.cs">
-      <DependentUpon>StartView.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -102,10 +97,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Demo2View.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\StartView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

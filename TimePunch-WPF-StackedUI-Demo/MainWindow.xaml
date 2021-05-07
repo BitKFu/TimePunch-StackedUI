@@ -4,19 +4,53 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:stackedUi1="clr-namespace:TimePunch.StackedUI;assembly=TpStackedUI"
+        xmlns:model="clr-namespace:TimePunch.StackedUI.Model;assembly=TpStackedUI"
         DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=MainWindowViewModel}"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        
+
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Text="{Binding BreadCrumbNavigationTitle}"></TextBlock>
+
+        <StackPanel Grid.Row="0" Grid.Column="0">
+            <ListView VerticalAlignment="Center" ItemsSource="{Binding ElementName=StackedFrame, Path=BreadCrumbs}">
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal"></StackPanel>
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Button Content="{Binding FrameTitle}" Command="{Binding Command}" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackPanel>
+
+        <Menu Grid.Row="1" Grid.Column="0"
+              Visibility="{Binding ElementName=StackedFrame, Path=TopFrame.Content.DataContext.MenuItems, Converter={StaticResource NotIsEmptyCollectionConverter}}"
+              ItemsSource="{Binding ElementName=StackedFrame, Path=TopFrame.Content.DataContext.MenuItems}">
+
+            <Menu.ItemContainerStyle>
+                <Style TargetType="{x:Type MenuItem}">
+                    <Setter Property="InputGestureText" Value="{Binding InputGestureText}"/>
+                    <Setter Property="Command" Value="{Binding Command}"/>
+                </Style>
+            </Menu.ItemContainerStyle>
+
+            <Menu.ItemTemplate>
+                <HierarchicalDataTemplate DataType="{x:Type model:MenuItemModel}" ItemsSource="{Binding Path=MenuItems}">
+                    <TextBlock Text="{Binding Header}" />
+                </HierarchicalDataTemplate>
+            </Menu.ItemTemplate>
+        </Menu>
         
-        <stackedUi1:StackedFrame Name="StackedFrame" Grid.Row="1">
+        <stackedUi1:StackedFrame Name="StackedFrame" Grid.Row="2">
         </stackedUi1:StackedFrame>
     </Grid>
 </Window>

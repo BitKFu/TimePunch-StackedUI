@@ -6,11 +6,13 @@
              xmlns:stacked="clr-namespace:TimePunch.StackedUI"
              xmlns:core="clr-namespace:TimePunch.StackedUI.Demo.Core"
              xmlns:stackedUi="clr-namespace:TimePunch.StackedUI;assembly=TpStackedUI"
+             xmlns:converter="clr-namespace:TimePunch.StackedUI.Converter;assembly=TpStackedUI"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
 
         <ResourceDictionary>
             <core:DemoViewModelLocator x:Key="ViewModelLocator"/>
+            <converter:NotIsEmptyCollectionConverter x:Key="NotIsEmptyCollectionConverter" />
             <ResourceDictionary.MergedDictionaries>
                 <ui:ThemeResources />
                 <ui:XamlControlsResources />

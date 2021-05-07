@@ -5,10 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using TimePunch.MVVM.EventAggregation;
 using TimePunch.MVVM.ViewModels;
+using TimePunch.StackedUI.ViewModels;
 
 namespace TimePunch.StackedUI.Demo.Core
 {
-    public class DemoViewModelBase : ViewModelBase
+    public class DemoViewModelBase : StackedViewModelBase
     {
         public DemoViewModelBase() : base(DemoKernel.Instance.EventAggregator)
         {

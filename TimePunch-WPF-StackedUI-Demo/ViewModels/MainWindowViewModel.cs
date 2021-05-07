@@ -9,30 +9,7 @@ using TimePunch.StackedUI.Events;
 
 namespace TimePunch.StackedUI.Demo.ViewModels
 {
-    public class MainWindowViewModel : DemoViewModelBase,
-        IHandleMessage<UpdateBreadCrumbNavigation>
+    public class MainWindowViewModel : DemoViewModelBase
     {
-        #region Property BreadCrumbNavigationTitle
-
-        /// <summary>
-        /// Gets or sets the BreadCrumbNavigationTitle.
-        /// </summary>
-        /// <value>The BreadCrumbNavigationTitle.</value>
-        public string BreadCrumbNavigationTitle
-        {
-            get { return GetPropertyValue(() => BreadCrumbNavigationTitle); }
-            set { SetPropertyValue(() => BreadCrumbNavigationTitle, value); }
-        }
-
-        #endregion
-
-        #region Implementation of IHandleMessage<UpdateBreadCrumbNavigation>
-
-        public void Handle(UpdateBreadCrumbNavigation message)
-        {
-            BreadCrumbNavigationTitle = string.Join(" -> ", message.BreadCrumbs.Select(b => b.FrameTitle));
-        }
-
-        #endregion
     }
 }
