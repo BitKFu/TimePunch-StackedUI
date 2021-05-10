@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using TimePunch.MVVM.EventAggregation;
+using TimePunch.StackedUI.Controller;
 using TimePunch.StackedUI.Extensions;
 using TimePunch.StackedUI.Model;
 
@@ -79,9 +81,17 @@ namespace TimePunch.StackedUI
         public void AddFrame(IEventAggregator eventAggregator, Frame frame, Page page)
         {
             // add a new column
-            var column = StackPanel.ColumnDefinitions.Count;
-            StackPanel.ColumnDefinitions.Insert(column, new ColumnDefinition() { Width = GridLength.Auto, MinWidth = page.MinWidth });
+            var column = StackPanel.ColumnDefinitions.Count - (StackedMode == StackedMode.Resizeable ? 1 : 0);
+            StackPanel.ColumnDefinitions.Insert(column,
+                new ColumnDefinition()
+                {
+                    Width = double.IsNaN(page.Width) || StackedMode == StackedMode.FullWidth
+                        ? GridLength.Auto
+                        : new GridLength(page.Width),
+                    MinWidth = page.MinWidth,
+                });
             Grid.SetColumn(frame, column);
+            page.Width = double.NaN;
 
             // push the frame to the new column
             frame.Content = page;
@@ -106,7 +116,7 @@ namespace TimePunch.StackedUI
             };
 
             // add the splitter 
-            var column = StackPanel.ColumnDefinitions.Count;
+            var column = StackPanel.ColumnDefinitions.Count - (StackedMode == StackedMode.Resizeable ? 1 : 0);
             StackPanel.ColumnDefinitions.Insert(column, new ColumnDefinition() { Width = new GridLength(5) });
             Grid.SetColumn(splitter, column);
 
@@ -128,7 +138,7 @@ namespace TimePunch.StackedUI
             StackPanel.ColumnDefinitions.RemoveAt(column);  // remove the columne
 
             // remove the splitter if there is one
-            var removedSplitter = frameStack.Any() ? frameStack.Peek() : null;
+            var removedSplitter = StackedMode == StackedMode.Resizeable ? removedFrame : frameStack.Any() ? frameStack.Peek() : null;
             if (removedSplitter != null && splitters.ContainsKey(removedSplitter))
             {
                 var splitter = splitters[removedSplitter];         // get the splitter to remove
@@ -140,12 +150,12 @@ namespace TimePunch.StackedUI
 
             AdjustColumnWidths();
             UpdateTopFrame();
-            BreadCrumbs.RemoveAt(BreadCrumbs.Count-1);
+            BreadCrumbs.RemoveAt(BreadCrumbs.Count - 1);
         }
 
         private void UpdateTopFrame()
         {
-            CanGoBack = frameStack.Count()>1;
+            CanGoBack = frameStack.Count() > 1;
             TopFrame = frameStack.Any() ? frameStack.Peek() : null;
         }
 
@@ -195,5 +205,22 @@ namespace TimePunch.StackedUI
 
         #endregion
 
+        /// <summary>
+        /// Initializes the stacked frame by using the stacked mode
+        /// </summary>
+        /// <param name="stackedMode">defines how the frames are beeing added</param>
+        public void Initialize(StackedMode stackedMode)
+        {
+            // add an empty column
+            if (stackedMode == StackedMode.Resizeable)
+                StackPanel.ColumnDefinitions.Add(new ColumnDefinition());
+
+            StackedMode = stackedMode;
+        }
+
+        /// <summary>
+        /// Gets or sets the stacked mode
+        /// </summary>
+        public StackedMode StackedMode { get; private set; }
     }
 }

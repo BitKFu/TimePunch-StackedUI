@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ModernWpf;
 using ModernWpf.Controls;
 using TimePunch.MVVM.Events;
 using TimePunch.StackedUI.Demo.Core;

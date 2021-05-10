@@ -13,7 +13,7 @@ namespace TimePunch.StackedUI.Extensions
         #region Frame Key
 
         public static readonly DependencyProperty FrameKeyProperty =
-            DependencyProperty.RegisterAttached("FrameKey", typeof(string), typeof(Page), new PropertyMetadata(string.Empty));
+            DependencyProperty.RegisterAttached("FrameKey", typeof(string), typeof(Page), new PropertyMetadata(Guid.NewGuid().ToString()));
 
         public static void SetFrameKey(DependencyObject dp, string value)
         {

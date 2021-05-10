@@ -34,7 +34,7 @@
                 </ListView.ItemsPanel>
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Button Content="{Binding FrameTitle}" Command="{Binding Command}" />
+                        <ui:HyperlinkButton Content="{Binding FrameTitle}" Command="{Binding Command}" />
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>

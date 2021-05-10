@@ -1,26 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using TimePunch.MVVM.EventAggregation;
-using TimePunch.MVVM.ViewModels;
 using TimePunch.StackedUI.Controller;
 using TimePunch.StackedUI.Demo.Events;
 using TimePunch.StackedUI.Demo.Views;
+using TimePunch_WPF_StackedModern_Demo.Views;
 
 namespace TimePunch.StackedUI.Demo.Core
 {
     public class DemoController : StackedController
-       , IHandleMessage<NavigateToDemo1View>
-       ,IHandleMessage<NavigateToDemo2View>
-       ,IHandleMessage<NavigateToDemo3View>
+        , IHandleMessage<NavigateToDemo1View>
+        , IHandleMessage<NavigateToDemo2View>
+        , IHandleMessage<NavigateToDemo3View>
+        , IHandleMessage<NavigateToStartView>
     {
         private Page basePage;
 
         public DemoController() 
-            : base(DemoKernel.Instance.EventAggregator)
+            : base(DemoKernel.Instance.EventAggregator, StackedMode.FullWidth)
         {
         }
 
@@ -57,6 +53,15 @@ namespace TimePunch.StackedUI.Demo.Core
         protected override Frame CreateFrame()
         {
             return new ModernWpf.Controls.Frame();
+        }
+
+        #endregion
+
+        #region Implementation of IHandleMessage<NavigateToStartView>
+
+        public void Handle(NavigateToStartView message)
+        {
+            AddPage(new LogonView());
         }
 
         #endregion

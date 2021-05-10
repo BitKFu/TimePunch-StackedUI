@@ -11,17 +11,42 @@ namespace TimePunch.StackedUI.Controller
     public class StackedController : BaseController,
         IHandleMessage<GoBackPageNavigationRequest>
     {
-        public StackedController(IEventAggregator eventAggregator) 
+        private StackedFrame stackedFrame;
+
+        /// <summary>
+        /// Creates a new instance of the StackedController
+        /// </summary>
+        /// <param name="eventAggregator">Event aggregation object</param>
+        /// <param name="mode">Defines how the frames are added</param>
+        public StackedController(IEventAggregator eventAggregator, StackedMode mode)
             : base(eventAggregator)
         {
-            if (eventAggregator == null) 
+            if (eventAggregator == null)
                 throw new ArgumentNullException(nameof(eventAggregator));
+
+            StackedMode = mode;
         }
 
         /// <summary>
         /// Stacked Frame control
         /// </summary>
-        public StackedFrame StackedFrame { get; set; }
+        public StackedFrame StackedFrame
+        {
+            get
+            {
+                return stackedFrame;
+            }
+            set
+            {
+                stackedFrame = value;
+                stackedFrame.Initialize(StackedMode);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the stacked mode
+        /// </summary>
+        public StackedMode StackedMode { get; }
 
         #region Implementation of IHandleMessage<NavigateToNewFrame>
 
@@ -43,13 +68,16 @@ namespace TimePunch.StackedUI.Controller
             if (isModal)
                 StackedFrame.DisableTop();
 
-            if (isResizable && StackedFrame.TopFrame != null)
+            if (StackedMode == StackedMode.FullWidth && isResizable && StackedFrame.TopFrame != null)
                 StackedFrame.AddSplitter();
 
             // add the new page
             var frame = CreateFrame();
             StackedFrame.AddFrame(EventAggregator, frame, page);
-            
+
+            if (StackedMode == StackedMode.Resizeable && isResizable)
+                StackedFrame.AddSplitter();
+
             return page;
         }
 
