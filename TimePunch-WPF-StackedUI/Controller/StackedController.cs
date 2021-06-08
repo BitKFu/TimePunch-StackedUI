@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Windows;
 using System.Windows.Controls;
 using TimePunch.MVVM.Controller;
 using TimePunch.MVVM.EventAggregation;
@@ -91,6 +92,29 @@ namespace TimePunch.StackedUI.Controller
         }
 
         #endregion
+
+        /// <summary>
+        /// Set the content of the property panel
+        /// </summary>
+        /// <param name="content">Content</param>
+        /// <param name="width">Width</param>
+        public void ShowPropertyPanel(UIElement content, int width)
+        {
+            StackedFrame.PropertyPanel.Children.Clear();
+            StackedFrame.PropertyPanel.Children.Add(content);
+
+            StackedFrame.PropertyPanelWidth = width;
+            StackedFrame.PropertyPanelVisibility = Visibility.Visible;
+        }
+
+        /// <summary>
+        /// Hides the property panel
+        /// </summary>
+        public void HidePropertyPanel()
+        {
+            StackedFrame.PropertyPanel.Children.Clear();
+            StackedFrame.PropertyPanelVisibility = Visibility.Collapsed;
+        }
 
         #region Implementation of IHandleMessage<GoBackPageNavigationRequest>
 

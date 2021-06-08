@@ -5,11 +5,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TimePunch.StackedUI"
              mc:Ignorable="d" 
+             x:Name="Frame"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"></ColumnDefinition>
-            <ColumnDefinition Width="5"></ColumnDefinition>
+            <ColumnDefinition Width="{Binding ElementName=Frame, Path=SplitterWidth}"></ColumnDefinition>
             <ColumnDefinition Width="Auto"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
@@ -32,8 +33,8 @@
                       ></GridSplitter>
 
         <Grid Grid.Column="2"
-              Visibility="Collapsed"
-              Name="PropertyPanel" Width="100"></Grid>
+              Visibility="{Binding ElementName=Frame, Path=PropertyPanelVisibility}"
+              Name="PropertyPanel" Width="{Binding ElementName=Frame, Path=PropertyPanelWidth, Mode=TwoWay}"></Grid>
     </Grid>
 
 </UserControl>

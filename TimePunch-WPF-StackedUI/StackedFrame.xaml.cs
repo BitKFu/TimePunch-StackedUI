@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using TimePunch.MVVM.EventAggregation;
 using TimePunch.StackedUI.Controller;
 using TimePunch.StackedUI.Extensions;
@@ -93,6 +94,15 @@ namespace TimePunch.StackedUI
             Grid.SetColumn(frame, column);
             page.Width = double.NaN;
 
+            // Check if the page has an adorner decorator
+            if (!(page.Content is AdornerDecorator))
+            {
+                var content = page.Content as UIElement;
+                page.Content = null;
+                var adornerDecorator = new AdornerDecorator() {Child = content };
+                page.Content = adornerDecorator;
+            }
+
             // push the frame to the new column
             frame.Content = page;
             frameStack.Push(frame);
@@ -117,7 +127,7 @@ namespace TimePunch.StackedUI
 
             // add the splitter 
             var column = StackPanel.ColumnDefinitions.Count - (StackedMode == StackedMode.Resizeable ? 1 : 0);
-            StackPanel.ColumnDefinitions.Insert(column, new ColumnDefinition() { Width = new GridLength(5) });
+            StackPanel.ColumnDefinitions.Insert(column, new ColumnDefinition() { Width = new GridLength(SplitterWidth) });
             Grid.SetColumn(splitter, column);
 
             StackPanel.Children.Add(splitter);
@@ -163,7 +173,7 @@ namespace TimePunch.StackedUI
         {
             var topFrame = frameStack.Count > 0 ? frameStack.Peek() : null;
             if (topFrame != null)
-                topFrame.IsHitTestVisible = false;
+                topFrame.IsEnabled = false;
         }
         public void EnableTop()
         {
@@ -172,7 +182,7 @@ namespace TimePunch.StackedUI
 
             var topFrame = frameStack.Peek();
             if (topFrame != null)
-                topFrame.IsHitTestVisible = true;
+                topFrame.IsEnabled = true;
         }
 
         public bool Contains(string frameKey)
@@ -222,5 +232,54 @@ namespace TimePunch.StackedUI
         /// Gets or sets the stacked mode
         /// </summary>
         public StackedMode StackedMode { get; private set; }
+
+        #region Property SplitterWith
+
+        public static readonly DependencyProperty SplitterWidthProperty =
+            DependencyProperty.RegisterAttached("SplitterWidth", typeof(int), typeof(StackedFrame), new PropertyMetadata(3));
+
+        /// <summary>
+        /// Gets or sets the with of the splitter
+        /// </summary>
+        public int SplitterWidth
+        {
+            get => (int)GetValue(SplitterWidthProperty);
+            set => SetValue(SplitterWidthProperty, value);
+        }
+
+        #endregion
+
+        #region Property PropertyPanelVisibility
+
+        public static readonly DependencyProperty PropertyPanelVisibilityProperty =
+            DependencyProperty.RegisterAttached("PropertyPanelVisibility", typeof(Visibility), typeof(StackedFrame), new PropertyMetadata(Visibility.Collapsed));
+
+        /// <summary>
+        /// Gets or sets the with of the splitter
+        /// </summary>
+        public Visibility PropertyPanelVisibility
+        {
+            get => (Visibility)GetValue(PropertyPanelVisibilityProperty);
+            set => SetValue(PropertyPanelVisibilityProperty, value);
+        }
+
+        #endregion
+
+        #region Property PropertyPanelWidth
+
+        public static readonly DependencyProperty PropertyPanelWidthProperty =
+            DependencyProperty.RegisterAttached("PropertyPanelWidth", typeof(int), typeof(StackedFrame), new PropertyMetadata(300));
+
+        /// <summary>
+        /// Gets or sets the with of the PropertyPanel
+        /// </summary>
+        public int PropertyPanelWidth
+        {
+            get => (int)GetValue(PropertyPanelWidthProperty);
+            set => SetValue(PropertyPanelWidthProperty, value);
+        }
+
+        #endregion
+
     }
 }
