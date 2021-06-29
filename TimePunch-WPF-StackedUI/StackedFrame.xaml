@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:TimePunch.StackedUI"
              mc:Ignorable="d" 
              x:Name="Frame"
              d:DesignHeight="450" d:DesignWidth="800">
@@ -24,17 +23,17 @@
             </Grid>
         </ScrollViewer>
 
-        <!-- Grid Splitter shown, if the property panel is visible -->
+        <!-- Grid Splitter shown, if the property panel is visible 
         <GridSplitter Grid.Column="1" 
                       HorizontalAlignment="Stretch"
                       ResizeDirection="Columns" 
                       ResizeBehavior="PreviousAndNext"
                       Visibility="{Binding ElementName=PropertyPanel, Path=Visibility}"
-                      ></GridSplitter>
+                      ></GridSplitter>-->
 
         <Grid Grid.Column="2"
               Visibility="{Binding ElementName=Frame, Path=PropertyPanelVisibility}"
-              Name="PropertyPanel" Width="{Binding ElementName=Frame, Path=PropertyPanelWidth, Mode=TwoWay}"></Grid>
+              Name="PropertyPanel"></Grid>
     </Grid>
 
 </UserControl>

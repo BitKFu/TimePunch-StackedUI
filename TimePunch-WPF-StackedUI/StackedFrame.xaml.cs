@@ -68,11 +68,11 @@ namespace TimePunch.StackedUI
             {
                 var last = i == StackPanel.ColumnDefinitions.Count - 1;
 
-                if (!last && StackPanel.ColumnDefinitions[i].Width.IsStar)
+                if (!last && i % 2 == 0)
                     StackPanel.ColumnDefinitions[i].Width = GridLength.Auto;
                 else
                 {
-                    if (last && StackPanel.ColumnDefinitions[i].Width.IsAuto)
+                    if (last && i % 2 == 0)
                         StackPanel.ColumnDefinitions[i].Width = new GridLength(1, GridUnitType.Star);
                 }
             }
@@ -189,7 +189,11 @@ namespace TimePunch.StackedUI
         {
             foreach (var frame in frameStack)
             {
-                var key = StackedFrameExtension.GetFrameKey(frame.Content as Page);
+                var page = frame.Content as Page;
+                if (page == null)
+                    continue;
+
+                var key = StackedFrameExtension.GetFrameKey(page);
                 if (key == frameKey)
                     return true;
             }
@@ -264,22 +268,5 @@ namespace TimePunch.StackedUI
         }
 
         #endregion
-
-        #region Property PropertyPanelWidth
-
-        public static readonly DependencyProperty PropertyPanelWidthProperty =
-            DependencyProperty.RegisterAttached("PropertyPanelWidth", typeof(int), typeof(StackedFrame), new PropertyMetadata(300));
-
-        /// <summary>
-        /// Gets or sets the with of the PropertyPanel
-        /// </summary>
-        public int PropertyPanelWidth
-        {
-            get => (int)GetValue(PropertyPanelWidthProperty);
-            set => SetValue(PropertyPanelWidthProperty, value);
-        }
-
-        #endregion
-
     }
 }

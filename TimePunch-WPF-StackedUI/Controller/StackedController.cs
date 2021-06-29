@@ -54,7 +54,7 @@ namespace TimePunch.StackedUI.Controller
         /// <summary>
         /// Used to navigate to a new Frame, e.g. add a frame with a new page
         /// </summary>
-        public Page AddPage(Page page, Page? basePage = null, bool isResizable = true, bool isModal = true)
+        public Page? AddPage(Page page, Page? basePage = null, bool isResizable = true, bool isModal = true)
         {
             // if a base frame is set, go back to it
             if (basePage != null)
@@ -64,6 +64,9 @@ namespace TimePunch.StackedUI.Controller
             var frameKey = StackedFrameExtension.GetFrameKey(page);
             if (StackedFrame.Contains(frameKey))
                 return null;
+
+            // Hide the current property panel
+            HidePropertyPanel();
 
             // if the page is modal, than disable the previous one
             if (isModal)
@@ -98,12 +101,11 @@ namespace TimePunch.StackedUI.Controller
         /// </summary>
         /// <param name="content">Content</param>
         /// <param name="width">Width</param>
-        public void ShowPropertyPanel(UIElement content, int width)
+        public void ShowPropertyPanel(UIElement content, double width)
         {
             StackedFrame.PropertyPanel.Children.Clear();
             StackedFrame.PropertyPanel.Children.Add(content);
 
-            StackedFrame.PropertyPanelWidth = width;
             StackedFrame.PropertyPanelVisibility = Visibility.Visible;
         }
 
