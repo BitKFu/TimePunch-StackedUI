@@ -9,8 +9,9 @@ using TimePunch.StackedUI.Extensions;
 
 namespace TimePunch.StackedUI.Controller
 {
+
     public class StackedController : BaseController,
-        IHandleMessage<GoBackPageNavigationRequest>
+        IHandleMessage<GoBackPageNavigationRequest>, IStackedController
     {
         private StackedFrame stackedFrame;
 
@@ -122,6 +123,12 @@ namespace TimePunch.StackedUI.Controller
 
         public virtual void Handle(GoBackPageNavigationRequest message)
         {
+            if (!StackedFrame.CheckAccess())
+            {
+                StackedFrame.Dispatcher.Invoke(() => Handle(message));
+                return;
+            }
+
             // Remove the top frame
             if (message.ToPage == null)
                 StackedFrame.GoBack();
@@ -136,5 +143,21 @@ namespace TimePunch.StackedUI.Controller
         }
 
         #endregion
+
+        /// <summary>
+        /// Gets a value indicating whether the user can go back one page
+        /// </summary>
+        public bool CanGoBackPage
+        {
+            get
+            {
+                if (StackedFrame.CheckAccess())
+                    return StackedFrame.CanGoBack;
+
+                bool result = false;
+                StackedFrame.Dispatcher.Invoke(() => result = StackedFrame.CanGoBack);
+                return result;
+            }
+        }
     }
 }

@@ -9,7 +9,7 @@
     <AssemblyOriginatorKeyFile>TpStackedUI.snk</AssemblyOriginatorKeyFile>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageLicenseExpression>MS-PL</PackageLicenseExpression>
-    <PackageVersion>0.5.0.0</PackageVersion>
+    <PackageVersion>0.6.3.2</PackageVersion>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
     <AssemblyName>TpStackedUI</AssemblyName>
@@ -17,6 +17,9 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <OutputPath>..\output\release</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\output\debug</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>

@@ -38,6 +38,6 @@ namespace TimePunch.StackedUI.Demo.Core
         /// <summary>
         /// Gets the controller
         /// </summary>
-        public StackedController Controller { get; private set; }
+        public IStackedController Controller { get; private set; }
     }
 }

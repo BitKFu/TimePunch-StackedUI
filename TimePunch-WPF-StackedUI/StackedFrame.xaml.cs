@@ -69,7 +69,12 @@ namespace TimePunch.StackedUI
                 var last = i == StackPanel.ColumnDefinitions.Count - 1;
 
                 if (!last && i % 2 == 0)
-                    StackPanel.ColumnDefinitions[i].Width = GridLength.Auto;
+                {
+                    // Minimize all prior pages
+                    StackPanel.ColumnDefinitions[i].Width = StackPanel.ColumnDefinitions[i].MinWidth > 0
+                        ? new GridLength(StackPanel.ColumnDefinitions[i].MinWidth)
+                        : GridLength.Auto;
+                }
                 else
                 {
                     if (last && i % 2 == 0)
