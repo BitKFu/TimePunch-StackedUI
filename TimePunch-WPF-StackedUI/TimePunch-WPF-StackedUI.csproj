@@ -9,7 +9,7 @@
     <AssemblyOriginatorKeyFile>TpStackedUI.snk</AssemblyOriginatorKeyFile>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageLicenseExpression>MS-PL</PackageLicenseExpression>
-    <PackageVersion>0.6.3.2</PackageVersion>
+    <PackageVersion>0.6.4.0</PackageVersion>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
     <AssemblyName>TpStackedUI</AssemblyName>
@@ -32,7 +32,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="TimePunch-MVVM" Version="0.5.0" />
+    <PackageReference Include="TimePunch-MVVM" Version="0.5.1" />
   </ItemGroup>
 
   <ItemGroup>

@@ -95,6 +95,7 @@ namespace TimePunch.StackedUI
                         ? GridLength.Auto
                         : new GridLength(page.Width),
                     MinWidth = page.MinWidth,
+                    MaxWidth = page.MaxWidth
                 });
             Grid.SetColumn(frame, column);
             page.Width = double.NaN;
