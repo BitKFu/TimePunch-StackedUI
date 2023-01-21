@@ -164,6 +164,12 @@ namespace TimePunch.StackedUI
                 StackPanel.ColumnDefinitions.RemoveAt(column);  // remove the columne
             }
 
+            if (removedFrame.Content is Page { DataContext: IDisposable vmPageDataContext })
+            {
+                // Dispose the data model
+                vmPageDataContext.Dispose();
+            }
+
             AdjustColumnWidths();
             UpdateTopFrame();
             BreadCrumbs.RemoveAt(BreadCrumbs.Count - 1);
