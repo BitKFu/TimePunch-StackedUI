@@ -196,7 +196,7 @@ namespace TimePunch.StackedUI
             }
 
             // push the frame to the new column
-            frame.Opacity = 0;
+            frame.Opacity = FadeInDuration > 0 ? 0 : 1;
             frame.Content = page;
             frameStack.Push(frame);
             StackPanel.Children.Add(frame);
