@@ -17,5 +17,10 @@ namespace TimePunch.StackedUI.Controller
         /// In resizeable mode, the frame stays with its width until the user expands it
         /// </summary>
         Resizeable,
+
+        /// <summary>
+        /// In place stack mode is a stack that does not extend horizontal, but do a replace
+        /// </summary>
+        InPlace
     }
 }

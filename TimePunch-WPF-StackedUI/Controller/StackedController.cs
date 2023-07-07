@@ -14,6 +14,7 @@ namespace TimePunch.StackedUI.Controller
         IHandleMessage<GoBackPageNavigationRequest>, IStackedController
     {
         private StackedFrame stackedFrame;
+        private StackedMode stackedMode;
 
         /// <summary>
         /// Creates a new instance of the StackedController
@@ -48,14 +49,26 @@ namespace TimePunch.StackedUI.Controller
         /// <summary>
         /// Gets or sets the stacked mode
         /// </summary>
-        public StackedMode StackedMode { get; }
+        public StackedMode StackedMode
+        {
+            get => stackedMode;
+            set
+            {
+                if (value != stackedMode && StackedFrame != null)
+                {
+                    StackedFrame.StackedMode = value;
+                }
+
+                stackedMode = value;
+            }
+        }
 
         #region Implementation of IHandleMessage<NavigateToNewFrame>
 
         /// <summary>
         /// Used to navigate to a new Frame, e.g. add a frame with a new page
         /// </summary>
-        public Page? AddPage(Page page, Page? basePage = null, bool isResizable = true, bool isModal = true)
+        public Page? AddPage(Page page, Page? basePage = null, bool isResizable = true, bool isModal = false)
         {
             // if a base frame is set, go back to it
             if (basePage != null)

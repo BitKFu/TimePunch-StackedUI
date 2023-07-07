@@ -4,7 +4,11 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
+using System.Windows.Navigation;
 using TimePunch.MVVM.EventAggregation;
 using TimePunch.StackedUI.Controller;
 using TimePunch.StackedUI.Extensions;
@@ -59,29 +63,75 @@ namespace TimePunch.StackedUI
 
         #endregion
 
+        private void AnimateColumnWidth(Storyboard sb, ColumnDefinition columnDefinition, GridLength from, GridLength newWidth)
+        {
+            var duration = TimeSpan.FromMilliseconds(2000);
+            //columnDefinition.Width = from;
+            var animation = new GridLengthAnimation
+            {
+                From = from,
+                To = newWidth,
+                Duration = duration
+            };
+            sb.Children.Add(animation);
+            sb.Completed += delegate
+            {
+                columnDefinition.BeginAnimation(ColumnDefinition.WidthProperty, null);
+                columnDefinition.Width = newWidth;
+            };
+            Storyboard.SetTarget(animation, columnDefinition);
+            Storyboard.SetTargetProperty(animation, new PropertyPath(ColumnDefinition.WidthProperty));
+        }
+
         /// <summary>
         /// This method sets only the last column definition to star width
         /// </summary>
         private void AdjustColumnWidths()
         {
-            for (int i = 0; i < StackPanel.ColumnDefinitions.Count; i++)
-            {
-                var last = i == StackPanel.ColumnDefinitions.Count - 1;
+            var sb = new Storyboard();
 
-                if (!last && i % 2 == 0)
+            if (StackedMode == StackedMode.InPlace)
+            {
+                // Hide all previous columns
+                for (int i = 0; i < StackPanel.ColumnDefinitions.Count; i++)
                 {
-                    // Minimize all prior pages
-                    StackPanel.ColumnDefinitions[i].Width = StackPanel.ColumnDefinitions[i].MinWidth > 0
-                        ? new GridLength(StackPanel.ColumnDefinitions[i].MinWidth)
-                        : GridLength.Auto;
-                }
-                else
-                {
-                    if (last && i % 2 == 0)
+                    var last = i == StackPanel.ColumnDefinitions.Count - 1;
+                    if (!last)
+                    {
+                        StackPanel.ColumnDefinitions[i].MinWidth = 0;
+                        StackPanel.ColumnDefinitions[i].Width = new GridLength(0);
+                        //AnimateColumnWidth(sb, StackPanel.ColumnDefinitions[i], StackPanel.ColumnDefinitions[i].Width, new GridLength(0));
+                    }
+                    else
+                    {
                         StackPanel.ColumnDefinitions[i].Width = new GridLength(1, GridUnitType.Star);
+                        //AnimateColumnWidth(sb,StackPanel.ColumnDefinitions[i], new GridLength(0), new GridLength(1, GridUnitType.Star));
+                    }
                 }
+                sb.Begin();
             }
-            ScrollViewer.ScrollToRightEnd();
+            else
+            {
+                // Adjust the with of the previous columns
+                for (int i = 0; i < StackPanel.ColumnDefinitions.Count; i++)
+                {
+                    var last = i == StackPanel.ColumnDefinitions.Count - 1;
+
+                    if (!last && i % 2 == 0)
+                    {
+                        // Minimize all prior pages
+                        StackPanel.ColumnDefinitions[i].Width = StackPanel.ColumnDefinitions[i].MinWidth > 0
+                            ? new GridLength(StackPanel.ColumnDefinitions[i].MinWidth)
+                            : GridLength.Auto;
+                    }
+                    else
+                    {
+                        if (last && i % 2 == 0)
+                            StackPanel.ColumnDefinitions[i].Width = new GridLength(1, GridUnitType.Star);
+                    }
+                }
+                ScrollViewer.ScrollToRightEnd();
+            }
         }
 
         public void AddFrame(IEventAggregator eventAggregator, Frame frame, Page page)
@@ -91,11 +141,14 @@ namespace TimePunch.StackedUI
             StackPanel.ColumnDefinitions.Insert(column,
                 new ColumnDefinition()
                 {
-                    Width = double.IsNaN(page.Width) || StackedMode == StackedMode.FullWidth
-                        ? GridLength.Auto
-                        : new GridLength(page.Width),
-                    MinWidth = page.MinWidth,
+                    Width = new GridLength(0),
+                    MinWidth = 0,
                     MaxWidth = page.MaxWidth
+                    //Width = double.IsNaN(page.Width) || StackedMode == StackedMode.FullWidth
+                    //    ? GridLength.Auto
+                    //    : new GridLength(page.Width),
+                    //MinWidth = page.MinWidth,
+                    //MaxWidth = page.MaxWidth
                 });
             Grid.SetColumn(frame, column);
             page.Width = double.NaN;
@@ -114,10 +167,12 @@ namespace TimePunch.StackedUI
             frameStack.Push(frame);
             StackPanel.Children.Add(frame);
 
-            AdjustColumnWidths();
-            UpdateTopFrame();
-
-            BreadCrumbs.Add(new BreadCrumbNavigation(eventAggregator, page));
+            Dispatcher.Invoke(() =>
+            {
+                AdjustColumnWidths();
+                UpdateTopFrame();
+                BreadCrumbs.Add(new BreadCrumbNavigation(eventAggregator, page));
+            });
         }
 
         public void AddSplitter()
@@ -170,9 +225,12 @@ namespace TimePunch.StackedUI
                 vmPageDataContext.Dispose();
             }
 
-            AdjustColumnWidths();
-            UpdateTopFrame();
-            BreadCrumbs.RemoveAt(BreadCrumbs.Count - 1);
+            Dispatcher.Invoke(() =>
+            {
+                AdjustColumnWidths();
+                UpdateTopFrame();
+                BreadCrumbs.RemoveAt(BreadCrumbs.Count - 1);
+            });
         }
 
         private void UpdateTopFrame()
@@ -247,7 +305,7 @@ namespace TimePunch.StackedUI
         /// <summary>
         /// Gets or sets the stacked mode
         /// </summary>
-        public StackedMode StackedMode { get; private set; }
+        public StackedMode StackedMode { get; internal set; }
 
         #region Property SplitterWith
 

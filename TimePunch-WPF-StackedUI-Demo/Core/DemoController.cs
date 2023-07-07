@@ -16,7 +16,7 @@ namespace TimePunch.StackedUI.Demo.Core
        ,IHandleMessage<NavigateToDemo3View>
     {
         public DemoController() 
-            : base(DemoKernel.Instance.EventAggregator, StackedMode.FullWidth)
+            : base(DemoKernel.Instance.EventAggregator, StackedMode.Resizeable)
         {
         }
 
