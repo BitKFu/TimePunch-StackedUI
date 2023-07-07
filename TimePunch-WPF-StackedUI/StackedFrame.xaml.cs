@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -63,24 +65,62 @@ namespace TimePunch.StackedUI
 
         #endregion
 
-        private void AnimateColumnWidth(Storyboard sb, ColumnDefinition columnDefinition, GridLength from, GridLength newWidth)
+        #region Property Duration
+
+        public static readonly DependencyProperty FadeInDurationProperty =
+            DependencyProperty.RegisterAttached("FadeInDuration", typeof(int), typeof(StackedFrame), new PropertyMetadata(200));
+
+        public int FadeInDuration
         {
-            var duration = TimeSpan.FromMilliseconds(2000);
-            //columnDefinition.Width = from;
-            var animation = new GridLengthAnimation
-            {
-                From = from,
-                To = newWidth,
-                Duration = duration
-            };
+            get => (int)GetValue(FadeInDurationProperty);
+            set => SetValue(FadeInDurationProperty, value);
+        }
+
+        #endregion
+
+        #region Property Duration
+
+        public static readonly DependencyProperty FadeOutDurationProperty =
+            DependencyProperty.RegisterAttached("FadeOutDuration", typeof(int), typeof(StackedFrame), new PropertyMetadata(50));
+
+        public int FadeOutDuration
+        {
+            get => (int)GetValue(FadeOutDurationProperty);
+            set => SetValue(FadeOutDurationProperty, value);
+        }
+
+        #endregion
+
+        private void FadeIn(UIElement element)
+        {
+            var sb = new Storyboard();
+            var duration = TimeSpan.FromMilliseconds(FadeInDuration);
+            var animation = new DoubleAnimation(0.0, 1.0, duration);
+            Storyboard.SetTarget(animation, element);
+            Storyboard.SetTargetProperty(animation, new PropertyPath(UIElement.OpacityProperty));
             sb.Children.Add(animation);
-            sb.Completed += delegate
+            sb.Begin();
+        }
+
+        private Task FadeOut(UIElement element)
+        {
+            var sb = new Storyboard();
+            var duration = TimeSpan.FromMilliseconds(FadeOutDuration);
+            var animation = new DoubleAnimation(1.0, 0.0, duration);
+            Storyboard.SetTarget(animation, element);
+            Storyboard.SetTargetProperty(animation, new PropertyPath(UIElement.OpacityProperty));
+            sb.Children.Add(animation);
+
+            var tcs = new TaskCompletionSource<bool>();
+            void OnComplete(object sender, EventArgs e)
             {
-                columnDefinition.BeginAnimation(ColumnDefinition.WidthProperty, null);
-                columnDefinition.Width = newWidth;
-            };
-            Storyboard.SetTarget(animation, columnDefinition);
-            Storyboard.SetTargetProperty(animation, new PropertyPath(ColumnDefinition.WidthProperty));
+                sb.Completed -= OnComplete;
+                tcs.SetResult(true);
+            }
+
+            sb.Completed += OnComplete;
+            sb.Begin();
+            return tcs.Task;
         }
 
         /// <summary>
@@ -88,8 +128,6 @@ namespace TimePunch.StackedUI
         /// </summary>
         private void AdjustColumnWidths()
         {
-            var sb = new Storyboard();
-
             if (StackedMode == StackedMode.InPlace)
             {
                 // Hide all previous columns
@@ -100,15 +138,12 @@ namespace TimePunch.StackedUI
                     {
                         StackPanel.ColumnDefinitions[i].MinWidth = 0;
                         StackPanel.ColumnDefinitions[i].Width = new GridLength(0);
-                        //AnimateColumnWidth(sb, StackPanel.ColumnDefinitions[i], StackPanel.ColumnDefinitions[i].Width, new GridLength(0));
                     }
                     else
                     {
                         StackPanel.ColumnDefinitions[i].Width = new GridLength(1, GridUnitType.Star);
-                        //AnimateColumnWidth(sb,StackPanel.ColumnDefinitions[i], new GridLength(0), new GridLength(1, GridUnitType.Star));
                     }
                 }
-                sb.Begin();
             }
             else
             {
@@ -130,6 +165,7 @@ namespace TimePunch.StackedUI
                             StackPanel.ColumnDefinitions[i].Width = new GridLength(1, GridUnitType.Star);
                     }
                 }
+
                 ScrollViewer.ScrollToRightEnd();
             }
         }
@@ -141,14 +177,11 @@ namespace TimePunch.StackedUI
             StackPanel.ColumnDefinitions.Insert(column,
                 new ColumnDefinition()
                 {
-                    Width = new GridLength(0),
-                    MinWidth = 0,
+                    Width = double.IsNaN(page.Width) || StackedMode == StackedMode.FullWidth
+                        ? GridLength.Auto
+                        : new GridLength(page.Width),
+                    MinWidth = page.MinWidth,
                     MaxWidth = page.MaxWidth
-                    //Width = double.IsNaN(page.Width) || StackedMode == StackedMode.FullWidth
-                    //    ? GridLength.Auto
-                    //    : new GridLength(page.Width),
-                    //MinWidth = page.MinWidth,
-                    //MaxWidth = page.MaxWidth
                 });
             Grid.SetColumn(frame, column);
             page.Width = double.NaN;
@@ -158,21 +191,22 @@ namespace TimePunch.StackedUI
             {
                 var content = page.Content as UIElement;
                 page.Content = null;
-                var adornerDecorator = new AdornerDecorator() {Child = content };
+                var adornerDecorator = new AdornerDecorator() { Child = content };
                 page.Content = adornerDecorator;
             }
 
             // push the frame to the new column
+            frame.Opacity = 0;
             frame.Content = page;
             frameStack.Push(frame);
             StackPanel.Children.Add(frame);
 
-            Dispatcher.Invoke(() =>
-            {
-                AdjustColumnWidths();
-                UpdateTopFrame();
-                BreadCrumbs.Add(new BreadCrumbNavigation(eventAggregator, page));
-            });
+            if (FadeInDuration > 0)
+                FadeIn(frame);
+
+            AdjustColumnWidths();
+            UpdateTopFrame();
+            BreadCrumbs.Add(new BreadCrumbNavigation(eventAggregator, page));
         }
 
         public void AddSplitter()
@@ -197,26 +231,32 @@ namespace TimePunch.StackedUI
             splitters.Add(frameStack.Peek(), splitter);
         }
 
-        public void GoBack()
+        public async Task GoBack(bool animate)
         {
             if (frameStack.Count == 0)
+            {
+                //UpdateTopFrame();
                 return;
+            }
 
             // remove the frame
-            var removedFrame = frameStack.Pop();            // get the frame to remove
-            var column = Grid.GetColumn(removedFrame);      // get the column in grid to remove
-            StackPanel.Children.Remove(removedFrame);       // remove the frame
-            StackPanel.ColumnDefinitions.RemoveAt(column);  // remove the columne
+            var removedFrame = frameStack.Pop(); // get the frame to remove
+            if (animate && FadeOutDuration>0)
+                await FadeOut(removedFrame);
+
+            var column = Grid.GetColumn(removedFrame); // get the column in grid to remove
+            StackPanel.Children.Remove(removedFrame); // remove the frame
+            StackPanel.ColumnDefinitions.RemoveAt(column); // remove the columne
 
             // remove the splitter if there is one
             var removedSplitter = StackedMode == StackedMode.Resizeable ? removedFrame : frameStack.Any() ? frameStack.Peek() : null;
             if (removedSplitter != null && splitters.ContainsKey(removedSplitter))
             {
-                var splitter = splitters[removedSplitter];         // get the splitter to remove
-                column = Grid.GetColumn(splitter);              // get the column in grid to remove
-                StackPanel.Children.Remove(splitter);           // remove the splitter
-                splitters.Remove(removedSplitter);                 // remove the splitter / frame binding
-                StackPanel.ColumnDefinitions.RemoveAt(column);  // remove the columne
+                var splitter = splitters[removedSplitter]; // get the splitter to remove
+                column = Grid.GetColumn(splitter); // get the column in grid to remove
+                StackPanel.Children.Remove(splitter); // remove the splitter
+                splitters.Remove(removedSplitter); // remove the splitter / frame binding
+                StackPanel.ColumnDefinitions.RemoveAt(column); // remove the columne
             }
 
             if (removedFrame.Content is Page { DataContext: IDisposable vmPageDataContext })
@@ -225,12 +265,9 @@ namespace TimePunch.StackedUI
                 vmPageDataContext.Dispose();
             }
 
-            Dispatcher.Invoke(() =>
-            {
-                AdjustColumnWidths();
-                UpdateTopFrame();
-                BreadCrumbs.RemoveAt(BreadCrumbs.Count - 1);
-            });
+            AdjustColumnWidths();
+            UpdateTopFrame();
+            BreadCrumbs.RemoveAt(BreadCrumbs.Count - 1);
         }
 
         private void UpdateTopFrame()
@@ -245,6 +282,7 @@ namespace TimePunch.StackedUI
             if (topFrame != null)
                 topFrame.IsEnabled = false;
         }
+
         public void EnableTop()
         {
             if (!frameStack.Any())
@@ -334,9 +372,32 @@ namespace TimePunch.StackedUI
         public Visibility PropertyPanelVisibility
         {
             get => (Visibility)GetValue(PropertyPanelVisibilityProperty);
-            set => SetValue(PropertyPanelVisibilityProperty, value);
+            set
+            {
+                if (value == Visibility.Visible)
+                {
+                    SetValue(PropertyPanelVisibilityProperty, value);
+                    if (FadeInDuration > 0)
+                        FadeIn(PropertyPanel);
+                }
+                else
+                {
+                    if (FadeOutDuration > 0)
+                    {
+                        FadeOut(PropertyPanel).ContinueWith((t) =>
+                        {
+                            Dispatcher.InvokeAsync(() =>
+                                SetValue(PropertyPanelVisibilityProperty, value));
+                        });
+                    }
+                    else
+                    {
+                        SetValue(PropertyPanelVisibilityProperty, value);
+                    }
+                }
+            }
         }
-
         #endregion
+
     }
 }

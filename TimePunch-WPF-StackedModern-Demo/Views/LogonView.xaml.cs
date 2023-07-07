@@ -31,7 +31,7 @@ namespace TimePunch_WPF_StackedModern_Demo.Views
         {
             var result = await LogonDialog.ShowAsync();
 
-            DemoKernel.Instance.EventAggregator.PublishMessage(new GoBackPageNavigationRequest());
+            await DemoKernel.Instance.EventAggregator.PublishMessageAsync(new GoBackPageNavigationRequest());
         }
     }
 }

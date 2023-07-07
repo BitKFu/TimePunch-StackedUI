@@ -106,7 +106,7 @@ namespace TimePunch.StackedUI.Demo.ViewModels
         /// <param name="eventArgs">The event arguments</param>
         public void ExecuteLastCommand(object sender, ExecutedRoutedEventArgs eventArgs)
         {
-            EventAggregator.PublishMessage(new GoBackPageNavigationRequest());
+            EventAggregator.PublishMessageAsync(new GoBackPageNavigationRequest());
         }
 
         #endregion

@@ -16,15 +16,16 @@ namespace TimePunch.StackedUI.Demo.Core
         private Page basePage;
 
         public DemoController() 
-            : base(DemoKernel.Instance.EventAggregator, StackedMode.InPlace)
+            : base(DemoKernel.Instance.EventAggregator, StackedMode.FullWidth)
         {
         }
 
         #region Implementation of IHandleMessage<NavigateToDemo1View>
 
-        public void Handle(NavigateToDemo1View message)
+        public async void Handle(NavigateToDemo1View message)
         {
-            while (StackedFrame.TopFrame != null) StackedFrame.GoBack();
+            while (StackedFrame.TopFrame != null)
+                await StackedFrame.GoBack(false);
             AddPage(new Demo1View(), basePage);
         }
 

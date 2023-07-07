@@ -9,7 +9,7 @@
     <AssemblyOriginatorKeyFile>TpStackedUI.snk</AssemblyOriginatorKeyFile>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageLicenseExpression>MS-PL</PackageLicenseExpression>
-    <PackageVersion>0.7.0.5</PackageVersion>
+    <PackageVersion>0.7.5.0</PackageVersion>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
     <AssemblyName>TpStackedUI</AssemblyName>

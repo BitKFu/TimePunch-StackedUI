@@ -19,7 +19,7 @@ namespace TimePunch.StackedUI.Model
             FrameKey = StackedFrameExtension.GetFrameKey(page);
             FrameTitle = page.GetValue(Page.TitleProperty).ToString();
             Command = new DynamicCommand(
-                (sender) => eventAggregator.PublishMessage(new GoBackPageNavigationRequest(page)));
+                (sender) => eventAggregator.PublishMessageAsync(new GoBackPageNavigationRequest(page)));
         }
 
         public string FrameKey { get; }

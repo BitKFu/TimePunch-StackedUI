@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using TimePunch.MVVM.Controller;
@@ -11,7 +12,7 @@ namespace TimePunch.StackedUI.Controller
 {
 
     public class StackedController : BaseController,
-        IHandleMessage<GoBackPageNavigationRequest>, IStackedController
+        IHandleMessageAsync<GoBackPageNavigationRequest>, IStackedController
     {
         private StackedFrame stackedFrame;
         private StackedMode stackedMode;
@@ -72,7 +73,7 @@ namespace TimePunch.StackedUI.Controller
         {
             // if a base frame is set, go back to it
             if (basePage != null)
-                EventAggregator.PublishMessage(new GoBackPageNavigationRequest(basePage));
+                EventAggregator.PublishMessageAsync(new GoBackPageNavigationRequest(basePage));
 
             // Check if the frame is already created
             var frameKey = StackedFrameExtension.GetFrameKey(page);
@@ -132,31 +133,6 @@ namespace TimePunch.StackedUI.Controller
             StackedFrame.PropertyPanelVisibility = Visibility.Collapsed;
         }
 
-        #region Implementation of IHandleMessage<GoBackPageNavigationRequest>
-
-        public virtual void Handle(GoBackPageNavigationRequest message)
-        {
-            if (!StackedFrame.CheckAccess())
-            {
-                StackedFrame.Dispatcher.Invoke(() => Handle(message));
-                return;
-            }
-
-            // Remove the top frame
-            if (message.ToPage == null)
-                StackedFrame.GoBack();
-            else
-            {
-                // ReSharper disable once PossibleUnintendedReferenceComparison
-                while (StackedFrame.TopFrame != null && StackedFrame.TopFrame.Content != message.ToPage)
-                    StackedFrame.GoBack();
-            }
-
-            StackedFrame.EnableTop();
-        }
-
-        #endregion
-
         /// <summary>
         /// Gets a value indicating whether the user can go back one page
         /// </summary>
@@ -172,5 +148,31 @@ namespace TimePunch.StackedUI.Controller
                 return result;
             }
         }
+
+        #region Implementation of IHandleMessageAsync<GoBackPageNavigationRequest>
+
+        public virtual async Task<GoBackPageNavigationRequest> Handle(GoBackPageNavigationRequest message)
+        {
+            if (!StackedFrame.CheckAccess())
+            {
+                await StackedFrame.Dispatcher.Invoke(() => Handle(message));
+                return message;
+            }
+
+            // Remove the top frame
+            if (message.ToPage == null)
+                await StackedFrame.GoBack(true);
+            else
+            {
+                // ReSharper disable once PossibleUnintendedReferenceComparison
+                while (StackedFrame.TopFrame != null && StackedFrame.TopFrame.Content != message.ToPage)
+                    await StackedFrame.GoBack(true);
+            }
+
+            StackedFrame.EnableTop();
+            return message;
+        }
+
+        #endregion
     }
 }

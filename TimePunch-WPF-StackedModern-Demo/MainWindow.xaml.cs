@@ -53,7 +53,7 @@ namespace TimePunch_WPF_StackedModern_Demo
         /// <param name="e"></param>
         private void OnBackRequested(object sender, BackRequestedEventArgs e)
         {
-            DemoKernel.Instance.EventAggregator.PublishMessage(new GoBackPageNavigationRequest());
+            DemoKernel.Instance.EventAggregator.PublishMessageAsync(new GoBackPageNavigationRequest());
         }
     }
 }
