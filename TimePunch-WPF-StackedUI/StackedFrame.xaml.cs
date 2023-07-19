@@ -394,6 +394,8 @@ namespace TimePunch.StackedUI
                     SetValue(PropertyPanelVisibilityProperty, value);
                     if (FadeInDuration > 0)
                         FadeIn(PropertyPanel);
+                    else
+                        PropertyPanel.Opacity = 1;
                 }
                 else
                 {
@@ -407,6 +409,7 @@ namespace TimePunch.StackedUI
                     }
                     else
                     {
+                        PropertyPanel.Opacity = 1;
                         SetValue(PropertyPanelVisibilityProperty, value);
                     }
                 }
