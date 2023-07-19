@@ -11,9 +11,9 @@ using TimePunch.StackedUI.Demo.Views;
 namespace TimePunch.StackedUI.Demo.Core
 {
     public class DemoController : StackedController
-       ,IHandleMessage<NavigateToDemo1View>
-       ,IHandleMessage<NavigateToDemo2View>
-       ,IHandleMessage<NavigateToDemo3View>
+       , IHandleMessageAsync<NavigateToDemo1View>
+       , IHandleMessageAsync<NavigateToDemo2View>
+       , IHandleMessageAsync<NavigateToDemo3View>
     {
         public DemoController() 
             : base(DemoKernel.Instance.EventAggregator, StackedMode.Resizeable)
@@ -22,27 +22,30 @@ namespace TimePunch.StackedUI.Demo.Core
 
         #region Implementation of IHandleMessage<NavigateToDemo1View>
 
-        public void Handle(NavigateToDemo1View message)
+        public async Task<NavigateToDemo1View> Handle(NavigateToDemo1View message)
         {
-            AddPage(new Demo1View());
+            await AddPage(new Demo1View());
+            return message;
         }
 
         #endregion
 
         #region Implementation of IHandleMessage<NavigateToDemo2View>
 
-        public void Handle(NavigateToDemo2View message)
+        public async Task<NavigateToDemo2View> Handle(NavigateToDemo2View message)
         {
-            AddPage(new Demo2View());
+            await AddPage(new Demo2View());
+            return message;
         }
 
         #endregion
 
         #region Implementation of IHandleMessage<NavigateToDemo3View>
 
-        public void Handle(NavigateToDemo3View message)
+        public async Task<NavigateToDemo3View> Handle(NavigateToDemo3View message)
         {
-            AddPage(new Demo3View());
+           await AddPage(new Demo3View());
+           return message;
         }
 
         #endregion

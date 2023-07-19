@@ -12,12 +12,12 @@ namespace TimePunch.StackedUI.Controller
     public interface IStackedController : IBaseController
     {
         // Methods
-        Page AddPage(Page page, Page basePage = null, bool isResizable = true, bool isModal = true);
+        Task<Page?> AddPage(Page page, Page? basePage = null, bool isResizable = true, bool isModal = true);
         void HidePropertyPanel();
-        void ShowPropertyPanel(UIElement content, double width);
+        void ShowPropertyPanel(UIElement content);
 
         // Properties
-        StackedFrame StackedFrame { get; set; }
+        StackedFrame? StackedFrame { get; set; }
         StackedMode StackedMode { get; }
         bool CanGoBackPage { get; }
     }

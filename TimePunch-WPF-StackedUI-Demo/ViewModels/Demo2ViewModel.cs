@@ -54,7 +54,7 @@ namespace TimePunch.StackedUI.Demo.ViewModels
         /// <param name="eventArgs">The event arguments</param>
         public void ExecuteNextCommand(object sender, ExecutedRoutedEventArgs eventArgs)
         {
-            EventAggregator.PublishMessage(new NavigateToDemo3View());
+            EventAggregator.PublishMessageAsync(new NavigateToDemo3View());
         }
 
         #endregion

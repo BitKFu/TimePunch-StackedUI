@@ -73,7 +73,7 @@
                 </DataTemplate>
             </ui:NavigationView.MenuItemTemplate>
 
-            <stackedUi:StackedFrame Name="StackedFrame" FadeInDuration="0" FadeOutDuration="0">
+            <stackedUi:StackedFrame Name="StackedFrame" FadeInDuration="100" FadeOutDuration="100">
             </stackedUi:StackedFrame>
 
         </ui:NavigationView>

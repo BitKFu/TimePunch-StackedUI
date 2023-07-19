@@ -43,7 +43,7 @@ namespace TimePunch_WPF_StackedModern_Demo
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
             DemoKernel.Instance.Controller.StackedFrame = StackedFrame;
-            DemoKernel.Instance.EventAggregator.PublishMessage(new NavigateToStartView());
+            DemoKernel.Instance.EventAggregator.PublishMessageAsync(new NavigateToStartView());
         }
 
         /// <summary>

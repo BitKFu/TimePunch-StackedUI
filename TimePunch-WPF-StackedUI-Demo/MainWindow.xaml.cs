@@ -19,7 +19,7 @@ namespace TimePunch.StackedUI.Demo
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
             DemoKernel.Instance.Controller.StackedFrame = StackedFrame;
-            DemoKernel.Instance.EventAggregator.PublishMessage(new NavigateToDemo1View());
+            DemoKernel.Instance.EventAggregator.PublishMessageAsync (new NavigateToDemo1View());
         }
     }
 }

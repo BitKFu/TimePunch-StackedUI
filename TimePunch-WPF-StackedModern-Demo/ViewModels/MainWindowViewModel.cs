@@ -26,8 +26,8 @@ namespace TimePunch.StackedUI.Demo.ViewModels
 
             DemoPages = new List<PageLink>()
             {
-                new PageLink() {Title = "Demo1", Icon="Home", GoToPage = ()=>EventAggregator.PublishMessage(new NavigateToDemo1View())},
-                new PageLink() {Title = "Demo2", Icon="AddFriend",GoToPage = ()=>EventAggregator.PublishMessage(new NavigateToDemo1View())},
+                new PageLink() {Title = "Demo1", Icon="Home", GoToPage = ()=>EventAggregator.PublishMessageAsync(new NavigateToDemo1View())},
+                new PageLink() {Title = "Demo2", Icon="AddFriend",GoToPage = ()=>EventAggregator.PublishMessageAsync(new NavigateToDemo1View())},
             };
 
         }
@@ -86,7 +86,7 @@ namespace TimePunch.StackedUI.Demo.ViewModels
         /// <param name="eventArgs">The event arguments</param>
         public void ExecuteDemo1Command(object sender, ExecutedRoutedEventArgs eventArgs)
         {
-            EventAggregator.PublishMessage(new NavigateToDemo1View());
+            EventAggregator.PublishMessageAsync(new NavigateToDemo1View());
         }
 
         #endregion

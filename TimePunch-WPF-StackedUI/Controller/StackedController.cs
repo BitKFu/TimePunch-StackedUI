@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,7 +13,7 @@ namespace TimePunch.StackedUI.Controller
     public class StackedController : BaseController,
         IHandleMessageAsync<GoBackPageNavigationRequest>, IStackedController
     {
-        private StackedFrame stackedFrame;
+        private StackedFrame? stackedFrame;
         private StackedMode stackedMode;
 
         /// <summary>
@@ -34,16 +33,13 @@ namespace TimePunch.StackedUI.Controller
         /// <summary>
         /// Stacked Frame control
         /// </summary>
-        public StackedFrame StackedFrame
+        public StackedFrame? StackedFrame
         {
-            get
-            {
-                return stackedFrame;
-            }
+            get => stackedFrame;
             set
             {
                 stackedFrame = value;
-                stackedFrame.Initialize(StackedMode);
+                stackedFrame?.Initialize(StackedMode);
             }
         }
 
@@ -69,15 +65,15 @@ namespace TimePunch.StackedUI.Controller
         /// <summary>
         /// Used to navigate to a new Frame, e.g. add a frame with a new page
         /// </summary>
-        public Page? AddPage(Page page, Page? basePage = null, bool isResizable = true, bool isModal = false)
+        public async Task<Page?> AddPage(Page page, Page? basePage = null, bool isResizable = true, bool isModal = true)
         {
             // if a base frame is set, go back to it
             if (basePage != null)
-                EventAggregator.PublishMessageAsync(new GoBackPageNavigationRequest(basePage));
+                await EventAggregator.PublishMessageAsync(new GoBackPageNavigationRequest(basePage));
 
             // Check if the frame is already created
             var frameKey = StackedFrameExtension.GetFrameKey(page);
-            if (StackedFrame.Contains(frameKey))
+            if (StackedFrame == null || StackedFrame.Contains(frameKey))
                 return null;
 
             // Hide the current property panel
@@ -92,7 +88,7 @@ namespace TimePunch.StackedUI.Controller
 
             // add the new page
             var frame = CreateFrame();
-            StackedFrame.AddFrame(EventAggregator, frame, page);
+            await StackedFrame.AddFrame(EventAggregator, frame, page);
 
             if (StackedMode == StackedMode.Resizeable && isResizable)
                 StackedFrame.AddSplitter();
@@ -115,9 +111,11 @@ namespace TimePunch.StackedUI.Controller
         /// Set the content of the property panel
         /// </summary>
         /// <param name="content">Content</param>
-        /// <param name="width">Width</param>
-        public void ShowPropertyPanel(UIElement content, double width)
+        public virtual void ShowPropertyPanel(UIElement content)
         {
+            if (StackedFrame == null)
+                return;
+
             StackedFrame.PropertyPanel.Children.Clear();
             StackedFrame.PropertyPanel.Children.Add(content);
 
@@ -127,10 +125,27 @@ namespace TimePunch.StackedUI.Controller
         /// <summary>
         /// Hides the property panel
         /// </summary>
-        public void HidePropertyPanel()
+        public virtual void HidePropertyPanel()
         {
+            if (StackedFrame == null)
+                return;
             StackedFrame.PropertyPanel.Children.Clear();
             StackedFrame.PropertyPanelVisibility = Visibility.Collapsed;
+        }
+
+        public UIElement? PropertyPanel
+        {
+            get => StackedFrame?.PropertyPanel.Children.Count > 0
+                ? StackedFrame.PropertyPanel.Children[0]
+                : null;
+
+            set
+            {
+                if (value != null)
+                    ShowPropertyPanel(value);
+                else
+                    HidePropertyPanel();
+            }
         }
 
         /// <summary>
@@ -140,10 +155,13 @@ namespace TimePunch.StackedUI.Controller
         {
             get
             {
+                if (StackedFrame == null)
+                    return false;
+
                 if (StackedFrame.CheckAccess())
                     return StackedFrame.CanGoBack;
 
-                bool result = false;
+                var result = false;
                 StackedFrame.Dispatcher.Invoke(() => result = StackedFrame.CanGoBack);
                 return result;
             }
@@ -153,6 +171,9 @@ namespace TimePunch.StackedUI.Controller
 
         public virtual async Task<GoBackPageNavigationRequest> Handle(GoBackPageNavigationRequest message)
         {
+            if (StackedFrame == null)
+                return message;
+
             if (!StackedFrame.CheckAccess())
             {
                 await StackedFrame.Dispatcher.Invoke(() => Handle(message));

@@ -91,7 +91,7 @@ namespace TimePunch.StackedUI
 
         #endregion
 
-        private void FadeIn(UIElement element)
+        private Task FadeIn(UIElement element)
         {
             var sb = new Storyboard();
             var duration = TimeSpan.FromMilliseconds(FadeInDuration);
@@ -99,7 +99,17 @@ namespace TimePunch.StackedUI
             Storyboard.SetTarget(animation, element);
             Storyboard.SetTargetProperty(animation, new PropertyPath(UIElement.OpacityProperty));
             sb.Children.Add(animation);
+
+            var tcs = new TaskCompletionSource<bool>();
+            void OnComplete(object sender, EventArgs e)
+            {
+                sb.Completed -= OnComplete;
+                tcs.SetResult(true);
+            }
+
+            sb.Completed += OnComplete;
             sb.Begin();
+            return tcs.Task;
         }
 
         private Task FadeOut(UIElement element)
@@ -170,7 +180,7 @@ namespace TimePunch.StackedUI
             }
         }
 
-        public void AddFrame(IEventAggregator eventAggregator, Frame frame, Page page)
+        public async Task AddFrame(IEventAggregator eventAggregator, Frame frame, Page page)
         {
             // add a new column
             var column = StackPanel.ColumnDefinitions.Count - (StackedMode == StackedMode.Resizeable ? 1 : 0);
@@ -201,12 +211,12 @@ namespace TimePunch.StackedUI
             frameStack.Push(frame);
             StackPanel.Children.Add(frame);
 
-            if (FadeInDuration > 0)
-                FadeIn(frame);
-
             AdjustColumnWidths();
             UpdateTopFrame();
             BreadCrumbs.Add(new BreadCrumbNavigation(eventAggregator, page));
+
+            if (FadeInDuration > 0)
+                await FadeIn(frame);
         }
 
         public void AddSplitter()
@@ -267,7 +277,12 @@ namespace TimePunch.StackedUI
 
             AdjustColumnWidths();
             UpdateTopFrame();
-            BreadCrumbs.RemoveAt(BreadCrumbs.Count - 1);
+
+            lock (BreadCrumbs)
+            {
+                if (BreadCrumbs.Count > 0)
+                    BreadCrumbs.RemoveAt(BreadCrumbs.Count - 1);
+            }
         }
 
         private void UpdateTopFrame()
