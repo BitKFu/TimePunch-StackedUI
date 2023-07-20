@@ -96,6 +96,7 @@ namespace TimePunch.StackedUI
             var sb = new Storyboard();
             var duration = TimeSpan.FromMilliseconds(FadeInDuration);
             var animation = new DoubleAnimation(0.0, 1.0, duration);
+            animation.FillBehavior = FillBehavior.Stop;
             Storyboard.SetTarget(animation, element);
             Storyboard.SetTargetProperty(animation, new PropertyPath(UIElement.OpacityProperty));
             sb.Children.Add(animation);
@@ -104,6 +105,7 @@ namespace TimePunch.StackedUI
             void OnComplete(object sender, EventArgs e)
             {
                 sb.Completed -= OnComplete;
+                element.Opacity = 1;
                 tcs.SetResult(true);
             }
 
@@ -117,6 +119,7 @@ namespace TimePunch.StackedUI
             var sb = new Storyboard();
             var duration = TimeSpan.FromMilliseconds(FadeOutDuration);
             var animation = new DoubleAnimation(1.0, 0.0, duration);
+            animation.FillBehavior = FillBehavior.Stop;
             Storyboard.SetTarget(animation, element);
             Storyboard.SetTargetProperty(animation, new PropertyPath(UIElement.OpacityProperty));
             sb.Children.Add(animation);
@@ -125,6 +128,7 @@ namespace TimePunch.StackedUI
             void OnComplete(object sender, EventArgs e)
             {
                 sb.Completed -= OnComplete;
+                element.Opacity = 0;
                 tcs.SetResult(true);
             }
 
@@ -191,10 +195,16 @@ namespace TimePunch.StackedUI
                         ? GridLength.Auto
                         : new GridLength(page.Width),
                     MinWidth = page.MinWidth,
-                    MaxWidth = page.MaxWidth
+                    MaxWidth = StackedMode == StackedMode.InPlace 
+                        ? double.MaxValue
+                        : page.MaxWidth
                 });
             Grid.SetColumn(frame, column);
             page.Width = double.NaN;
+
+            // Update max with of page - if it's an inplace update
+            if (StackedMode == StackedMode.InPlace)
+                page.MaxWidth = double.MaxValue;
 
             // Check if the page has an adorner decorator
             if (!(page.Content is AdornerDecorator))
@@ -389,13 +399,16 @@ namespace TimePunch.StackedUI
             get => (Visibility)GetValue(PropertyPanelVisibilityProperty);
             set
             {
+                // Maybe we don't need to change
+                if (PropertyPanelVisibility == value)
+                    return;
+
+                // Change the visibility
                 if (value == Visibility.Visible)
                 {
                     SetValue(PropertyPanelVisibilityProperty, value);
                     if (FadeInDuration > 0)
                         FadeIn(PropertyPanel);
-                    else
-                        PropertyPanel.Opacity = 1;
                 }
                 else
                 {
@@ -404,12 +417,14 @@ namespace TimePunch.StackedUI
                         FadeOut(PropertyPanel).ContinueWith((t) =>
                         {
                             Dispatcher.InvokeAsync(() =>
-                                SetValue(PropertyPanelVisibilityProperty, value));
+                            {
+                                PropertyPanel.Opacity = 1;
+                                SetValue(PropertyPanelVisibilityProperty, value);
+                            });
                         });
                     }
                     else
                     {
-                        PropertyPanel.Opacity = 1;
                         SetValue(PropertyPanelVisibilityProperty, value);
                     }
                 }

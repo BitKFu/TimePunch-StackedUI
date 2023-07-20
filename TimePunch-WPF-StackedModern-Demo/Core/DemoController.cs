@@ -17,7 +17,7 @@ namespace TimePunch.StackedUI.Demo.Core
         private Page basePage;
 
         public DemoController() 
-            : base(DemoKernel.Instance.EventAggregator, StackedMode.FullWidth)
+            : base(DemoKernel.Instance.EventAggregator, StackedMode.InPlace)
         {
         }
 

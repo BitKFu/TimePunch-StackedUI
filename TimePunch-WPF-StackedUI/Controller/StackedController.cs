@@ -76,9 +76,6 @@ namespace TimePunch.StackedUI.Controller
             if (StackedFrame == null || StackedFrame.Contains(frameKey))
                 return null;
 
-            //// Hide the current property panel
-            //HidePropertyPanel();
-
             // if the page is modal, than disable the previous one
             if (isModal)
                 StackedFrame.DisableTop();
