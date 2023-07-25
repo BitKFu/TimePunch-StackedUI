@@ -196,7 +196,7 @@ namespace TimePunch.StackedUI
                         : new GridLength(page.Width),
                     MinWidth = page.MinWidth,
                     MaxWidth = StackedMode == StackedMode.InPlace 
-                        ? double.MaxValue
+                        ? double.PositiveInfinity
                         : page.MaxWidth
                 });
             Grid.SetColumn(frame, column);
@@ -204,7 +204,7 @@ namespace TimePunch.StackedUI
 
             // Update max with of page - if it's an inplace update
             if (StackedMode == StackedMode.InPlace)
-                page.MaxWidth = double.MaxValue;
+                page.MaxWidth = double.PositiveInfinity;
 
             // Check if the page has an adorner decorator
             if (!(page.Content is AdornerDecorator))
