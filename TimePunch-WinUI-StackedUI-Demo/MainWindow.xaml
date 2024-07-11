@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window
+    x:Class="TimePunch_WinUI_StackedUI_Demo.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:TimePunch_WinUI_StackedUI_Demo"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:stackedUi="using:TimePunch.StackedUI"
+    Title="MainWindow" 
+    mc:Ignorable="d">
+
+    <ContentControl DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=MainWindowViewModel}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <!-- Navigation View is in the second row -->
+            <NavigationView Grid.Row="2" Grid.Column="0"       
+                            IsTitleBarAutoPaddingEnabled="False"
+                           IsBackButtonVisible="Collapsed"
+                           IsBackEnabled="False"
+                           IsPaneOpen="True"
+                           AlwaysShowHeader="True"
+                           SelectedItem="{Binding SelectedMenuItem, Mode=TwoWay}"
+                           MenuItemsSource="{Binding DemoPages}"
+                           >
+
+                <NavigationView.MenuItemTemplate>
+                    <DataTemplate>
+                        <NavigationViewItem Icon="{Binding Icon}" Content="{Binding Title}" AutomationProperties.Name="{Binding Title}"/>
+                    </DataTemplate>
+                </NavigationView.MenuItemTemplate>
+
+                <stackedUi:StackedFrame Name="StackedFrame" FadeInDuration="100" FadeOutDuration="100">
+                </stackedUi:StackedFrame>
+
+            </NavigationView>
+        </Grid>
+    </ContentControl>
+
+</Window>
