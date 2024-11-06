@@ -333,21 +333,6 @@ namespace TimePunch.StackedUI.Controller
                 if (addedPage == null)
                     return null;
                 
-                // Add scroll wheel query
-                // ReSharper disable once SuspiciousTypeConversion.Global
-                if (addedPage is not IPreventMouseWheelScrolling)   // On report page scroll wheel is used for zoom
-                {
-                    addedPage.Loaded += (e, args) =>
-                    {
-                        addedPage.PointerWheelChanged += OnScrollPanel;
-                        foreach (var element in addedPage.FindDescendants())
-                        {
-                            if (element is UIElement uiElement)
-                                uiElement.PointerWheelChanged += OnScrollPanel;
-                        }
-                    };
-                }
-
                 // Get the key of the new top page - to set the with
                 if (StackedFrame.TopFrame?.Parent is Grid surroundingGrid && StackedMode != StackedMode.InPlace)
                 {
@@ -359,7 +344,7 @@ namespace TimePunch.StackedUI.Controller
                 }
 
                 // wait a short moment to be sure, that the page has been displayed
-                await Task.Delay(100).ContinueWith(t => dispatcher.TryEnqueue(()=>
+                await Task.Delay(50).ContinueWith(t => dispatcher.TryEnqueue(()=>
                     {
                         UpdateScrollPosition(addedPage);
 
@@ -378,23 +363,6 @@ namespace TimePunch.StackedUI.Controller
         #endregion
 
         #region Scrollbar Handling
-
-        private void OnScrollPanel(object sender, PointerRoutedEventArgs e)
-        {
-            if (!e.KeyModifiers.HasFlag(VirtualKeyModifiers.Control))
-                return;
-
-            if (StackedFrame == null)
-                return;
-
-            var scroll = StackedFrame.FindDescendant<ScrollViewer>();
-            if (scroll == null) 
-                return;
-
-            var currentOffset = scroll.HorizontalOffset;
-            var delta = e.GetCurrentPoint((UIElement)sender).Properties.MouseWheelDelta;
-            scroll.ScrollToHorizontalOffset(currentOffset - delta);
-        }
 
         protected virtual void UpdateScrollPosition(Page addedPage)
         {

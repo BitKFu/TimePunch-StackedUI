@@ -373,7 +373,7 @@ namespace TimePunch.StackedUI
         #region Property SplitterWith
 
         public static readonly DependencyProperty SplitterWidthProperty =
-            DependencyProperty.RegisterAttached("SplitterWidth", typeof(int), typeof(StackedFrame), new PropertyMetadata(3));
+            DependencyProperty.RegisterAttached("SplitterWidth", typeof(GridLength), typeof(StackedFrame), new PropertyMetadata(3));
 
         /// <summary>
         /// Gets or sets the with of the splitter

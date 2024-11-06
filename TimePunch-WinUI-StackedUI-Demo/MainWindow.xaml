@@ -65,7 +65,7 @@
         </Grid>
 
         <!-- Breadcrumb navigation -->
-        <BreadcrumbBar Grid.Row="1" ItemsSource="{x:Bind StackedFrame.BreadCrumbs}" ItemClicked="OnBreadcrumbClick">
+        <BreadcrumbBar Grid.Row="1" ItemsSource="{x:Bind StackedFrame.BreadCrumbs}" ItemClicked="OnBreadcrumbClick" Margin="16 0">
             <BreadcrumbBar.ItemTemplate>
                 <DataTemplate x:DataType="l:BreadCrumbNavigation">
                     <BreadcrumbBarItem Content="{Binding}" AutomationProperties.Name="{Binding FrameTitle}">

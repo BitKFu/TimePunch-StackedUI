@@ -3,10 +3,12 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Animation;
 using System.Collections.ObjectModel;
 using CommunityToolkit.WinUI.Controls;
+using Microsoft.UI.Xaml.Input;
 using TimePunch.MVVM.EventAggregation;
 using TimePunch.StackedUI.Controller;
 using TimePunch.StackedUI.Extensions;
 using TimePunch.StackedUI.Model;
+using Windows.System;
 
 namespace TimePunch.StackedUI
 {
@@ -181,20 +183,6 @@ namespace TimePunch.StackedUI
         public async Task AddFrame(IEventAggregator eventAggregator, Frame frame, Page page)
         {
             // add a new column
-            //var column = StackPanel.ColumnDefinitions.Count - (StackedMode == StackedMode.Resizeable ? 1 : 0);
-            //StackPanel.ColumnDefinitions.Insert(column,
-            //    new ColumnDefinition()
-            //    {
-            //        Width = double.IsNaN(page.Width) || StackedMode == StackedMode.FullWidth
-            //            ? GridLength.Auto
-            //            : new GridLength(page.Width),
-            //        MinWidth = page.MinWidth,
-            //        MaxWidth = StackedMode == StackedMode.InPlace 
-            //            ? double.PositiveInfinity
-            //            : page.MaxWidth
-            //    });
-            //Grid.SetColumn(frame, column);
-
             frame.Width = double.IsNaN(page.Width) || StackedMode == StackedMode.FullWidth
                 ? page.MinWidth
                 : page.Width;
@@ -208,17 +196,6 @@ namespace TimePunch.StackedUI
             // Update max with of page - if it's an inplace update
             if (StackedMode == StackedMode.InPlace)
                 page.MaxWidth = double.PositiveInfinity;
-
-            // Check if the page has an adorner decorator
-            // @todo: Find a replacement for an AdornerDecorator
-
-            //if (!(page.Content is AdornerDecorator))
-            //{
-            //    var content = page.Content as UIElement;
-            //    page.Content = null;
-            //    var adornerDecorator = new AdornerDecorator() { Child = content };
-            //    page.Content = adornerDecorator;
-            //}
 
             // push the frame to the new column
             frame.Opacity = FadeInDuration > 0 ? 0 : 1;
@@ -236,19 +213,12 @@ namespace TimePunch.StackedUI
 
         public void AddSplitter()
         {
+            // add the splitter 
             var splitter = new ContentSizer()
             {
-                //ResizeDirection = GridSplitter.GridResizeDirection.Columns,
-                //ResizeBehavior = GridSplitter.GridResizeBehavior.BasedOnAlignment,
-                //HorizontalAlignment = HorizontalAlignment.Stretch,
                 TargetControl = StackPanel.Children.Last() as FrameworkElement,
             };
             
-            // add the splitter 
-            //var column = StackPanel.ColumnDefinitions.Count - (StackedMode == StackedMode.Resizeable ? 1 : 0);
-            //StackPanel.ColumnDefinitions.Insert(column, new ColumnDefinition() { Width = SplitterWidth });
-            //Grid.SetColumn(splitter, column);
-
             StackPanel.Children.Add(splitter);
 
             // push the splitter to the frame dictionary
@@ -259,7 +229,6 @@ namespace TimePunch.StackedUI
         {
             if (frameStack.Count == 0)
             {
-                //UpdateTopFrame();
                 return;
             }
 
@@ -268,19 +237,15 @@ namespace TimePunch.StackedUI
             if (animate && FadeOutDuration>0)
                 await FadeOut(removedFrame);
 
-            var column = Grid.GetColumn(removedFrame); // get the column in grid to remove
             StackPanel.Children.Remove(removedFrame); // remove the frame
-            //StackPanel.ColumnDefinitions.RemoveAt(column); // remove the columne
 
             // remove the splitter if there is one
             var removedSplitter = StackedMode == StackedMode.Resizeable ? removedFrame : frameStack.Any() ? frameStack.Peek() : null;
             if (removedSplitter != null && splitters.ContainsKey(removedSplitter))
             {
                 var splitter = splitters[removedSplitter]; // get the splitter to remove
-                column = Grid.GetColumn(splitter); // get the column in grid to remove
                 StackPanel.Children.Remove(splitter); // remove the splitter
                 splitters.Remove(removedSplitter); // remove the splitter / frame binding
-                //StackPanel.ColumnDefinitions.RemoveAt(column); // remove the columne
             }
 
             if (removedFrame.Content is Page { DataContext: IDisposable vmPageDataContext })
@@ -362,10 +327,6 @@ namespace TimePunch.StackedUI
         /// <param name="stackedMode">defines how the frames are beeing added</param>
         public void Initialize(StackedMode stackedMode)
         {
-            // add an empty column
-            //if (stackedMode == StackedMode.Resizeable)
-            //    StackPanel.ColumnDefinitions.Add(new ColumnDefinition());
-
             StackedMode = stackedMode;
         }
 
@@ -436,5 +397,33 @@ namespace TimePunch.StackedUI
         }
         #endregion
 
+        #region Escape Key Handling
+
+        private async void OnGoBackNavigation(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+        {
+            if (CanGoBack)
+                await GoBack(true);
+
+            args.Handled = true;
+        }
+
+        #endregion
+
+        #region Scrollbar Handling
+
+        private void OnPointerWheelChanged(object sender, PointerRoutedEventArgs e)
+        {
+            if (!e.KeyModifiers.HasFlag(VirtualKeyModifiers.Control))
+                return;
+
+            if (sender is ScrollViewer scroll)
+            {
+                var currentOffset = scroll.HorizontalOffset;
+                var delta = e.GetCurrentPoint((UIElement)sender).Properties.MouseWheelDelta;
+                scroll.ScrollToHorizontalOffset(currentOffset - delta);
+            }
+        }
+
+        #endregion
     }
 }

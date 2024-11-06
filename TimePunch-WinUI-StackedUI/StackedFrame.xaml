@@ -7,6 +7,9 @@
              mc:Ignorable="d" 
              x:Name="Frame"
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.KeyboardAccelerators>
+        <KeyboardAccelerator Key="Escape" Invoked="OnGoBackNavigation"></KeyboardAccelerator>
+    </UserControl.KeyboardAccelerators>
     
     <Grid>
         <Grid.ColumnDefinitions>
@@ -20,6 +23,7 @@
                       VerticalScrollBarVisibility="Disabled"
                       x:FieldModifier="public"
                       x:Name="ScrollViewer"
+                      PointerWheelChanged="OnPointerWheelChanged"
                       Grid.Column="0">
             <StackPanel Name="StackPanel" Orientation="Horizontal">
 
