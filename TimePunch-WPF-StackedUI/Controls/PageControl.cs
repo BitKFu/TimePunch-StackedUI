@@ -24,6 +24,22 @@ namespace TimePunch.StackedUI.Controls
 
         #endregion
 
+        #region Property TitleProperty
+
+        public static readonly DependencyProperty TitleProperty =
+            DependencyProperty.RegisterAttached("Title", typeof(string), typeof(PageControl), new PropertyMetadata(null));
+
+        /// <summary>
+        /// Gets or sets the CanGoBack.
+        /// </summary>
+        /// <value>The CanGoBack.</value>
+        public string Title
+        {
+            get => (string)GetValue(TitleProperty);
+            set => SetValue(TitleProperty, value);
+        }
+
+        #endregion
 
         #region Content
 

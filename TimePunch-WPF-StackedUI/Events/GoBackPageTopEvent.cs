@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TimePunch.StackedUI.Demo.Events
+namespace TimePunch.StackedUI.Events
 {
-    public class NavigateToStartView
+    public class GoBackPageTopEvent
     {
     }
 }

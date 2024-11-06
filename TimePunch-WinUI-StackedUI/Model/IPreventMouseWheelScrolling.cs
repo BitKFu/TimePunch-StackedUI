@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TimePunch.StackedUI.Demo.Core;
 
-namespace TimePunch.StackedUI.Demo.Events
+namespace TimePunch.StackedUI.Model
 {
-    public class NavigateToDemo3View 
+    internal interface IPreventMouseWheelScrolling
     {
     }
 }

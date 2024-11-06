@@ -8,13 +8,13 @@
       xmlns:controls="clr-namespace:TimePunch.StackedUI.Controls;assembly=TpStackedUI"
       DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=Demo1ViewModel}"
       extensions1:StackedFrameExtension.FrameKey="Demo1View"
-      mc:Ignorable="d" Width="800" MinWidth="300" 
-      d:DesignHeight="450" d:DesignWidth="800" 
-      Title="Demo1View">
+      Title="Demo1View"
+      mc:Ignorable="d" Width="1000" MinWidth="400" 
+      d:DesignHeight="450" d:DesignWidth="800" >
 
     <controls:PageControl>
         <controls:PageControl.Content>
-            <Grid>
+            <Grid Background="Red">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
@@ -27,16 +27,16 @@
                 </Grid.ColumnDefinitions>
 
                 <Button Content="Next" 
-                Grid.Row="0" 
-                Grid.Column="1" 
-                Margin="12"
-                Command="{Binding NextCommand}"
-                Width="100"></Button>
+                        Grid.Row="0" 
+                        Grid.Column="1" 
+                        Margin="12"
+                        Command="{Binding NextCommand}"
+                        Width="100"/>
                 <Button Content="Last" 
-                Grid.Row="1" 
-                Grid.Column="1" 
-                Margin="12"
-                Command="{Binding LastCommand}"></Button>
+                        Grid.Row="1" 
+                        Grid.Column="1" 
+                        Margin="12"
+                        Command="{Binding LastCommand}"/>
             </Grid>
         </controls:PageControl.Content>
     </controls:PageControl>

@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Navigation;
@@ -373,7 +374,7 @@ namespace TimePunch.StackedUI
         #region Property SplitterWith
 
         public static readonly DependencyProperty SplitterWidthProperty =
-            DependencyProperty.RegisterAttached("SplitterWidth", typeof(GridLength), typeof(StackedFrame), new PropertyMetadata(3));
+            DependencyProperty.RegisterAttached("SplitterWidth", typeof(int), typeof(StackedFrame), new PropertyMetadata(3));
 
         /// <summary>
         /// Gets or sets the with of the splitter
@@ -431,6 +432,5 @@ namespace TimePunch.StackedUI
             }
         }
         #endregion
-
     }
 }

@@ -11,7 +11,6 @@ namespace TimePunch.StackedUI.Controller
     {
         // Adding pages
         Task<Page?> InitTopPageAsync(DispatcherQueue dispatcher, PageNavigationEvent message, ViewModelBase vm, Page pageToAdd, bool isResizable = true, bool isModal = false);
-
         Task<Page?> InitSubPageAsync(DispatcherQueue dispatcher, PageNavigationEvent message, ViewModelBase vm, Page pageToAdd, Page? basePage = null, bool isResizable = true, bool isModal = false);
 
         // Methods

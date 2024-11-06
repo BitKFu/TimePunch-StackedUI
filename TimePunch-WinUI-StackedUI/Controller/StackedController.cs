@@ -184,7 +184,6 @@ namespace TimePunch.StackedUI.Controller
                     if (message.ToPage == null)
                         return message;
                 }
-
             }
 
             // Remove the top frame
@@ -200,7 +199,6 @@ namespace TimePunch.StackedUI.Controller
             }
 
             StackedFrame.EnableTop();
-
 
             // Get the key of the new top page - after closing the previous
             var newTopPage = StackedFrame?.TopFrame?.Content as Page;

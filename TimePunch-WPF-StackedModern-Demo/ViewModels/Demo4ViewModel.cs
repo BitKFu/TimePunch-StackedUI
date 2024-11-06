@@ -1,11 +1,11 @@
 ﻿using System.Windows.Input;
-using TimePunch.StackedUI.Demo.Core;
-using TimePunch.StackedUI.Demo.Events;
+using TimePunch.MVVM.Events;
 using TimePunch.StackedUI.Events;
+using TimePunch.StackedUI.Demo.Core;
 
-namespace TimePunch.StackedUI.Demo.ViewModels
+namespace TimePunch.StackedUI.Demo.Events
 {
-    public class Demo2ViewModel : DemoViewModelBase
+    public class Demo4ViewModel : DemoViewModelBase
     {
         #region Overrides of ViewModelBase
 
@@ -39,7 +39,7 @@ namespace TimePunch.StackedUI.Demo.ViewModels
         /// <param name="eventArgs">The event arguments</param>
         public void CanExecuteNextCommand(object sender, CanExecuteRoutedEventArgs eventArgs)
         {
-            eventArgs.CanExecute = true;
+            eventArgs.CanExecute = false;
         }
 
         /// <summary>
@@ -49,7 +49,6 @@ namespace TimePunch.StackedUI.Demo.ViewModels
         /// <param name="eventArgs">The event arguments</param>
         public void ExecuteNextCommand(object sender, ExecutedRoutedEventArgs eventArgs)
         {
-            EventAggregator.PublishMessageAsync(new NavigateToDemo3View());
         }
 
         #endregion
@@ -76,7 +75,7 @@ namespace TimePunch.StackedUI.Demo.ViewModels
         /// <param name="eventArgs">The event arguments</param>
         public void CanExecuteLastCommand(object sender, CanExecuteRoutedEventArgs eventArgs)
         {
-            eventArgs.CanExecute = false;
+            eventArgs.CanExecute = true;
         }
 
         /// <summary>

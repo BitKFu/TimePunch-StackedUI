@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using TimePunch.StackedUI.Demo.Core;
 using TimePunch.StackedUI.Demo.Events;
 using TimePunch.StackedUI.Events;
@@ -54,6 +49,7 @@ namespace TimePunch.StackedUI.Demo.ViewModels
         /// <param name="eventArgs">The event arguments</param>
         public void ExecuteNextCommand(object sender, ExecutedRoutedEventArgs eventArgs)
         {
+            EventAggregator.PublishMessageAsync(new NavigateToDemo4View());
         }
 
         #endregion

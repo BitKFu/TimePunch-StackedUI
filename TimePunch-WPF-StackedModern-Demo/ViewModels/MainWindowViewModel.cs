@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Input;
 using TimePunch.StackedUI.Demo.Core;
 using TimePunch.StackedUI.Demo.Events;
+using TimePunch.StackedUI.Events;
 
 namespace TimePunch.StackedUI.Demo.ViewModels
 {
@@ -23,11 +24,12 @@ namespace TimePunch.StackedUI.Demo.ViewModels
             base.Initialize();
 
             Demo1Command = RegisterCommand(ExecuteDemo1Command, CanExecuteDemo1Command, true);
+            GoBackNavigationPageCommand = RegisterCommand(ExecuteGoBackNavigationPageCommand, CanExecuteGoBackNavigationPageCommand, true);
 
             DemoPages = new List<PageLink>()
             {
                 new PageLink() {Title = "Demo1", Icon="Home", GoToPage = ()=>EventAggregator.PublishMessageAsync(new NavigateToDemo1View())},
-                new PageLink() {Title = "Demo2", Icon="AddFriend",GoToPage = ()=>EventAggregator.PublishMessageAsync(new NavigateToDemo1View())},
+                new PageLink() {Title = "Demo2", Icon="AddFriend",GoToPage = ()=>EventAggregator.PublishMessageAsync(new NavigateToDemo2View())},
             };
 
         }
@@ -105,5 +107,41 @@ namespace TimePunch.StackedUI.Demo.ViewModels
 
         #endregion
 
+        #region GoBackNavigationPage Command
+
+        /// <summary>
+        /// Gets or sets the GoBackNavigationPage command.
+        /// </summary>
+        /// <value>The GoBackNavigationPage command.</value>
+        public ICommand GoBackNavigationPageCommand
+        {
+            get { return GetPropertyValue(() => GoBackNavigationPageCommand); }
+            set { SetPropertyValue(() => GoBackNavigationPageCommand, value); }
+        }
+
+        /// <summary>
+        /// Determines whether this instance can execute GoBackNavigationPage command.
+        /// </summary>
+        /// <returns>
+        /// 	<c>true</c> if this instance can execute GoBackNavigationPage command; otherwise, <c>false</c>.
+        /// </returns>
+        /// <param name="sender">The sender.</param>
+        /// <param name="eventArgs">The event arguments</param>
+        public void CanExecuteGoBackNavigationPageCommand(object sender, CanExecuteRoutedEventArgs eventArgs)
+        {
+            eventArgs.CanExecute = true;
+        }
+
+        /// <summary>
+        /// Executes the GoBackNavigationPage command.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="eventArgs">The event arguments</param>
+        public void ExecuteGoBackNavigationPageCommand(object sender, ExecutedRoutedEventArgs eventArgs)
+        {
+            EventAggregator.PublishMessageAsync(new GoBackPageNavigationRequest());
+        }
+
+        #endregion
     }
 }

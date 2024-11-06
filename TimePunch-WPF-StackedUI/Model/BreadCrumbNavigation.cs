@@ -17,7 +17,8 @@ namespace TimePunch.StackedUI.Model
         public BreadCrumbNavigation(IEventAggregator eventAggregator, Page page)
         {
             FrameKey = StackedFrameExtension.GetFrameKey(page);
-            FrameTitle = page.GetValue(Page.TitleProperty).ToString();
+            FrameTitle = page.GetValue(Page.TitleProperty)?.ToString() ?? string.Empty;
+            
             Command = new DynamicCommand(
                 (sender) => eventAggregator.PublishMessageAsync(new GoBackPageNavigationRequest(page)));
         }

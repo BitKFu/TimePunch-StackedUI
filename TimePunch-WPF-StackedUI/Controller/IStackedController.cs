@@ -1,18 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using TimePunch.MVVM.Controller;
+using TimePunch.MVVM.ViewModels;
+using TimePunch.StackedUI.Events;
 
 namespace TimePunch.StackedUI.Controller
 {
     public interface IStackedController : IBaseController
     {
+        // Adding pages
+        Task<Page?> InitTopPageAsync(PageNavigationEvent message, ViewModelBase vm, Page pageToAdd, bool isResizable = true, bool isModal = false);
+        Task<Page?> InitSubPageAsync(PageNavigationEvent message, ViewModelBase vm, Page pageToAdd, Page? basePage = null, bool isResizable = true, bool isModal = false);
+
         // Methods
-        Task<Page?> AddPage(Page page, Page? basePage = null, bool isResizable = true, bool isModal = true);
         void HidePropertyPanel();
         void ShowPropertyPanel(UIElement content);
 
@@ -21,5 +22,4 @@ namespace TimePunch.StackedUI.Controller
         StackedMode StackedMode { get; }
         bool CanGoBackPage { get; }
     }
-
 }

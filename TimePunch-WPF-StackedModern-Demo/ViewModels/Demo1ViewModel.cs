@@ -1,17 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
-using TimePunch.MVVM.EventAggregation;
-using TimePunch.MVVM.Events;
-using TimePunch.MVVM.ViewModels;
-using TimePunch.StackedUI.Demo.Core;
-using TimePunch.StackedUI.Demo.Events;
 using TimePunch.StackedUI.Events;
 using TimePunch.StackedUI.Model;
+using TimePunch.StackedUI.Demo.Core;
+using TimePunch.StackedUI.Demo.Events;
 
 namespace TimePunch.StackedUI.Demo.ViewModels
 {
@@ -30,7 +22,7 @@ namespace TimePunch.StackedUI.Demo.ViewModels
                 MenuItems = new ObservableCollection<MenuItemModel>()
                 {
                     new MenuItemModel(){Header = "Open"},
-                    new MenuItemModel(){Header = "Close"},
+                    new MenuItemModel() { Header = "Close" },
                 }
             });
         }
@@ -69,7 +61,7 @@ namespace TimePunch.StackedUI.Demo.ViewModels
         /// <param name="eventArgs">The event arguments</param>
         public void ExecuteNextCommand(object sender, ExecutedRoutedEventArgs eventArgs)
         {
-            EventAggregator.PublishMessageAsync(new NavigateToDemo2View());
+            EventAggregator.PublishMessageAsync(new NavigateToDemo3View());
         }
 
         #endregion
@@ -96,7 +88,7 @@ namespace TimePunch.StackedUI.Demo.ViewModels
         /// <param name="eventArgs">The event arguments</param>
         public void CanExecuteLastCommand(object sender, CanExecuteRoutedEventArgs eventArgs)
         {
-            eventArgs.CanExecute = true;
+            eventArgs.CanExecute = false;
         }
 
         /// <summary>
