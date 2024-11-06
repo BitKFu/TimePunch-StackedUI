@@ -90,7 +90,7 @@ namespace TimePunch.StackedUI
             var sb = new Storyboard();
             var duration = TimeSpan.FromMilliseconds(FadeInDuration);
             var animation = new DoubleAnimation() { From = 0.0, To = 1.0, Duration = duration };
-            animation.FillBehavior = FillBehavior.Stop;
+            animation.FillBehavior = FillBehavior.HoldEnd;
             Storyboard.SetTarget(animation, element);
             Storyboard.SetTargetProperty(animation, "Opacity");
             sb.Children.Add(animation);
@@ -114,7 +114,7 @@ namespace TimePunch.StackedUI
             var sb = new Storyboard();
             var duration = TimeSpan.FromMilliseconds(FadeOutDuration);
             var animation = new DoubleAnimation() { From = 1.0, To = 0.0, Duration = duration };
-            animation.FillBehavior = FillBehavior.Stop;
+            animation.FillBehavior = FillBehavior.HoldEnd;
             Storyboard.SetTarget(animation, element);
             Storyboard.SetTargetProperty(animation, "Opacity");
             sb.Children.Add(animation);
@@ -218,7 +218,7 @@ namespace TimePunch.StackedUI
             {
                 TargetControl = StackPanel.Children.Last() as FrameworkElement,
             };
-            
+
             StackPanel.Children.Add(splitter);
 
             // push the splitter to the frame dictionary
@@ -234,7 +234,7 @@ namespace TimePunch.StackedUI
 
             // remove the frame
             var removedFrame = frameStack.Pop(); // get the frame to remove
-            if (animate && FadeOutDuration>0)
+            if (animate && FadeOutDuration > 0)
                 await FadeOut(removedFrame);
 
             StackPanel.Children.Remove(removedFrame); // remove the frame
@@ -401,10 +401,10 @@ namespace TimePunch.StackedUI
 
         private async void OnGoBackNavigation(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
         {
+            args.Handled = true;
+
             if (CanGoBack)
                 await GoBack(true);
-
-            args.Handled = true;
         }
 
         #endregion

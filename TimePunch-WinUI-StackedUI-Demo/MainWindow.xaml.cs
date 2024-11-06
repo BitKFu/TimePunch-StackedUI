@@ -1,22 +1,9 @@
-using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Windows.Foundation;
-using Windows.UI.Core;
-using CommunityToolkit.WinUI;
-using Microsoft.UI;
 using TimePunch_WinUI_StackedUI_Demo.Core;
-using TimePunch_WinUI_StackedUI_Demo.Events;
-using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Controls;
-using TimePunch.StackedUI.Controller;
 using TimePunch.StackedUI.Model;
 using TimePunch.StackedUI.Window;
-using WinRT.Interop;
 using WindowActivatedEventArgs = Microsoft.UI.Xaml.WindowActivatedEventArgs;
 
 // To learn more about WinUI, the WinUI project structure,

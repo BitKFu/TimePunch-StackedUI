@@ -1,11 +1,8 @@
-﻿using Windows.System;
-using CommunityToolkit.WinUI;
+﻿using CommunityToolkit.WinUI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
 using TimePunch.MVVM.Controller;
 using TimePunch.MVVM.EventAggregation;
-using TimePunch.MVVM.Events;
 using TimePunch.MVVM.ViewModels;
 using TimePunch.StackedUI.Events;
 using TimePunch.StackedUI.Extensions;
