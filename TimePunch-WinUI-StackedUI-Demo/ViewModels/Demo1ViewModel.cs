@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
+using Microsoft.UI.Xaml.Navigation;
 using TimePunch.MVVM.Events;
 using TimePunch.StackedUI.Events;
 using TimePunch.StackedUI.Model;
@@ -22,8 +23,8 @@ namespace TimePunch_WinUI_StackedUI_Demo.ViewModels
                 Header = "File",
                 MenuItems = new ObservableCollection<MenuItemModel>()
                 {
-                    new MenuItemModel(){Header = "Open"},
-                    new MenuItemModel(){Header = "Close"},
+                    new(){Header = "Open"},
+                    new(){Header = "Close"},
                 }
             });
         }
@@ -36,7 +37,7 @@ namespace TimePunch_WinUI_StackedUI_Demo.ViewModels
         /// Gets or sets the Next command.
         /// </summary>
         /// <value>The Next command.</value>
-        public ICommand NextCommand
+        public ICommand? NextCommand
         {
             get { return GetPropertyValue(() => NextCommand); }
             set { SetPropertyValue(() => NextCommand, value); }
@@ -50,7 +51,7 @@ namespace TimePunch_WinUI_StackedUI_Demo.ViewModels
         /// </returns>
         /// <param name="sender">The sender.</param>
         /// <param name="eventArgs">The event arguments</param>
-        public void CanExecuteNextCommand(object sender, CanExecuteRoutedEventArgs eventArgs)
+        public void CanExecuteNextCommand(object? sender, CanExecuteRoutedEventArgs eventArgs)
         {
             eventArgs.CanExecute = true;
         }
@@ -60,9 +61,9 @@ namespace TimePunch_WinUI_StackedUI_Demo.ViewModels
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="eventArgs">The event arguments</param>
-        public void ExecuteNextCommand(object sender, ExecutedRoutedEventArgs eventArgs)
+        public void ExecuteNextCommand(object? sender, ExecutedRoutedEventArgs eventArgs)
         {
-            EventAggregator.PublishMessageAsync(new NavigateToDemo2View());
+            EventAggregator.PublishMessageAsync(new NavigateToDemo3View());
         }
 
         #endregion
@@ -73,7 +74,7 @@ namespace TimePunch_WinUI_StackedUI_Demo.ViewModels
         /// Gets or sets the Last command.
         /// </summary>
         /// <value>The Last command.</value>
-        public ICommand LastCommand
+        public ICommand? LastCommand
         {
             get { return GetPropertyValue(() => LastCommand); }
             set { SetPropertyValue(() => LastCommand, value); }
@@ -87,9 +88,9 @@ namespace TimePunch_WinUI_StackedUI_Demo.ViewModels
         /// </returns>
         /// <param name="sender">The sender.</param>
         /// <param name="eventArgs">The event arguments</param>
-        public void CanExecuteLastCommand(object sender, CanExecuteRoutedEventArgs eventArgs)
+        public void CanExecuteLastCommand(object? sender, CanExecuteRoutedEventArgs eventArgs)
         {
-            eventArgs.CanExecute = true;
+            eventArgs.CanExecute = false;
         }
 
         /// <summary>
@@ -97,7 +98,7 @@ namespace TimePunch_WinUI_StackedUI_Demo.ViewModels
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="eventArgs">The event arguments</param>
-        public void ExecuteLastCommand(object sender, ExecutedRoutedEventArgs eventArgs)
+        public void ExecuteLastCommand(object? sender, ExecutedRoutedEventArgs eventArgs)
         {
             EventAggregator.PublishMessageAsync(new GoBackPageNavigationRequest());
         }

@@ -24,7 +24,7 @@ namespace TimePunch_WinUI_StackedUI_Demo.ViewModels
         /// Gets or sets the Next command.
         /// </summary>
         /// <value>The Next command.</value>
-        public ICommand NextCommand
+        public ICommand? NextCommand
         {
             get { return GetPropertyValue(() => NextCommand); }
             set { SetPropertyValue(() => NextCommand, value); }
@@ -61,7 +61,7 @@ namespace TimePunch_WinUI_StackedUI_Demo.ViewModels
         /// Gets or sets the Last command.
         /// </summary>
         /// <value>The Last command.</value>
-        public ICommand LastCommand
+        public ICommand? LastCommand
         {
             get { return GetPropertyValue(() => LastCommand); }
             set { SetPropertyValue(() => LastCommand, value); }
@@ -77,7 +77,7 @@ namespace TimePunch_WinUI_StackedUI_Demo.ViewModels
         /// <param name="eventArgs">The event arguments</param>
         public void CanExecuteLastCommand(object sender, CanExecuteRoutedEventArgs eventArgs)
         {
-            eventArgs.CanExecute = true;
+            eventArgs.CanExecute = false;
         }
 
         /// <summary>

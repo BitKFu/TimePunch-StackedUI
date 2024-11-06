@@ -8,7 +8,7 @@
       xmlns:controls="clr-namespace:TimePunch.StackedUI.Controls;assembly=TpStackedUI"
       DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=Demo1ViewModel}"
       extensions1:StackedFrameExtension.FrameKey="Demo1View"
-      mc:Ignorable="d" Width="800" MinWidth="300" MaxWidth="500"
+      mc:Ignorable="d" Width="800" MinWidth="300" 
       d:DesignHeight="450" d:DesignWidth="800" 
       Title="Demo1View">
 

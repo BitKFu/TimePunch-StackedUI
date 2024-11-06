@@ -1,13 +1,12 @@
-﻿using CommunityToolkit.WinUI.UI.Controls;
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Animation;
 using System.Collections.ObjectModel;
+using CommunityToolkit.WinUI.Controls;
 using TimePunch.MVVM.EventAggregation;
 using TimePunch.StackedUI.Controller;
 using TimePunch.StackedUI.Extensions;
 using TimePunch.StackedUI.Model;
-using static CommunityToolkit.WinUI.UI.Controls.GridSplitter;
 
 namespace TimePunch.StackedUI
 {
@@ -173,9 +172,6 @@ namespace TimePunch.StackedUI
                             StackPanel.ColumnDefinitions[i].Width = new GridLength(1, GridUnitType.Star);
                     }
                 }
-
-                //@todo: Find a different method
-                //ScrollViewer.ScrollToRightEnd();
             }
         }
 
@@ -230,16 +226,14 @@ namespace TimePunch.StackedUI
         {
             var splitter = new GridSplitter
             {
-                //ShowsPreview = false,
-                ResizeDirection = GridResizeDirection.Columns,
-                ResizeBehavior = GridResizeBehavior.PreviousAndNext,
+                ResizeDirection = GridSplitter.GridResizeDirection.Columns,
+                ResizeBehavior = GridSplitter.GridResizeBehavior.BasedOnAlignment,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
-                Margin = new Thickness(0, 0, 0, 20)
             };
-
+            
             // add the splitter 
             var column = StackPanel.ColumnDefinitions.Count - (StackedMode == StackedMode.Resizeable ? 1 : 0);
-            StackPanel.ColumnDefinitions.Insert(column, new ColumnDefinition() { Width = new GridLength(SplitterWidth) });
+            StackPanel.ColumnDefinitions.Insert(column, new ColumnDefinition() { Width = SplitterWidth });
             Grid.SetColumn(splitter, column);
 
             StackPanel.Children.Add(splitter);
@@ -370,14 +364,14 @@ namespace TimePunch.StackedUI
         #region Property SplitterWith
 
         public static readonly DependencyProperty SplitterWidthProperty =
-            DependencyProperty.RegisterAttached("SplitterWidth", typeof(int), typeof(StackedFrame), new PropertyMetadata(3));
+            DependencyProperty.RegisterAttached("SplitterWidth", typeof(GridLength), typeof(StackedFrame), new PropertyMetadata(new GridLength(16)));
 
         /// <summary>
         /// Gets or sets the with of the splitter
         /// </summary>
-        public int SplitterWidth
+        public GridLength SplitterWidth
         {
-            get => (int)GetValue(SplitterWidthProperty);
+            get => (GridLength)GetValue(SplitterWidthProperty);
             set => SetValue(SplitterWidthProperty, value);
         }
 

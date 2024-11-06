@@ -3,15 +3,18 @@
     x:Class="TimePunch_WinUI_StackedUI_Demo.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:TimePunch_WinUI_StackedUI_Demo"
-    xmlns:core="using:TimePunch_WinUI_StackedUI_Demo.Core">
+    xmlns:core="using:TimePunch_WinUI_StackedUI_Demo.Core"
+    xmlns:converter="using:TimePunch.StackedUI.Converter">
     <Application.Resources>
         <ResourceDictionary>
             <core:DemoViewModelLocator x:Key="ViewModelLocator"/>
+            <converter:IconConverter x:Key="IconConverter"/>
+
             <ResourceDictionary.MergedDictionaries>
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
                 <!-- Other merged dictionaries here -->
             </ResourceDictionary.MergedDictionaries>
+
             <!-- Other app resources here -->
         </ResourceDictionary>
     </Application.Resources>

@@ -1,12 +1,10 @@
-﻿using CommunityToolkit.WinUI.UI.Controls;
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Markup;
 
 namespace TimePunch.StackedUI.Controls
 {
-    [ContentProperty(Name="Content")]
-    public class PageControl : Control
+    public class PageControl : ContentControl
     {
         #region Property MenuProperty
 
@@ -42,23 +40,6 @@ namespace TimePunch.StackedUI.Controls
 
         #endregion
 
-
-        #region Content
-
-        public static readonly DependencyProperty ContentProperty =
-            DependencyProperty.Register(
-                nameof(Content),
-                typeof(object),
-                typeof(PageControl),
-                null);
-
-        public object Content
-        {
-            get => GetValue(ContentProperty);
-            set => SetValue(ContentProperty, value);
-        }
-
-        #endregion
 
     }
 }

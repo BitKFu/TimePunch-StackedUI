@@ -39,5 +39,9 @@
     <PackageReference Include="CommunityToolkit.WinUI.Controls.Sizers" Version="8.1.240916" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="NewFolder\" />
+  </ItemGroup>
+
 </Project>
 

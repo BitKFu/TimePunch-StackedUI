@@ -5,11 +5,12 @@ namespace TimePunch_WinUI_StackedUI_Demo.Core
 {
     public class DemoKernel
     {
-        private static DemoKernel instance;
+        private static DemoKernel? instance;
 
         private DemoKernel(IEventAggregator eventAggregator)
         {
             EventAggregator = eventAggregator;
+            Controller = new DemoController(EventAggregator);
         }
 
         /// <summary>
@@ -22,7 +23,6 @@ namespace TimePunch_WinUI_StackedUI_Demo.Core
                 if (instance == null)
                 {
                     instance = new DemoKernel(new EventAggregator());
-                    instance.Controller = new DemoController();
                 }
 
                 return instance;

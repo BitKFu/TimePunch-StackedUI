@@ -1,20 +1,25 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows10.0.19041.0</TargetFramework>
+    <TargetFramework>net8.0-windows10.0.22621.0</TargetFramework>
     <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+    <PlatformTarget>x64</PlatformTarget>
+    <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
+    <UseWinUI>true</UseWinUI>
     <RootNamespace>TimePunch_WinUI_StackedUI_Demo</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <Platforms>x86;x64;ARM64</Platforms>
-    <RuntimeIdentifiers>win10-x86;win10-x64;win10-arm64</RuntimeIdentifiers>
-    <PublishProfile>win10-$(Platform).pubxml</PublishProfile>
-    <UseWinUI>true</UseWinUI>
+    <RunAnalyzersDuringBuild>False</RunAnalyzersDuringBuild>
+    <Nullable>enable</Nullable>
     <EnableMsixTooling>true</EnableMsixTooling>
+    <WindowsPackageType>None</WindowsPackageType>
+    <UseAppHost>true</UseAppHost>
   </PropertyGroup>
+
   <ItemGroup>
     <None Remove="Views\Demo1View.xaml" />
     <None Remove="Views\Demo2View.xaml" />
     <None Remove="Views\Demo3View.xaml" />
+    <None Remove="Views\Demo4View.xaml" />
     <None Remove="Views\LogonDialog.xaml" />
     <None Remove="Views\LogonView.xaml" />
   </ItemGroup>
@@ -30,21 +35,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.5.240311000" />
-    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.3233" />
-    <PackageReference Include="TimePunch-MVVM" Version="0.7.0" />
+    <PackageReference Include="Microsoft.UI.Xaml" Version="2.8.6" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.6.240923002" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1742" />
     <Manifest Include="$(ApplicationManifest)" />
   </ItemGroup>
 
-  <!-- 
-    Defining the "Msix" ProjectCapability here allows the Single-project MSIX Packaging
-    Tools extension to be activated for this project even if the Windows App SDK Nuget
-    package has not yet been restored.
-  -->
-  <ItemGroup Condition="'$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
-    <ProjectCapability Include="Msix" />
-  </ItemGroup>
+ 
   <ItemGroup>
+    <ProjectReference Include="..\..\TimePunch-MVVM\trunk\TimePunch-MVVM\TimePunch-MVVM.csproj" />
     <ProjectReference Include="..\TimePunch-WinUI-StackedUI\TimePunch-WinUI-StackedUI.csproj" />
   </ItemGroup>
   <ItemGroup>
@@ -69,13 +68,12 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
-
-  <!-- 
-    Defining the "HasPackageAndPublishMenuAddedByProject" property here allows the Solution 
-    Explorer "Package and Publish" context menu entry to be enabled for this project even if 
-    the Windows App SDK Nuget package has not yet been restored.
-  -->
-  <PropertyGroup Condition="'$(DisableHasPackageAndPublishMenuAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
-    <HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>
-  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Converter\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\Demo4View.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
 </Project>

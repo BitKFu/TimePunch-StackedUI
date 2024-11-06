@@ -237,7 +237,7 @@ namespace TimePunch.StackedUI
                 ResizeDirection = GridResizeDirection.Columns,
                 ResizeBehavior = GridResizeBehavior.PreviousAndNext,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
-                Margin = new Thickness(0, 0, 0, 20)
+                Margin = new Thickness(0, 0, 0, 20),
             };
 
             // add the splitter 

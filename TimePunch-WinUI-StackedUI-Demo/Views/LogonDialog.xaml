@@ -9,9 +9,7 @@
              CloseButtonText="Cancel"
              DefaultButton="Primary"
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-        <TextBlock Text="Do something really cool"></TextBlock>
-        <TextBox
-            AcceptsReturn="True" />
-    </Grid>
+    <StackPanel Orientation="Vertical">
+        <TextBox AcceptsReturn="True" Header="Do something really cool" />
+    </StackPanel>
 </ContentDialog>

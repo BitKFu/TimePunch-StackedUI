@@ -16,7 +16,7 @@ namespace TimePunch.StackedUI.Model
 
             var pageControl = page.Content as PageControl;
             if (pageControl != null)
-                FrameTitle = pageControl.GetValue(PageControl.TitleProperty).ToString();
+                FrameTitle = pageControl.GetValue(PageControl.TitleProperty)?.ToString() ?? string.Empty;
 
             Command = new DynamicCommand(
                 (sender) => eventAggregator.PublishMessageAsync(new GoBackPageNavigationRequest(page)));

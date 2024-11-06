@@ -45,6 +45,6 @@ namespace TimePunch_WinUI_StackedUI_Demo
             m_window.Activate();
         }
 
-        private Window m_window;
+        private Window? m_window;
     }
 }
