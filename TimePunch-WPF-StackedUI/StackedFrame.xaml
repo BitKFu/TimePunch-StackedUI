@@ -18,7 +18,7 @@
                       VerticalScrollBarVisibility="Disabled"
                       x:Name="ScrollViewer"
                       Grid.Column="0">
-            <Grid Name="StackPanel">
+            <Grid Name="StackGrid">
 
             </Grid>
         </ScrollViewer>

@@ -16,7 +16,7 @@ namespace TimePunch.StackedUI
     public partial class StackedFrame : UserControl
     {
         private readonly Stack<Frame> frameStack = new Stack<Frame>();
-        private readonly Dictionary<Frame, GridSplitter> splitters = new Dictionary<Frame, GridSplitter>();
+        private readonly Dictionary<Frame, ContentSizer> splitters = new Dictionary<Frame, ContentSizer>();
 
         public StackedFrame()
         {
@@ -138,38 +138,41 @@ namespace TimePunch.StackedUI
             if (StackedMode == StackedMode.InPlace)
             {
                 // Hide all previous columns
-                for (int i = 0; i < StackPanel.ColumnDefinitions.Count; i++)
+                for (int i = 0; i < StackPanel.Children.Count; i++)
                 {
-                    var last = i == StackPanel.ColumnDefinitions.Count - 1;
+                    var element = (FrameworkElement)StackPanel.Children[i];
+
+                    var last = i == StackPanel.Children.Count - 1;
                     if (!last)
                     {
-                        StackPanel.ColumnDefinitions[i].MinWidth = 0;
-                        StackPanel.ColumnDefinitions[i].Width = new GridLength(0);
+                        element.MinWidth = 0;
+                        element.Width = 0;
                     }
                     else
                     {
-                        StackPanel.ColumnDefinitions[i].Width = new GridLength(1, GridUnitType.Star);
+                        element.Width = Frame.ActualWidth;
                     }
                 }
             }
             else
             {
                 // Adjust the with of the previous columns
-                for (int i = 0; i < StackPanel.ColumnDefinitions.Count; i++)
+                for (int i = 0; i < StackPanel.Children.Count; i++)
                 {
-                    var last = i == StackPanel.ColumnDefinitions.Count - 1;
+                    var element = (FrameworkElement)StackPanel.Children[i];
+                    var last = i >= StackPanel.Children.Count - 2;
 
                     if (!last && i % 2 == 0)
                     {
                         // Minimize all prior pages
-                        StackPanel.ColumnDefinitions[i].Width = StackPanel.ColumnDefinitions[i].MinWidth > 0
-                            ? new GridLength(StackPanel.ColumnDefinitions[i].MinWidth)
-                            : GridLength.Auto;
+                        element.Width = element.MinWidth > 0
+                            ? element.MinWidth
+                            : element.Width;
                     }
                     else
                     {
                         if (last && i % 2 == 0)
-                            StackPanel.ColumnDefinitions[i].Width = new GridLength(1, GridUnitType.Star);
+                            element.Width = StackedMode == StackedMode.FullWidth ? Frame.ActualWidth : element.ActualWidth;
                     }
                 }
             }
@@ -178,19 +181,28 @@ namespace TimePunch.StackedUI
         public async Task AddFrame(IEventAggregator eventAggregator, Frame frame, Page page)
         {
             // add a new column
-            var column = StackPanel.ColumnDefinitions.Count - (StackedMode == StackedMode.Resizeable ? 1 : 0);
-            StackPanel.ColumnDefinitions.Insert(column,
-                new ColumnDefinition()
-                {
-                    Width = double.IsNaN(page.Width) || StackedMode == StackedMode.FullWidth
-                        ? GridLength.Auto
-                        : new GridLength(page.Width),
-                    MinWidth = page.MinWidth,
-                    MaxWidth = StackedMode == StackedMode.InPlace 
-                        ? double.PositiveInfinity
-                        : page.MaxWidth
-                });
-            Grid.SetColumn(frame, column);
+            //var column = StackPanel.ColumnDefinitions.Count - (StackedMode == StackedMode.Resizeable ? 1 : 0);
+            //StackPanel.ColumnDefinitions.Insert(column,
+            //    new ColumnDefinition()
+            //    {
+            //        Width = double.IsNaN(page.Width) || StackedMode == StackedMode.FullWidth
+            //            ? GridLength.Auto
+            //            : new GridLength(page.Width),
+            //        MinWidth = page.MinWidth,
+            //        MaxWidth = StackedMode == StackedMode.InPlace 
+            //            ? double.PositiveInfinity
+            //            : page.MaxWidth
+            //    });
+            //Grid.SetColumn(frame, column);
+
+            frame.Width = double.IsNaN(page.Width) || StackedMode == StackedMode.FullWidth
+                ? page.MinWidth
+                : page.Width;
+            frame.MinWidth = page.MinWidth;
+            frame.MaxWidth = StackedMode == StackedMode.InPlace
+                ? double.PositiveInfinity
+                : page.MaxWidth;
+
             page.Width = double.NaN;
 
             // Update max with of page - if it's an inplace update
@@ -224,17 +236,18 @@ namespace TimePunch.StackedUI
 
         public void AddSplitter()
         {
-            var splitter = new GridSplitter
+            var splitter = new ContentSizer()
             {
-                ResizeDirection = GridSplitter.GridResizeDirection.Columns,
-                ResizeBehavior = GridSplitter.GridResizeBehavior.BasedOnAlignment,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
+                //ResizeDirection = GridSplitter.GridResizeDirection.Columns,
+                //ResizeBehavior = GridSplitter.GridResizeBehavior.BasedOnAlignment,
+                //HorizontalAlignment = HorizontalAlignment.Stretch,
+                TargetControl = StackPanel.Children.Last() as FrameworkElement,
             };
             
             // add the splitter 
-            var column = StackPanel.ColumnDefinitions.Count - (StackedMode == StackedMode.Resizeable ? 1 : 0);
-            StackPanel.ColumnDefinitions.Insert(column, new ColumnDefinition() { Width = SplitterWidth });
-            Grid.SetColumn(splitter, column);
+            //var column = StackPanel.ColumnDefinitions.Count - (StackedMode == StackedMode.Resizeable ? 1 : 0);
+            //StackPanel.ColumnDefinitions.Insert(column, new ColumnDefinition() { Width = SplitterWidth });
+            //Grid.SetColumn(splitter, column);
 
             StackPanel.Children.Add(splitter);
 
@@ -257,7 +270,7 @@ namespace TimePunch.StackedUI
 
             var column = Grid.GetColumn(removedFrame); // get the column in grid to remove
             StackPanel.Children.Remove(removedFrame); // remove the frame
-            StackPanel.ColumnDefinitions.RemoveAt(column); // remove the columne
+            //StackPanel.ColumnDefinitions.RemoveAt(column); // remove the columne
 
             // remove the splitter if there is one
             var removedSplitter = StackedMode == StackedMode.Resizeable ? removedFrame : frameStack.Any() ? frameStack.Peek() : null;
@@ -267,7 +280,7 @@ namespace TimePunch.StackedUI
                 column = Grid.GetColumn(splitter); // get the column in grid to remove
                 StackPanel.Children.Remove(splitter); // remove the splitter
                 splitters.Remove(removedSplitter); // remove the splitter / frame binding
-                StackPanel.ColumnDefinitions.RemoveAt(column); // remove the columne
+                //StackPanel.ColumnDefinitions.RemoveAt(column); // remove the columne
             }
 
             if (removedFrame.Content is Page { DataContext: IDisposable vmPageDataContext })
@@ -276,7 +289,7 @@ namespace TimePunch.StackedUI
                 vmPageDataContext.Dispose();
             }
 
-            AdjustColumnWidths();
+            //AdjustColumnWidths();
             UpdateTopFrame();
 
             lock (BreadCrumbs)
@@ -350,8 +363,8 @@ namespace TimePunch.StackedUI
         public void Initialize(StackedMode stackedMode)
         {
             // add an empty column
-            if (stackedMode == StackedMode.Resizeable)
-                StackPanel.ColumnDefinitions.Add(new ColumnDefinition());
+            //if (stackedMode == StackedMode.Resizeable)
+            //    StackPanel.ColumnDefinitions.Add(new ColumnDefinition());
 
             StackedMode = stackedMode;
         }

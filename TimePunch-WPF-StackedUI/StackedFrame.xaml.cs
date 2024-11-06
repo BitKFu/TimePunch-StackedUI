@@ -145,38 +145,38 @@ namespace TimePunch.StackedUI
             if (StackedMode == StackedMode.InPlace)
             {
                 // Hide all previous columns
-                for (int i = 0; i < StackPanel.ColumnDefinitions.Count; i++)
+                for (int i = 0; i < StackGrid.ColumnDefinitions.Count; i++)
                 {
-                    var last = i == StackPanel.ColumnDefinitions.Count - 1;
+                    var last = i == StackGrid.ColumnDefinitions.Count - 1;
                     if (!last)
                     {
-                        StackPanel.ColumnDefinitions[i].MinWidth = 0;
-                        StackPanel.ColumnDefinitions[i].Width = new GridLength(0);
+                        StackGrid.ColumnDefinitions[i].MinWidth = 0;
+                        StackGrid.ColumnDefinitions[i].Width = new GridLength(0);
                     }
                     else
                     {
-                        StackPanel.ColumnDefinitions[i].Width = new GridLength(1, GridUnitType.Star);
+                        StackGrid.ColumnDefinitions[i].Width = new GridLength(1, GridUnitType.Star);
                     }
                 }
             }
             else
             {
                 // Adjust the with of the previous columns
-                for (int i = 0; i < StackPanel.ColumnDefinitions.Count; i++)
+                for (int i = 0; i < StackGrid.ColumnDefinitions.Count; i++)
                 {
-                    var last = i == StackPanel.ColumnDefinitions.Count - 1;
+                    var last = i == StackGrid.ColumnDefinitions.Count - 1;
 
                     if (!last && i % 2 == 0)
                     {
                         // Minimize all prior pages
-                        StackPanel.ColumnDefinitions[i].Width = StackPanel.ColumnDefinitions[i].MinWidth > 0
-                            ? new GridLength(StackPanel.ColumnDefinitions[i].MinWidth)
+                        StackGrid.ColumnDefinitions[i].Width = StackGrid.ColumnDefinitions[i].MinWidth > 0
+                            ? new GridLength(StackGrid.ColumnDefinitions[i].MinWidth)
                             : GridLength.Auto;
                     }
                     else
                     {
                         if (last && i % 2 == 0)
-                            StackPanel.ColumnDefinitions[i].Width = new GridLength(1, GridUnitType.Star);
+                            StackGrid.ColumnDefinitions[i].Width = new GridLength(1, GridUnitType.Star);
                     }
                 }
 
@@ -187,8 +187,8 @@ namespace TimePunch.StackedUI
         public async Task AddFrame(IEventAggregator eventAggregator, Frame frame, Page page)
         {
             // add a new column
-            var column = StackPanel.ColumnDefinitions.Count - (StackedMode == StackedMode.Resizeable ? 1 : 0);
-            StackPanel.ColumnDefinitions.Insert(column,
+            var column = StackGrid.ColumnDefinitions.Count - (StackedMode == StackedMode.Resizeable ? 1 : 0);
+            StackGrid.ColumnDefinitions.Insert(column,
                 new ColumnDefinition()
                 {
                     Width = double.IsNaN(page.Width) || StackedMode == StackedMode.FullWidth
@@ -219,7 +219,7 @@ namespace TimePunch.StackedUI
             frame.Opacity = FadeInDuration > 0 ? 0 : 1;
             frame.Content = page;
             frameStack.Push(frame);
-            StackPanel.Children.Add(frame);
+            StackGrid.Children.Add(frame);
 
             AdjustColumnWidths();
             UpdateTopFrame();
@@ -241,11 +241,11 @@ namespace TimePunch.StackedUI
             };
 
             // add the splitter 
-            var column = StackPanel.ColumnDefinitions.Count - (StackedMode == StackedMode.Resizeable ? 1 : 0);
-            StackPanel.ColumnDefinitions.Insert(column, new ColumnDefinition() { Width = new GridLength(SplitterWidth) });
+            var column = StackGrid.ColumnDefinitions.Count - (StackedMode == StackedMode.Resizeable ? 1 : 0);
+            StackGrid.ColumnDefinitions.Insert(column, new ColumnDefinition() { Width = new GridLength(SplitterWidth) });
             Grid.SetColumn(splitter, column);
 
-            StackPanel.Children.Add(splitter);
+            StackGrid.Children.Add(splitter);
 
             // push the splitter to the frame dictionary
             splitters.Add(frameStack.Peek(), splitter);
@@ -265,8 +265,8 @@ namespace TimePunch.StackedUI
                 await FadeOut(removedFrame);
 
             var column = Grid.GetColumn(removedFrame); // get the column in grid to remove
-            StackPanel.Children.Remove(removedFrame); // remove the frame
-            StackPanel.ColumnDefinitions.RemoveAt(column); // remove the columne
+            StackGrid.Children.Remove(removedFrame); // remove the frame
+            StackGrid.ColumnDefinitions.RemoveAt(column); // remove the columne
 
             // remove the splitter if there is one
             var removedSplitter = StackedMode == StackedMode.Resizeable ? removedFrame : frameStack.Any() ? frameStack.Peek() : null;
@@ -274,9 +274,9 @@ namespace TimePunch.StackedUI
             {
                 var splitter = splitters[removedSplitter]; // get the splitter to remove
                 column = Grid.GetColumn(splitter); // get the column in grid to remove
-                StackPanel.Children.Remove(splitter); // remove the splitter
+                StackGrid.Children.Remove(splitter); // remove the splitter
                 splitters.Remove(removedSplitter); // remove the splitter / frame binding
-                StackPanel.ColumnDefinitions.RemoveAt(column); // remove the columne
+                StackGrid.ColumnDefinitions.RemoveAt(column); // remove the columne
             }
 
             if (removedFrame.Content is Page { DataContext: IDisposable vmPageDataContext })
@@ -360,7 +360,7 @@ namespace TimePunch.StackedUI
         {
             // add an empty column
             if (stackedMode == StackedMode.Resizeable)
-                StackPanel.ColumnDefinitions.Add(new ColumnDefinition());
+                StackGrid.ColumnDefinitions.Add(new ColumnDefinition());
 
             StackedMode = stackedMode;
         }

@@ -407,9 +407,9 @@ namespace TimePunch.StackedUI.Controller
                 return;
 
             // Get the key of the new top page - to set the with
-            if (StackedFrame.TopFrame?.Parent is Grid surroundingGrid)
+            if (StackedFrame.TopFrame?.Parent is StackPanel panel)
             {
-                var currentColumn = Grid.GetColumn(StackedFrame.TopFrame);
+                var currentColumn = panel.Children.IndexOf(StackedFrame.TopFrame);
                 if (currentColumn > 1)
                 {
                     scroll.ScrollToHorizontalOffset(double.PositiveInfinity);

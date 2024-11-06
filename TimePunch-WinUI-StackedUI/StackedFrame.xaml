@@ -21,9 +21,9 @@
                       x:FieldModifier="public"
                       x:Name="ScrollViewer"
                       Grid.Column="0">
-            <Grid Name="StackPanel">
+            <StackPanel Name="StackPanel" Orientation="Horizontal">
 
-            </Grid>
+            </StackPanel>
         </ScrollViewer>
 
         <Grid Grid.Column="2"
@@ -32,7 +32,7 @@
               x:Name="PropertyPanel">
 
             <!-- Important to due a bug of the Windows Community Toolkit https://github.com/CommunityToolkit/Windows/issues/273 -->
-            <controls:GridSplitter Grid.Column="0" Visibility="Collapsed"/>
+            <controls:ContentSizer Grid.Column="0" Visibility="Collapsed" TargetControl="{x:Bind PropertyPanel}"/>
 
         </Grid>
     </Grid>
