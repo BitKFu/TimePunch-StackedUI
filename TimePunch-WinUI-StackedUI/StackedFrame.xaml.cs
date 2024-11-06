@@ -135,7 +135,8 @@ namespace TimePunch.StackedUI
         /// <summary>
         /// This method sets only the last column definition to star width
         /// </summary>
-        private void AdjustColumnWidths()
+        /// <param name="pageWidth"></param>
+        private void AdjustColumnWidths(double pageWidth)
         {
             if (StackedMode == StackedMode.InPlace)
             {
@@ -174,7 +175,7 @@ namespace TimePunch.StackedUI
                     else
                     {
                         if (last && i % 2 == 0)
-                            element.Width = StackedMode == StackedMode.FullWidth ? Frame.ActualWidth : element.ActualWidth;
+                            element.Width = pageWidth;
                     }
                 }
             }
@@ -183,15 +184,13 @@ namespace TimePunch.StackedUI
         public async Task AddFrame(IEventAggregator eventAggregator, Frame frame, Page page)
         {
             // add a new column
-            frame.Width = double.IsNaN(page.Width) || StackedMode == StackedMode.FullWidth
+            frame.Width = double.IsNaN(page.Width) //|| StackedMode == StackedMode.FullWidth
                 ? page.MinWidth
                 : page.Width;
             frame.MinWidth = page.MinWidth;
             frame.MaxWidth = StackedMode == StackedMode.InPlace
                 ? double.PositiveInfinity
                 : page.MaxWidth;
-
-            page.Width = double.NaN;
 
             // Update max with of page - if it's an inplace update
             if (StackedMode == StackedMode.InPlace)
@@ -203,7 +202,7 @@ namespace TimePunch.StackedUI
             frameStack.Push(frame);
             StackPanel.Children.Add(frame);
 
-            AdjustColumnWidths();
+            AdjustColumnWidths(page.Width);
             UpdateTopFrame();
             BreadCrumbs.Add(new BreadCrumbNavigation(eventAggregator, page));
 
@@ -254,8 +253,11 @@ namespace TimePunch.StackedUI
                 vmPageDataContext.Dispose();
             }
 
-            //AdjustColumnWidths();
+
             UpdateTopFrame();
+
+            if (TopFrame?.Content is Page page)
+                AdjustColumnWidths(page.Width);
 
             lock (BreadCrumbs)
             {

@@ -12,6 +12,6 @@ namespace TimePunch.StackedUI.Model
         /// <summary>
         /// Load the page width
         /// </summary>
-        GridLength GetPageWidth(string pageName);
+        double GetPageWidth(string pageName);
     }
 }

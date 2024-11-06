@@ -13,7 +13,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="ModernWpfUI.Signed" Version="0.9.4" />
-    <PackageReference Include="TimePunch-MVVM" Version="0.5.1" />
   </ItemGroup>
 
   <ItemGroup>

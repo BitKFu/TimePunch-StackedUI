@@ -81,12 +81,12 @@ namespace TimePunch.StackedUI.Controller
             if (StackedFrame == null || StackedFrame.Contains(frameKey))
                 return null;
             
-            // if the page is modal, than disable the previous one
+            // if the page is modal, then disable the previous one
             if (isModal)
                 StackedFrame.DisableTop();
             
-            if (StackedMode == StackedMode.FullWidth && isResizable && StackedFrame.TopFrame != null)
-                StackedFrame.AddSplitter();
+            //if (StackedMode == StackedMode.FullWidth && isResizable && StackedFrame.TopFrame != null)
+            //    StackedFrame.AddSplitter();
             
             // add the new page
             var frame = CreateFrame();
@@ -312,7 +312,7 @@ namespace TimePunch.StackedUI.Controller
                     return null;
                 
                 // Try to read the saved width
-                var pageWidth = GridLength.Auto;
+                var pageWidth = pageToAdd.Width;
                 if (StackedFrame.TopFrame?.Content is Page topPage)
                 {
                     var pagePersister = GetPagePersister();
@@ -320,23 +320,14 @@ namespace TimePunch.StackedUI.Controller
                     {
                         var frameKey = StackedFrameExtension.GetFrameKey(topPage);
                         pageWidth = pagePersister.GetPageWidth(frameKey);
+                        pageToAdd.Width = pageWidth;
                     }
                 }
-                
+
                 // Now add the page
                 var addedPage = await AddPage(pageToAdd, basePage, isResizable, isModal);
                 if (addedPage == null)
                     return null;
-                
-                // Get the key of the new top page - to set the with
-                if (StackedFrame.TopFrame?.Parent is Grid surroundingGrid && StackedMode != StackedMode.InPlace)
-                {
-                    var currentColumn = Grid.GetColumn(StackedFrame.TopFrame);
-                    if (currentColumn > 1)
-                    {
-                        surroundingGrid.ColumnDefinitions[currentColumn - 2].Width = pageWidth;
-                    }
-                }
 
                 // wait a short moment to be sure, that the page has been displayed
                 await Task.Delay(50).ContinueWith(t => dispatcher.TryEnqueue(()=>
