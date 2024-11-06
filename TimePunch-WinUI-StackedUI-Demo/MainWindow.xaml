@@ -16,6 +16,7 @@
     </Window.SystemBackdrop>
 
     <Grid DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=MainWindowViewModel}"
+          x:Name="ContentGrid"
           Loaded="FrameworkElement_OnLoaded"
     >
         <Grid.RowDefinitions>
