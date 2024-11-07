@@ -191,6 +191,7 @@ namespace TimePunch.StackedUI
             frame.MaxWidth = StackedMode == StackedMode.InPlace
                 ? double.PositiveInfinity
                 : page.MaxWidth;
+            frame.HorizontalContentAlignment = HorizontalAlignment.Stretch;
 
             // Update max with of page - if it's an inplace update
             if (StackedMode == StackedMode.InPlace)
@@ -203,6 +204,8 @@ namespace TimePunch.StackedUI
             StackPanel.Children.Add(frame);
 
             AdjustColumnWidths(page.Width);
+            page.Width = double.NaN;    // Make page resizeable (otherwise content gets centered)
+
             UpdateTopFrame();
             BreadCrumbs.Add(new BreadCrumbNavigation(eventAggregator, page));
 
