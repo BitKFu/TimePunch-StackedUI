@@ -29,10 +29,11 @@
 
   <ItemGroup>
     <PackageReference Include="Extended.Wpf.Toolkit" Version="4.6.1" />
-    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net472" Version="1.0.2">
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net472" Version="1.0.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="TimePunch-MVVM" Version="0.8.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -52,10 +53,6 @@
     <Page Include="StackedUIResources.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\TimePunch-MVVM\trunk\TimePunch-MVVM\TimePunch-MVVM.csproj" />
   </ItemGroup>
 
 </Project>

@@ -8,15 +8,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net472" Version="1.0.2">
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net472" Version="1.0.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="ModernWpfUI.Signed" Version="0.9.4" />
+    <PackageReference Include="ModernWpfUI.Signed" Version="0.9.5.1" />
+    <PackageReference Include="TimePunch-MVVM" Version="0.8.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\TimePunch-MVVM\trunk\TimePunch-MVVM\TimePunch-MVVM.csproj" />
     <ProjectReference Include="..\TimePunch-WPF-StackedUI\TimePunch-WPF-StackedUI.csproj" />
   </ItemGroup>
 

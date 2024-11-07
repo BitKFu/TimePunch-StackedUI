@@ -70,7 +70,7 @@ namespace TimePunch.StackedUI.Controller
         /// <summary>
         /// Used to navigate to a new Frame, e.g. add a frame with a new page
         /// </summary>
-        private async Task<Page?> AddPage(Page page, Page? basePage, bool isResizable, bool isModal)
+        protected virtual async Task<Page?> AddPage(Page page, Page? basePage, bool isResizable, bool isModal)
         {
             // if a base frame is set, go back to it
             if (basePage != null)

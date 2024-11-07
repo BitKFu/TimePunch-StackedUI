@@ -1,8 +1,5 @@
 {
   "profiles": {
-    "TimePunch-WinUI-StackedUI-Demo (Package)": {
-      "commandName": "MsixPackage"
-    },
     "TimePunch-WinUI-StackedUI-Demo (Unpackaged)": {
       "commandName": "Project"
     }
