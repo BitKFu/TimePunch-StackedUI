@@ -8,8 +8,10 @@
     <GenerateAssemblyFileVersion>false</GenerateAssemblyFileVersion>
     <AssemblyOriginatorKeyFile>TpStackedUI.snk</AssemblyOriginatorKeyFile>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageLicenseExpression>MS-PL</PackageLicenseExpression>
+    <Company>TimePunch KG</Company>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageVersion>0.9.0.0</PackageVersion>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
     <AssemblyName>TpStackedUI</AssemblyName>
