@@ -72,7 +72,7 @@ namespace TimePunch.StackedUI.Controller
         /// <summary>
         /// Used to navigate to a new Frame, e.g. add a frame with a new page
         /// </summary>
-        protected virtual async Task<Page?> AddPage(Page page, Page? basePage, bool isResizable, bool isModal)
+        protected virtual async Task<Page?> AddPage(Page page, Page? basePage = null, bool isResizable = true, bool isModal = true)
         {
             // if a base frame is set, go back to it
             if (basePage != null)
@@ -147,6 +147,19 @@ namespace TimePunch.StackedUI.Controller
                 await StackedFrame.GoBack(false);
 
             EventAggregator.PublishMessage(new GoBackPageTopEvent());
+        }
+
+        /// <summary>
+        /// Goes back to the top content frame
+        /// </summary>
+        protected void GoBackContentTop()
+        {
+            if (ContentFrame == null)
+                return;
+
+            // Go back to top
+            while (ContentFrame.CanGoBack)
+                ContentFrame.GoBack();
         }
 
         public async Task<Page?> InitTopPageAsync( PageNavigationEvent message, ViewModelBase vm, Page pageToAdd, bool isResizable = true, bool isModal = false)

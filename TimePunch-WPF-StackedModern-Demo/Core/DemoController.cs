@@ -18,12 +18,11 @@ namespace TimePunch.StackedUI.Demo.Core
         , IHandleMessageAsync<NavigateToDemo4View>
         , IHandleMessageAsync<NavigateToStartView>
     {
-        private Page basePage;
-
         public DemoController() 
             : base(DemoKernel.Instance.EventAggregator, StackedMode.Resizeable)
         {
         }
+
         #region Implementation of IHandleMessage<NavigateToDemo1View>
 
         public async Task<NavigateToDemo1View> Handle(NavigateToDemo1View message)

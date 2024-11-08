@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TimePunch.StackedUI.Model
 {
-    internal interface IPreventMouseWheelScrolling
+    public interface IPreventMouseWheelScrolling
     {
     }
 }

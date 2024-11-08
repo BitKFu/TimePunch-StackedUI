@@ -1,5 +1,4 @@
-﻿using System;
-using TimePunch.StackedUI.Controller;
+﻿using TimePunch.StackedUI.Controller;
 using TimePunch_WinUI_StackedUI_Demo.Events;
 using TimePunch_WinUI_StackedUI_Demo.Views;
 using TimePunch.MVVM.EventAggregation;
@@ -18,8 +17,6 @@ namespace TimePunch_WinUI_StackedUI_Demo.Core
         , IHandleMessageAsync<NavigateToDemo4View>
         , IHandleMessageAsync<NavigateToStartView>
     {
-        private readonly Page? basePage = null;
-
         public DemoController(IEventAggregator eventAggregator) 
             : base(eventAggregator, StackedMode.Resizeable)
         {
