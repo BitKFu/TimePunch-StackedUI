@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Markup;
 
 namespace TimePunch.StackedUI.Controls
 {
-    public class PageControl : ContentControl
+    public partial class PageControl : ContentControl
     {
         #region Property MenuProperty
 

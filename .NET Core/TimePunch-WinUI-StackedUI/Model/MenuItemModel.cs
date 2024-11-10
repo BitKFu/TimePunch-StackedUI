@@ -4,7 +4,7 @@ using System.Windows.Input;
 
 namespace TimePunch.StackedUI.Model
 {
-    public class MenuItemModel : DependencyObject
+    public partial class MenuItemModel : DependencyObject
     {
         #region Property Header
 

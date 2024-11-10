@@ -1,0 +1,88 @@
+<Project Sdk="Uno.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net8.0-ios;net8.0-maccatalyst;net8.0-android;net8.0-windows10.0.26100;net8.0-browserwasm;net8.0-desktop</TargetFrameworks>
+    <UnoSingleProject>true</UnoSingleProject>
+    <OutputType>Library</OutputType>
+    <!-- Ensures the .xr.xml files are generated in a proper layout folder -->
+    <GenerateLibraryLayout>true</GenerateLibraryLayout>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>TpStackedUnoUI</AssemblyName>
+    <RootNamespace>TimePunch.StackedUI</RootNamespace>
+
+    <!--
+      UnoFeatures let's you quickly add and manage implicit package references based on the features you want to use.
+      https://aka.platform.uno/singleproject-features
+    -->
+    <!--
+    <UnoFeatures></UnoFeatures>
+    -->
+  </PropertyGroup>
+
+  <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
+    <!--
+    If you encounter this error message:
+
+      error NETSDK1148: A referenced assembly was compiled using a newer version of Microsoft.Windows.SDK.NET.dll.
+      Please update to a newer .NET SDK in order to reference this assembly.
+
+    This means that the two packages below must be aligned with the "build" version number of
+    the "Microsoft.Windows.SDK.BuildTools" package above, and the "revision" version number
+    must be the highest found in https://www.nuget.org/packages/Microsoft.Windows.SDK.NET.Ref.
+    -->
+    <!-- <FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" RuntimeFrameworkVersion="10.0.22621.28" />
+    <FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" TargetingPackVersion="10.0.22621.28" /> -->
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controller\" />
+    <Folder Include="Controls\" />
+    <Folder Include="Converter\" />
+    <Folder Include="Events\" />
+    <Folder Include="Extensions\" />
+    <Folder Include="Icons\" />
+    <Folder Include="Model\" />
+    <Folder Include="Window\" />
+    <Folder Include="ViewModels\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\.NET Core\TimePunch-WinUI-StackedUI\Controller\IStackedController.cs" Link="Controller\IStackedController.cs" />
+    <Compile Include="..\..\.NET Core\TimePunch-WinUI-StackedUI\Controller\StackedController.cs" Link="Controller\StackedController.cs" />
+    <Compile Include="..\..\.NET Core\TimePunch-WinUI-StackedUI\Controller\StackedMode.cs" Link="Controller\StackedMode.cs" />
+    <Compile Include="..\..\.NET Core\TimePunch-WinUI-StackedUI\Controls\PageControl.cs" Link="Controls\PageControl.cs" />
+    <Compile Include="..\..\.NET Core\TimePunch-WinUI-StackedUI\Converter\IconConverter.cs" Link="Converter\IconConverter.cs" />
+    <Compile Include="..\..\.NET Core\TimePunch-WinUI-StackedUI\Converter\NotIsEmptyCollectionConverter.cs" Link="Converter\NotIsEmptyCollectionConverter.cs" />
+    <Compile Include="..\..\.NET Core\TimePunch-WinUI-StackedUI\Events\GoBackPageNavigationRequest.cs" Link="Events\GoBackPageNavigationRequest.cs" />
+    <Compile Include="..\..\.NET Core\TimePunch-WinUI-StackedUI\Events\GoBackPageTopEvent.cs" Link="Events\GoBackPageTopEvent.cs" />
+    <Compile Include="..\..\.NET Core\TimePunch-WinUI-StackedUI\Events\PageNavigationEvent.cs" Link="Events\PageNavigationEvent.cs" />
+    <Compile Include="..\..\.NET Core\TimePunch-WinUI-StackedUI\Extensions\StackedFrameExtension.cs" Link="Extensions\StackedFrameExtension.cs" />
+    <Compile Include="..\..\.NET Core\TimePunch-WinUI-StackedUI\Icons\SegoeFluent.cs" Link="Icons\SegoeFluent.cs" />
+    <Compile Include="..\..\.NET Core\TimePunch-WinUI-StackedUI\Icons\SegoeMDL2.cs" Link="Icons\SegoeMDL2.cs" />
+    <Compile Include="..\..\.NET Core\TimePunch-WinUI-StackedUI\Model\BreadCrumbNavigation.cs" Link="Model\BreadCrumbNavigation.cs" />
+    <Compile Include="..\..\.NET Core\TimePunch-WinUI-StackedUI\Model\IPagePersister.cs" Link="Model\IPagePersister.cs" />
+    <Compile Include="..\..\.NET Core\TimePunch-WinUI-StackedUI\Model\IPreventMouseWheelScrolling.cs" Link="Model\IPreventMouseWheelScrolling.cs" />
+    <Compile Include="..\..\.NET Core\TimePunch-WinUI-StackedUI\Model\MenuItemModel.cs" Link="Model\MenuItemModel.cs" />
+    <Compile Include="..\..\.NET Core\TimePunch-WinUI-StackedUI\StackedFrame.xaml.cs" Link="StackedFrame.xaml.cs" />
+    <Compile Include="..\..\.NET Core\TimePunch-WinUI-StackedUI\ViewModels\StackedViewModelBase.cs" Link="ViewModels\StackedViewModelBase.cs" />
+    <Compile Include="..\..\.NET Core\TimePunch-WinUI-StackedUI\Window\StackedWindow.cs" Link="Window\StackedWindow.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.WinUI.Controls.Primitives" Version="8.1.240916" />
+    <PackageReference Include="CommunityToolkit.WinUI.Controls.Sizers" Version="8.1.240916" />
+    <PackageReference Include="TimePunch-Uno-MVVM" Version="0.8.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Include="..\..\.NET Core\TimePunch-WinUI-StackedUI\StackedFrame.xaml" Link="StackedFrame.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="StackedFrame.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+</Project>

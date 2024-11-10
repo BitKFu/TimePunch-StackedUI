@@ -22,6 +22,13 @@
     <Platforms>AnyCPU</Platforms>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>..\..\output\release</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\..\output\debug</OutputPath>
+  </PropertyGroup>
+
   <PropertyGroup>
     <NoWarn>$(NoWarn);CS8002</NoWarn>
     <AssemblyName>TpStackedWinUI</AssemblyName>
