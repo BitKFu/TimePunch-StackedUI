@@ -9,6 +9,15 @@
     <Nullable>enable</Nullable>
     <AssemblyName>TpStackedUnoUI</AssemblyName>
     <RootNamespace>TimePunch.StackedUI</RootNamespace>
+    <Company>TimePunch KG</Company>
+    <Authors>BitKFu</Authors>
+    <PackageVersion>0.9.4.0</PackageVersion>
+    <IncludeSymbols>True</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PackageTags>uno;winui;stacked</PackageTags>
+    <BaseOutputPath>..\..\output</BaseOutputPath>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Version>0.9.4</Version>
 
     <!--
       UnoFeatures let's you quickly add and manage implicit package references based on the features you want to use.
