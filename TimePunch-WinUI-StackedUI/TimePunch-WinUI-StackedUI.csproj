@@ -24,6 +24,7 @@
 
   <PropertyGroup>
     <NoWarn>$(NoWarn);CS8002</NoWarn>
+    <AssemblyName>TpStackedWinUI</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
