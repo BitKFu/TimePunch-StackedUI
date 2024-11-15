@@ -20,6 +20,7 @@ namespace TimePunch.StackedUI.Controller
     {
         private StackedFrame? stackedFrame;
         private StackedMode stackedMode;
+        private readonly SemaphoreSlim navigationSemaphore = new(1);
 
         /// <summary>
         /// Creates a new instance of the StackedController
@@ -75,26 +76,26 @@ namespace TimePunch.StackedUI.Controller
             // if a base frame is set, go back to it
             if (basePage != null)
                 await EventAggregator.PublishMessageAsync(new GoBackPageNavigationRequest(basePage));
-            
+
             // Check if the frame is already created
             var frameKey = StackedFrameExtension.GetFrameKey(page);
             if (StackedFrame == null || StackedFrame.Contains(frameKey))
                 return null;
-            
+
             // if the page is modal, then disable the previous one
             if (isModal)
                 StackedFrame.DisableTop();
-            
+
             //if (StackedMode == StackedMode.FullWidth && isResizable && StackedFrame.TopFrame != null)
             //    StackedFrame.AddSplitter();
-            
+
             // add the new page
             var frame = CreateFrame();
             await StackedFrame.AddFrame(EventAggregator, frame, page);
-            
+
             if (StackedMode == StackedMode.Resizeable && isResizable)
                 StackedFrame.AddSplitter();
-           
+
             return page;
         }
 
@@ -126,7 +127,7 @@ namespace TimePunch.StackedUI.Controller
             {
                 if (StackedFrame == null)
                     return false;
-                
+
                 if (IsUiThread)
                     return StackedFrame.CanGoBack;
 
@@ -154,7 +155,8 @@ namespace TimePunch.StackedUI.Controller
             if (!IsUiThread)
             {
                 var waitHandle = new ManualResetEvent(false);
-                ApplicationDispatcher.TryEnqueue(async () => {
+                ApplicationDispatcher.TryEnqueue(async () =>
+                {
                     message = await Handle(message);
                     waitHandle.Set();
                 });
@@ -283,18 +285,28 @@ namespace TimePunch.StackedUI.Controller
         /// <summary>
         /// Goes back to the top frame
         /// </summary>
-        protected async Task GoBackPageTop()
+        protected async Task GoBackPageTop(bool takeLock=true)
         {
             if (StackedFrame == null)
                 return;
 
-            // Go back to top
-            while (StackedFrame.TopFrame != null)
-                await StackedFrame.GoBack(false);
+            // wait to get the navigation handle
+            if (takeLock)
+                await navigationSemaphore.WaitAsync();
+            try
+            {
+                // Go back to top
+                while (StackedFrame.TopFrame != null)
+                    await StackedFrame.GoBack(false);
+            }
+            finally
+            {
+                if (takeLock)
+                    navigationSemaphore.Release();
+            }
 
             EventAggregator.PublishMessage(new GoBackPageTopEvent());
         }
-
 
         /// <summary>
         /// Goes back to the top content frame
@@ -312,53 +324,77 @@ namespace TimePunch.StackedUI.Controller
 
         public async Task<Page?> InitTopPageAsync(DispatcherQueue dispatcher, PageNavigationEvent message, ViewModelBase vm, Page pageToAdd, bool isResizable = true, bool isModal = false)
         {
-            await GoBackPageTop();
-            return await InitSubPageAsync(dispatcher, message, vm, pageToAdd, null, isResizable, isModal);
+            // wait to get the navigation handle
+            await navigationSemaphore.WaitAsync();
+            try
+            {
+                await GoBackPageTop(false);
+                return await ProtectedInitSubPageAsync(dispatcher, message, vm, pageToAdd, null, isResizable, isModal, false);
+            }
+            finally
+            {
+                navigationSemaphore.Release();
+            }
         }
 
-        public virtual async Task<Page?> InitSubPageAsync(DispatcherQueue dispatcher, PageNavigationEvent message, ViewModelBase vm, Page pageToAdd, Page? basePage = null, bool isResizable = true, bool isModal = false)
+        public async Task<Page?> InitSubPageAsync(DispatcherQueue dispatcher, PageNavigationEvent message, ViewModelBase vm, Page pageToAdd, Page? basePage = null, bool isResizable = true, bool isModal = false)
+        {
+            return await ProtectedInitSubPageAsync(dispatcher, message, vm, pageToAdd, basePage, isResizable, isModal, true);
+        }
+
+        protected virtual async Task<Page?> ProtectedInitSubPageAsync(DispatcherQueue dispatcher, PageNavigationEvent message, ViewModelBase vm, Page pageToAdd, Page? basePage, bool isResizable, bool isModal, bool takeLock)
         {
             if (StackedFrame == null)
                 return null;
 
-            using (new DoPrevent(this))
+            // wait to get the navigation handle
+            if (takeLock)
+                await navigationSemaphore.WaitAsync();
+            try
             {
-                if (!await vm.InitializePageAsync(message, dispatcher))
-                    return null;
-                
-                // Try to read the saved width
-                var pageWidth = pageToAdd.Width;
-                if (StackedFrame.TopFrame?.Content is Page topPage)
+                using (new DoPrevent(this))
                 {
-                    var pagePersister = GetPagePersister();
-                    if (pagePersister != null)
+                    if (!await vm.InitializePageAsync(message, dispatcher))
+                        return null;
+
+                    // Try to read the saved width
+                    var pageWidth = pageToAdd.Width;
+                    if (StackedFrame.TopFrame?.Content is Page topPage)
                     {
-                        var frameKey = StackedFrameExtension.GetFrameKey(topPage);
-                        pageWidth = pagePersister.GetPageWidth(frameKey);
-                        pageToAdd.Width = pageWidth;
+                        var pagePersister = GetPagePersister();
+                        if (pagePersister != null)
+                        {
+                            var frameKey = StackedFrameExtension.GetFrameKey(topPage);
+                            pageWidth = pagePersister.GetPageWidth(frameKey);
+                            pageToAdd.Width = pageWidth;
+                        }
                     }
+
+                    // Now add the page
+                    var addedPage = await AddPage(pageToAdd, basePage, isResizable, isModal);
+                    if (addedPage == null)
+                        return null;
+
+                    // wait a short moment to be sure, that the page has been displayed
+                    await Task.Delay(50).ContinueWith(t => dispatcher.TryEnqueue(() =>
+                        {
+                            UpdateScrollPosition(addedPage);
+
+                            // Set the focus to the page
+                            SetPageFocus(addedPage);
+
+                            // Eventually Hides the property panels
+                            UpdatePropertyPanels(addedPage);
+                        }));
+
+                    return addedPage;
                 }
-
-                // Now add the page
-                var addedPage = await AddPage(pageToAdd, basePage, isResizable, isModal);
-                if (addedPage == null)
-                    return null;
-
-                // wait a short moment to be sure, that the page has been displayed
-                await Task.Delay(50).ContinueWith(t => dispatcher.TryEnqueue(()=>
-                    {
-                        UpdateScrollPosition(addedPage);
-
-                        // Set the focus to the page
-                        SetPageFocus(addedPage);
-
-                        // Eventually Hides the property panels
-                        UpdatePropertyPanels(addedPage);
-                    }));
-
-                return addedPage;
             }
-
+            finally
+            {
+                if (takeLock)
+                    navigationSemaphore.Release();
+            }
         }
 
         #endregion
@@ -371,8 +407,8 @@ namespace TimePunch.StackedUI.Controller
                 return;
 
             // we only need to scroll to the end, if the page does not contain a grid!
-            var scroll = StackedFrame.FindDescendant<ScrollViewer>(); 
-            if (scroll == null) 
+            var scroll = StackedFrame.FindDescendant<ScrollViewer>();
+            if (scroll == null)
                 return;
 
             // Get the key of the new top page - to set the with

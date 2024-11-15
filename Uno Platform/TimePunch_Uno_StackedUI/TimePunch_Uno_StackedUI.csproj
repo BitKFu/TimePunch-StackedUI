@@ -1,6 +1,6 @@
-<Project Sdk="Uno.Sdk">
+﻿<Project Sdk="Uno.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net8.0;net8.0-ios;net8.0-maccatalyst;net8.0-android;net8.0-windows10.0.26100;net8.0-browserwasm;net8.0-desktop</TargetFrameworks>
+    <TargetFrameworks>net8.0;net8.0-ios;net8.0-maccatalyst;net8.0-android;net8.0-browserwasm;net8.0-desktop;</TargetFrameworks>
     <UnoSingleProject>true</UnoSingleProject>
     <OutputType>Library</OutputType>
     <!-- Ensures the .xr.xml files are generated in a proper layout folder -->
@@ -80,13 +80,16 @@
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.WinUI.Controls.Primitives" Version="8.1.240916" />
     <PackageReference Include="CommunityToolkit.WinUI.Controls.Sizers" Version="8.1.240916" />
-    <PackageReference Include="TimePunch-Uno-MVVM" Version="0.8.2" />
   </ItemGroup>
 
   <ItemGroup>
     <Page Include="..\..\.NET Core\TimePunch-WinUI-StackedUI\StackedFrame.xaml" Link="StackedFrame.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\TimePunch-MVVM\trunk\Uno Platform\TimePunch_Uno_MVVM\TimePunch_Uno_MVVM.csproj" />
   </ItemGroup>
 
   <ItemGroup>
