@@ -2,6 +2,7 @@
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Animation;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using CommunityToolkit.WinUI.Controls;
 using Microsoft.UI.Xaml.Input;
 using TimePunch.MVVM.EventAggregation;
@@ -20,6 +21,8 @@ namespace TimePunch.StackedUI
         private readonly Stack<Frame> frameStack = new Stack<Frame>();
         private readonly Dictionary<Frame, ContentSizer> splitters = new Dictionary<Frame, ContentSizer>();
 
+        private readonly object fadeInOut = new object();
+
         public StackedFrame()
         {
             InitializeComponent();
@@ -36,7 +39,7 @@ namespace TimePunch.StackedUI
         /// <value>The CanGoBack.</value>
         public bool CanGoBack
         {
-            get => (bool)GetValue(CanGoBackProperty);
+            get => (bool)GetValue(CanGoBackProperty) && !Monitor.IsEntered(fadeInOut);
             set => SetValue(CanGoBackProperty, value);
         }
 
@@ -183,89 +186,118 @@ namespace TimePunch.StackedUI
 
         public async Task AddFrame(IEventAggregator eventAggregator, Frame frame, Page page)
         {
-            // add a new column
-            frame.Width = double.IsNaN(page.Width) //|| StackedMode == StackedMode.FullWidth
-                ? page.MinWidth
-                : page.Width;
-            frame.MinWidth = page.MinWidth;
-            frame.MaxWidth = StackedMode == StackedMode.InPlace
-                ? double.PositiveInfinity
-                : page.MaxWidth;
-            frame.HorizontalContentAlignment = HorizontalAlignment.Stretch;
+            Monitor.TryEnter(fadeInOut, -1);
 
-            // Update max with of page - if it's an inplace update
-            if (StackedMode == StackedMode.InPlace)
-                page.MaxWidth = double.PositiveInfinity;
+            try
+            {
+                // add a new column
+                frame.Width = double.IsNaN(page.Width) //|| StackedMode == StackedMode.FullWidth
+                    ? page.MinWidth
+                    : page.Width;
+                frame.MinWidth = page.MinWidth;
+                frame.MaxWidth = StackedMode == StackedMode.InPlace
+                    ? double.PositiveInfinity
+                    : page.MaxWidth;
+                frame.HorizontalContentAlignment = HorizontalAlignment.Stretch;
 
-            // push the frame to the new column
-            frame.Opacity = FadeInDuration > 0 ? 0 : 1;
-            frame.Content = page;
-            frameStack.Push(frame);
-            StackPanel.Children.Add(frame);
+                // Update max with of page - if it's an inplace update
+                if (StackedMode == StackedMode.InPlace)
+                    page.MaxWidth = double.PositiveInfinity;
 
-            AdjustColumnWidths(page.Width);
-            page.Width = double.NaN;    // Make page resizeable (otherwise content gets centered)
+                // push the frame to the new column
+                frame.Opacity = FadeInDuration > 0 ? 0 : 1;
+                frame.Content = page;
+                frameStack.Push(frame);
+                StackPanel.Children.Add(frame);
 
-            UpdateTopFrame();
-            BreadCrumbs.Add(new BreadCrumbNavigation(eventAggregator, page));
+                AdjustColumnWidths(page.Width);
+                page.Width = double.NaN; // Make page resizeable (otherwise content gets centered)
 
-            if (FadeInDuration > 0)
-                await FadeIn(frame);
+                UpdateTopFrame();
+                BreadCrumbs.Add(new BreadCrumbNavigation(eventAggregator, page));
+
+                if (FadeInDuration > 0)
+                    await FadeIn(frame);
+            }
+            finally
+            {
+                Monitor.Exit(fadeInOut);
+            }
         }
 
         public void AddSplitter()
         {
-            // add the splitter 
-            var splitter = new ContentSizer()
+            lock (splitters)
             {
-                TargetControl = StackPanel.Children.Last() as FrameworkElement,
-            };
+                // check if there is a frame
+                if (frameStack.Count == 0)
+                    return;
 
-            StackPanel.Children.Add(splitter);
+                var frame = frameStack.Peek();
 
-            // push the splitter to the frame dictionary
-            splitters.Add(frameStack.Peek(), splitter);
+                // check if there is already a splitter
+                if (splitters.ContainsKey(frame))
+                    return;
+
+                // add the splitter 
+                var splitter = new ContentSizer()
+                {
+                    TargetControl = StackPanel.Children.Last() as FrameworkElement,
+                };
+
+                // push the splitter to the frame dictionary
+                splitters.Add(frame, splitter);
+
+                // At last, add the splitter to the stack panel
+                StackPanel.Children.Add(splitter);
+            }
         }
 
         public async Task GoBack(bool animate)
         {
             if (frameStack.Count == 0)
-            {
                 return;
-            }
 
-            // remove the frame
-            var removedFrame = frameStack.Pop(); // get the frame to remove
-            if (animate && FadeOutDuration > 0)
-                await FadeOut(removedFrame);
+            Monitor.TryEnter(fadeInOut, -1);
 
-            StackPanel.Children.Remove(removedFrame); // remove the frame
-
-            // remove the splitter if there is one
-            var removedSplitter = StackedMode == StackedMode.Resizeable ? removedFrame : frameStack.Any() ? frameStack.Peek() : null;
-            if (removedSplitter != null && splitters.ContainsKey(removedSplitter))
+            try
             {
-                var splitter = splitters[removedSplitter]; // get the splitter to remove
-                StackPanel.Children.Remove(splitter); // remove the splitter
-                splitters.Remove(removedSplitter); // remove the splitter / frame binding
+                // remove the frame
+                var removedFrame = frameStack.Pop(); // get the frame to remove
+                if (animate && FadeOutDuration > 0)
+                    await FadeOut(removedFrame);
+
+                StackPanel.Children.Remove(removedFrame); // remove the frame
+
+                // remove the splitter if there is one
+                var removedSplitter = StackedMode == StackedMode.Resizeable ? removedFrame : frameStack.Any() ? frameStack.Peek() : null;
+                if (removedSplitter != null && splitters.ContainsKey(removedSplitter))
+                {
+                    var splitter = splitters[removedSplitter]; // get the splitter to remove
+                    StackPanel.Children.Remove(splitter); // remove the splitter
+                    splitters.Remove(removedSplitter); // remove the splitter / frame binding
+                }
+
+                if (removedFrame.Content is Page { DataContext: IDisposable vmPageDataContext })
+                {
+                    // Dispose the data model
+                    vmPageDataContext.Dispose();
+                }
+
+                UpdateTopFrame();
+
+                if (TopFrame?.Content is Page page)
+                    AdjustColumnWidths(page.Width);
+
+                lock (BreadCrumbs)
+                {
+                    if (BreadCrumbs.Count > 0)
+                        BreadCrumbs.RemoveAt(BreadCrumbs.Count - 1);
+                }
             }
-
-            if (removedFrame.Content is Page { DataContext: IDisposable vmPageDataContext })
+            finally
             {
-                // Dispose the data model
-                vmPageDataContext.Dispose();
-            }
-
-
-            UpdateTopFrame();
-
-            if (TopFrame?.Content is Page page)
-                AdjustColumnWidths(page.Width);
-
-            lock (BreadCrumbs)
-            {
-                if (BreadCrumbs.Count > 0)
-                    BreadCrumbs.RemoveAt(BreadCrumbs.Count - 1);
+                Monitor.Exit(fadeInOut);
             }
         }
 
@@ -333,6 +365,7 @@ namespace TimePunch.StackedUI
         public void Initialize(StackedMode stackedMode)
         {
             StackedMode = stackedMode;
+            Bindings.Update();
         }
 
         /// <summary>
@@ -373,33 +406,37 @@ namespace TimePunch.StackedUI
                 if (PropertyPanelVisibility == value)
                     return;
 
+                UpdatePropertyVisibility(value);
+            }
+        }
+
+        private async void UpdatePropertyVisibility(Visibility value)
+        {
+            Monitor.TryEnter(fadeInOut, -1);
+
+            try
+            {
                 // Change the visibility
                 if (value == Visibility.Visible)
                 {
                     SetValue(PropertyPanelVisibilityProperty, value);
                     if (FadeInDuration > 0)
-                        FadeIn(PropertyPanel);
+                        await FadeIn(PropertyPanel);
                 }
                 else
                 {
                     if (FadeOutDuration > 0)
-                    {
-                        FadeOut(PropertyPanel).ContinueWith((t) =>
-                        {
-                            Windows.Foundation.IAsyncAction asyncAction = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-                            {
-                                PropertyPanel.Opacity = 1;
-                                SetValue(PropertyPanelVisibilityProperty, value);
-                            });
-                        });
-                    }
-                    else
-                    {
-                        SetValue(PropertyPanelVisibilityProperty, value);
-                    }
+                        await FadeOut(PropertyPanel);
+
+                    SetValue(PropertyPanelVisibilityProperty, value);
                 }
             }
+            finally
+            {
+                Monitor.Exit(fadeInOut);
+            }
         }
+
         #endregion
 
         #region Escape Key Handling
@@ -430,5 +467,20 @@ namespace TimePunch.StackedUI
         }
 
         #endregion
+
+        public ScrollBarVisibility IsHorizontalScrollBarVisibility => StackedMode == StackedMode.Resizeable
+            ? ScrollBarVisibility.Auto
+            : ScrollBarVisibility.Disabled;
+
+        /// <summary>
+        /// Update the page size when the size of the stack panel changes
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (StackedMode == StackedMode.InPlace && TopFrame?.Content is Page page)
+                AdjustColumnWidths(page.ActualWidth);
+        }
     }
 }
