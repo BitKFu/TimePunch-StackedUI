@@ -2,6 +2,7 @@
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using TimePunch_WinUI_StackedUI_Demo.Core;
+using TimePunch.MVVM.Controller;
 using TimePunch.StackedUI.Controller;
 
 namespace TimePunch_WinUI_StackedUI_Demo.ViewModels
@@ -10,13 +11,19 @@ namespace TimePunch_WinUI_StackedUI_Demo.ViewModels
     {
         public override Task<bool> InitializePageAsync(object extraData, DispatcherQueue dispatcher)
         {
-            SetPropertyValue(() => NavigationStyle, (int)DemoKernel.Instance.Controller.StackedMode);
-            SetPropertyValue(() => FadeInDuration,  DemoKernel.Instance.Controller.StackedFrame!.FadeInDuration);
-            SetPropertyValue(() => FadeOutDuration, DemoKernel.Instance.Controller.StackedFrame!.FadeOutDuration);
+            if (Kernel.Instance!.Controller is StackedController stackedController)
+            {
+                SetPropertyValue(() => NavigationStyle, (int)stackedController.StackedMode);
+                SetPropertyValue(() => FadeInDuration, stackedController.StackedFrame!.FadeInDuration);
+                SetPropertyValue(() => FadeOutDuration, stackedController.StackedFrame!.FadeOutDuration);
+            }
 
-            var windowContent = DemoKernel.Instance.MainWindow.Content as FrameworkElement;
-            if (windowContent != null)
-                SetPropertyValue(() => ApplicationTheme, (int)windowContent.RequestedTheme);
+            if (Kernel.Instance is DemoKernel demoKernel)
+            {
+                var windowContent = demoKernel.MainWindow.Content as FrameworkElement;
+                if (windowContent != null)
+                    SetPropertyValue(() => ApplicationTheme, (int)windowContent.RequestedTheme);
+            }
 
             return base.InitializePageAsync(extraData, dispatcher);
         }
@@ -34,7 +41,8 @@ namespace TimePunch_WinUI_StackedUI_Demo.ViewModels
             {
                 if (SetPropertyValue(() => NavigationStyle, value))
                 {
-                    DemoKernel.Instance.Controller.StackedMode = (StackedMode)value;
+                    if (DemoKernel.Instance.Controller is StackedController stackedController)
+                        stackedController.StackedMode = (StackedMode)value;
                 }
             }
         }
@@ -53,7 +61,10 @@ namespace TimePunch_WinUI_StackedUI_Demo.ViewModels
             set
             {
                 if (SetPropertyValue(() => FadeInDuration, value))
-                    DemoKernel.Instance.Controller.StackedFrame!.FadeInDuration = value;
+                {
+                    if (DemoKernel.Instance.Controller is StackedController stackedController)
+                        stackedController.StackedFrame!.FadeInDuration = value;
+                }
             }
         }
 
@@ -71,7 +82,10 @@ namespace TimePunch_WinUI_StackedUI_Demo.ViewModels
             set
             {
                 if (SetPropertyValue(() => FadeOutDuration, value))
-                    DemoKernel.Instance.Controller.StackedFrame!.FadeOutDuration = value;
+                {
+                    if (DemoKernel.Instance.Controller is StackedController stackedController)
+                        stackedController.StackedFrame!.FadeOutDuration = value;
+                }
             }
         }
 
@@ -88,9 +102,10 @@ namespace TimePunch_WinUI_StackedUI_Demo.ViewModels
             get { return GetPropertyValue(() => ApplicationTheme); }
             set
             {
-                if (SetPropertyValue(() => ApplicationTheme, value))
+                if (SetPropertyValue(() => ApplicationTheme, value) && 
+                    Kernel.Instance is DemoKernel demoKernel)
                 {
-                    var windowContent = DemoKernel.Instance.MainWindow.Content as FrameworkElement;
+                    var windowContent = demoKernel.MainWindow.Content as FrameworkElement;
                     if (windowContent == null)
                         return;
 

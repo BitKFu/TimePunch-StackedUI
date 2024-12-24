@@ -18,6 +18,8 @@ namespace TimePunch_WinUI_StackedUI_Demo.Core
         , IHandleMessageAsync<NavigateToStartView>
         , IHandleMessageAsync<NavigateToSettingsView>
     {
+        private readonly IPagePersister demoPagePersister = new DemoPagePersister();
+
         public DemoController(IEventAggregator eventAggregator) 
             : base(eventAggregator, StackedMode.Resizeable)
         {
@@ -68,7 +70,6 @@ namespace TimePunch_WinUI_StackedUI_Demo.Core
 
         #endregion
 
-
         #region Implementation of IHandleMessage<NavigateToDemo4View>
 
         public async Task<NavigateToDemo4View> Handle(NavigateToDemo4View message)
@@ -110,7 +111,7 @@ namespace TimePunch_WinUI_StackedUI_Demo.Core
         protected override IPagePersister? GetPagePersister()
         {
             // here we could offer a class to persist the page size
-            return null;
+            return demoPagePersister;
         }
 
         protected override void UpdatePropertyPanels(Page newTopPage)

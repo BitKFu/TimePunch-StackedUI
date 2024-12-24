@@ -3,6 +3,9 @@ using Microsoft.UI.Xaml.Media;
 using TimePunch_WinUI_StackedUI_Demo.Core;
 using Microsoft.UI.Xaml.Controls;
 using TimePunch_WinUI_StackedUI_Demo.ViewModels;
+using TimePunch.MVVM.Controller;
+using TimePunch.MVVM.EventAggregation;
+using TimePunch.StackedUI.Controller;
 using TimePunch.StackedUI.Model;
 using TimePunch.StackedUI.Window;
 using WindowActivatedEventArgs = Microsoft.UI.Xaml.WindowActivatedEventArgs;
@@ -19,6 +22,7 @@ namespace TimePunch_WinUI_StackedUI_Demo
     {
         public MainWindow()
         {
+            Kernel.Instance = new DemoKernel(new EventAggregator(), this);
             this.InitializeComponent();
         }
 
@@ -27,9 +31,9 @@ namespace TimePunch_WinUI_StackedUI_Demo
             Activated += MainWindow_Activated;
             SetTitleBar(AppTitleBar);
 
-            DemoKernel.Instance.Controller.StackedFrame = StackedFrame;
-            DemoKernel.Instance.MainWindow = this;
-
+            if (DemoKernel.Instance.Controller is StackedController stackedController)
+                stackedController.StackedFrame = StackedFrame;
+            
             if (ContentGrid.DataContext is MainWindowViewModel viewModel)
                 viewModel.InitializePageAsync(this, DispatcherQueue);
         }

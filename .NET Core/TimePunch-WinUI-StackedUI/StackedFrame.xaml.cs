@@ -10,6 +10,9 @@ using TimePunch.StackedUI.Controller;
 using TimePunch.StackedUI.Extensions;
 using TimePunch.StackedUI.Model;
 using Windows.System;
+using TimePunch.MVVM.Controller;
+using TimePunch.MVVM.Events;
+using TimePunch.StackedUI.Events;
 
 namespace TimePunch.StackedUI
 {
@@ -254,7 +257,7 @@ namespace TimePunch.StackedUI
             }
         }
 
-        public async Task GoBack(bool animate)
+        internal async Task GoBack(bool animate)
         {
             if (frameStack.Count == 0)
                 return;
@@ -461,7 +464,7 @@ namespace TimePunch.StackedUI
             args.Handled = true;
 
             if (CanGoBack)
-                await GoBack(true);
+                await Kernel.Instance!.EventAggregator.PublishMessageAsync(new GoBackPageNavigationRequest());
         }
 
         #endregion

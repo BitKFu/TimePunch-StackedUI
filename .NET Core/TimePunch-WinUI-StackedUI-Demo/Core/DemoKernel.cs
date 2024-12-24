@@ -1,38 +1,22 @@
 ﻿using Microsoft.UI.Xaml;
+using TimePunch.MVVM.Controller;
 using TimePunch.MVVM.EventAggregation;
 using TimePunch.StackedUI.Controller;
 
 namespace TimePunch_WinUI_StackedUI_Demo.Core
 {
-    public class DemoKernel
+    public class DemoKernel : Kernel
     {
-        private static DemoKernel? instance;
-
-        private DemoKernel(IEventAggregator eventAggregator)
+        public DemoKernel(IEventAggregator eventAggregator, Window mainWindow)
         {
             EventAggregator = eventAggregator;
+            MainWindow = mainWindow;
             Controller = new DemoController(EventAggregator);
         }
 
-        /// <summary>
-        /// Gets or sets the Kernel Instance
-        /// </summary>
-        public static DemoKernel Instance => instance ??= new DemoKernel(new EventAggregator());
+        public override IEventAggregator EventAggregator { get; }
+        public override IBaseController Controller { get; }
 
-        /// <summary>
-        /// Gets the event aggregator.
-        /// </summary>
-        /// <returns></returns>
-        public IEventAggregator EventAggregator { get; }
-
-        /// <summary>
-        /// Gets the controller
-        /// </summary>
-        public IStackedController Controller { get; private set; }
-
-        /// <summary>
-        /// Gets or sets the Main Window
-        /// </summary>
-        public Window MainWindow { get; set; }
+        public Window MainWindow { get; }
     }
 }
