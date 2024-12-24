@@ -34,6 +34,11 @@ namespace TimePunch_WinUI_StackedUI_Demo.ViewModels
                 new() {Title = "Demo2", Icon = "Save", GoToPage = ()=>EventAggregator.PublishMessageAsync(new NavigateToDemo2View())},
             };
 
+            FooterPages = new List<PageLink>()
+            {
+                new() {Title = "Settings", Icon = "Setting", GoToPage = ()=>EventAggregator.PublishMessageAsync(new NavigateToSettingsView())},
+                //new() {Title = "Logon", Icon = "User", GoToPage = ()=>EventAggregator.PublishMessageAsync(new NavigateToLogonView())},
+            };
         }
 
         public override Task<bool> InitializePageAsync(object extraData, DispatcherQueue dispatcher)
@@ -112,6 +117,20 @@ namespace TimePunch_WinUI_StackedUI_Demo.ViewModels
         {
             get { return GetPropertyValue(() => DemoPages); }
             set { SetPropertyValue(() => DemoPages, value); }
+        }
+
+        #endregion
+
+        #region Property FooterPages
+
+        /// <summary>
+        /// Gets or sets the PageLinks.
+        /// </summary>
+        /// <value>The PageLinks.</value>
+        public List<PageLink>? FooterPages
+        {
+            get { return GetPropertyValue(() => FooterPages); }
+            set { SetPropertyValue(() => FooterPages, value); }
         }
 
         #endregion

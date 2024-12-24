@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="TimePunch_WinUI_StackedUI_Demo.Views.SettingsView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:TimePunch_WinUI_StackedUI_Demo.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:extensions="using:TimePunch.StackedUI.Extensions"
+    xmlns:controls="using:TimePunch.StackedUI.Controls"
+    xmlns:controls1="using:CommunityToolkit.WinUI.Controls"
+    mc:Ignorable="d" Width="1000" MinWidth="400" 
+    DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=SettingsViewModel}"
+    extensions:StackedFrameExtension.FrameKey="Settings"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <controls:PageControl Title="Settings">
+        <controls:PageControl.Content>
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch">
+                <controls1:SettingsExpander 
+                    VerticalAlignment="Top"
+                    Header="StackedUI Settings"
+                    IsExpanded="True"
+                    Description="Different settings to style the StackedUI">
+
+                    <controls1:SettingsExpander.Items>
+
+                        <controls1:SettingsCard Header="Theme">
+                            <ComboBox SelectedIndex="{Binding ApplicationTheme, Mode=TwoWay}"  Width="500">
+                                <ComboBoxItem Content="System"/>
+                                <ComboBoxItem Content="Light Mode"/>
+                                <ComboBoxItem Content="Dark Mode"/>
+                            </ComboBox>
+
+                        </controls1:SettingsCard>
+
+                        <controls1:SettingsCard Header="Navigation" >
+                            <ComboBox SelectedIndex="{Binding NavigationStyle, Mode=TwoWay}"  Width="500">
+                                <ComboBoxItem Content="Expand right"/>
+                                <ComboBoxItem Content="In-Place"/>
+                            </ComboBox>
+                        </controls1:SettingsCard>
+
+                        <controls1:SettingsCard Header="Animations">
+                            <StackPanel Orientation="Vertical"  Width="500">
+                                <Slider Header="Fade In" Minimum="0" Maximum="500" Value="{Binding FadeInDuration, Mode=TwoWay}"></Slider>
+                                <Slider Header="Fade Out" Minimum="0" Maximum="500" Value="{Binding FadeOutDuration, Mode=TwoWay}"></Slider>
+                            </StackPanel>
+                        </controls1:SettingsCard>
+
+                    </controls1:SettingsExpander.Items>
+
+                </controls1:SettingsExpander>
+            </StackPanel>
+        </controls:PageControl.Content>
+    </controls:PageControl>
+</Page>

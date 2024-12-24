@@ -19,7 +19,7 @@ namespace TimePunch.StackedUI.Controller
 
         // Properties
         StackedFrame? StackedFrame { get; set; }
-        StackedMode StackedMode { get; }
+        StackedMode StackedMode { get; set; }
         bool CanGoBackPage { get; }
     }
 }

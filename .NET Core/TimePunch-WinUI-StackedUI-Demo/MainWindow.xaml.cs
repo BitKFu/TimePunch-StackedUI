@@ -28,6 +28,8 @@ namespace TimePunch_WinUI_StackedUI_Demo
             SetTitleBar(AppTitleBar);
 
             DemoKernel.Instance.Controller.StackedFrame = StackedFrame;
+            DemoKernel.Instance.MainWindow = this;
+
             if (ContentGrid.DataContext is MainWindowViewModel viewModel)
                 viewModel.InitializePageAsync(this, DispatcherQueue);
         }

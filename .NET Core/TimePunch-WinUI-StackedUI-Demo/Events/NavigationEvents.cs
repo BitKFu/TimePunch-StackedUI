@@ -9,5 +9,6 @@ namespace TimePunch_WinUI_StackedUI_Demo.Events
     public class NavigateToDemo2View : PageNavigationEvent;
     public class NavigateToDemo3View : PageNavigationEvent;
     public class NavigateToDemo4View : PageNavigationEvent;
+    public class NavigateToSettingsView : PageNavigationEvent;
 
 }

@@ -10,6 +10,7 @@ namespace TimePunch_WinUI_StackedUI_Demo.Core
         private static Demo4ViewModel? backingDemo4ViewModel;
         private static MainWindowViewModel? backingMainWindowViewModel;
         private static LogonViewModel? backingLogonViewModel;
+        private static SettingsViewModel? backingSettingsViewModel;
 
         public static Demo1ViewModel Demo1ViewModel
         {
@@ -68,6 +69,16 @@ namespace TimePunch_WinUI_StackedUI_Demo.Core
                 backingLogonViewModel = new LogonViewModel();
                 backingLogonViewModel.Initialize();
                 return backingLogonViewModel;
+            }
+        }
+
+        public static SettingsViewModel SettingsViewModel
+        {
+            get
+            {
+                backingSettingsViewModel = new SettingsViewModel();
+                backingSettingsViewModel.Initialize();
+                return backingSettingsViewModel;
             }
         }
 

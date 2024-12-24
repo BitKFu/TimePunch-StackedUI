@@ -85,7 +85,9 @@
                     IsBackButtonVisible="Collapsed"
                     IsBackEnabled="False"
                     IsPaneOpen="True"
+                    IsSettingsVisible="False"
                     SelectedItem="{Binding Path=SelectedMenuItem, Mode=TwoWay}"
+                    FooterMenuItemsSource="{Binding Path=FooterPages, Mode=OneWay}"
                     MenuItemsSource="{Binding Path=DemoPages, Mode=OneWay}">
 
             <NavigationView.MenuItemTemplate>

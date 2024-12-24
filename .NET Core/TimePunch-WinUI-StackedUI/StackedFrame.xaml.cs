@@ -22,6 +22,7 @@ namespace TimePunch.StackedUI
         private readonly Dictionary<Frame, ContentSizer> splitters = new Dictionary<Frame, ContentSizer>();
 
         private readonly object fadeInOut = new object();
+        private StackedMode stackedMode;
 
         public StackedFrame()
         {
@@ -277,6 +278,13 @@ namespace TimePunch.StackedUI
                     StackPanel.Children.Remove(splitter); // remove the splitter
                     splitters.Remove(removedSplitter); // remove the splitter / frame binding
                 }
+                // That might be a special case, when switching from InPlace to Resizeable
+                else if (StackedMode == StackedMode.Resizeable && splitters.Count == 1)
+                {
+                    var splitter = splitters.First().Value;
+                    StackPanel.Children.Remove(splitter);
+                    splitters.Clear();
+                }
 
                 if (removedFrame.Content is Page { DataContext: IDisposable vmPageDataContext })
                 {
@@ -365,13 +373,20 @@ namespace TimePunch.StackedUI
         public void Initialize(StackedMode stackedMode)
         {
             StackedMode = stackedMode;
-            Bindings.Update();
         }
 
         /// <summary>
         /// Gets or sets the stacked mode
         /// </summary>
-        public StackedMode StackedMode { get; internal set; }
+        public StackedMode StackedMode
+        {
+            get => stackedMode;
+            internal set
+            {
+                stackedMode = value;
+                Bindings.Update();
+            }
+        }
 
         #region Property SplitterWith
 

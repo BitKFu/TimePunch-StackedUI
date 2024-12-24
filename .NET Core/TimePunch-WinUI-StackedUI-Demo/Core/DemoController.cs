@@ -16,6 +16,7 @@ namespace TimePunch_WinUI_StackedUI_Demo.Core
         , IHandleMessageAsync<NavigateToDemo3View>
         , IHandleMessageAsync<NavigateToDemo4View>
         , IHandleMessageAsync<NavigateToStartView>
+        , IHandleMessageAsync<NavigateToSettingsView>
     {
         public DemoController(IEventAggregator eventAggregator) 
             : base(eventAggregator, StackedMode.Resizeable)
@@ -125,5 +126,14 @@ namespace TimePunch_WinUI_StackedUI_Demo.Core
         #endregion
 
 
+        public async Task<NavigateToSettingsView> Handle(NavigateToSettingsView message)
+        {
+            var page = new SettingsView();
+            if (page.DataContext is SettingsViewModel viewModel)
+            {
+                await InitTopPageAsync(DispatcherQueue.GetForCurrentThread(), message, viewModel, page);
+            }
+            return message;
+        }
     }
 }
