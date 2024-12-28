@@ -86,9 +86,6 @@ namespace TimePunch.StackedUI.Controller
             if (isModal)
                 StackedFrame.DisableTop();
 
-            //if (StackedMode == StackedMode.FullWidth && isResizable && StackedFrame.TopFrame != null)
-            //    StackedFrame.AddSplitter();
-
             // add the new page
             var frame = CreateFrame();
             await StackedFrame.AddFrame(EventAggregator, frame, page);
@@ -105,7 +102,8 @@ namespace TimePunch.StackedUI.Controller
         /// <returns></returns>
         protected virtual Frame CreateFrame()
         {
-            return new Frame();
+            var frame = new Frame();
+            return frame;
         }
 
         #endregion
@@ -160,33 +158,11 @@ namespace TimePunch.StackedUI.Controller
                     message = await Handle(message);
                     waitHandle.Set();
                 });
+                waitHandle.WaitOne();
                 return message;
             }
 
             var topPage = StackedFrame.TopFrame?.Content as Page;
-
-            //// Store the grid size
-            //var gridWithToSave = GridLength.Auto;
-            //var gridMinWith = 0.0;
-            //if (topPage != null && StackedFrame.TopFrame?.Parent is Grid surroundingGrid)
-            //{
-            //    var currentColumn = Grid.GetColumn(StackedFrame.TopFrame);
-            //    if (currentColumn > 1 && StackedMode != StackedMode.InPlace) // if it's 0 its the last content 
-            //    {
-            //        gridWithToSave = surroundingGrid.ColumnDefinitions[currentColumn - 2].Width;
-            //        gridMinWith = surroundingGrid.ColumnDefinitions[currentColumn - 2].MinWidth;
-            //    }
-            //    else if (currentColumn > 0 && StackedMode == StackedMode.InPlace)
-            //    {
-            //        // Inplace don't store
-            //    }
-            //    else
-            //    {
-            //        // Prevent going back to a blank page
-            //        if (message.ToPage == null)
-            //            return message;
-            //    }
-            //}
 
             // Remove the top frame
             if (message.ToPage == null)
@@ -202,15 +178,16 @@ namespace TimePunch.StackedUI.Controller
 
             StackedFrame.EnableTop();
 
-            var newTopPage = StackedFrame?.TopFrame?.Content as Page;
+            var newTopFrame = StackedFrame?.TopFrame;
+            var newTopPage = newTopFrame?.Content as Page;
             var pagePersister = GetPagePersister();
             if (pagePersister != null && StackedMode == StackedMode.Resizeable)
             {
                 // Get the key of the new top page - after closing the previous
-                if (newTopPage != null)
+                if (newTopFrame != null && newTopPage != null)
                 {
                     var frameKey = StackedFrameExtension.GetFrameKey(newTopPage);
-                    newTopPage.Width = pagePersister.GetPageWidth(frameKey);
+                    newTopFrame.Width = pagePersister.GetPageWidth(frameKey);
                 }
             }
 
