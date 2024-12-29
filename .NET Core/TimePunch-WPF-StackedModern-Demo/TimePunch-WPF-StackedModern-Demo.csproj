@@ -5,6 +5,7 @@
     <TargetFramework>net48</TargetFramework>
     <RootNamespace>TimePunch_WPF_StackedModern_Demo</RootNamespace>
     <UseWPF>true</UseWPF>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,7 +14,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="ModernWpfUI.Signed" Version="0.9.5.1" />
-    <PackageReference Include="TimePunch-MVVM" Version="0.8.1" />
+    <PackageReference Include="TimePunch-MVVM" Version="0.8.2" />
   </ItemGroup>
 
   <ItemGroup>

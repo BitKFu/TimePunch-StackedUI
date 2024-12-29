@@ -21,7 +21,7 @@ namespace TimePunch_WinUI_StackedUI_Demo.Core
         private readonly IPagePersister demoPagePersister = new DemoPagePersister();
 
         public DemoController(IEventAggregator eventAggregator) 
-            : base(eventAggregator, StackedMode.Resizeable)
+            : base(eventAggregator)
         {
         }
 

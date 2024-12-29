@@ -66,7 +66,9 @@
                            IsBackButtonVisible="Collapsed"
                            IsBackEnabled="False"
                            IsPaneOpen="False"
+                           IsSettingsVisible="False"
                            SelectedItem="{Binding SelectedMenuItem, Mode=TwoWay}"
+                           FooterMenuItemsSource="{Binding Path=FooterPages, Mode=OneWay}"
                            MenuItemsSource="{Binding DemoPages}"
                            >
 

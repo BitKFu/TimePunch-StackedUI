@@ -2,16 +2,11 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Navigation;
 using TimePunch.MVVM.EventAggregation;
 using TimePunch.StackedUI.Controller;
 using TimePunch.StackedUI.Extensions;
@@ -141,7 +136,7 @@ namespace TimePunch.StackedUI
         /// <summary>
         /// This method sets only the last column definition to star width
         /// </summary>
-        private void AdjustColumnWidths()
+        private void AdjustColumnWidths(double pageWidth)
         {
             if (StackedMode == StackedMode.InPlace)
             {
@@ -165,23 +160,26 @@ namespace TimePunch.StackedUI
                 // Adjust the with of the previous columns
                 for (int i = 0; i < StackGrid.ColumnDefinitions.Count; i++)
                 {
-                    var last = i == StackGrid.ColumnDefinitions.Count - 1;
+                    var last = i >= StackGrid.ColumnDefinitions.Count - 2;
 
                     if (!last && i % 2 == 0)
                     {
                         // Minimize all prior pages
                         StackGrid.ColumnDefinitions[i].Width = StackGrid.ColumnDefinitions[i].MinWidth > 0
                             ? new GridLength(StackGrid.ColumnDefinitions[i].MinWidth)
-                            : GridLength.Auto;
+                            : StackGrid.ColumnDefinitions[i].Width;
                     }
                     else
                     {
                         if (last && i % 2 == 0)
-                            StackGrid.ColumnDefinitions[i].Width = new GridLength(1, GridUnitType.Star);
+                            StackGrid.ColumnDefinitions[i].Width = double.IsNaN(pageWidth) 
+                                ? new GridLength(1, GridUnitType.Star)
+                                : new GridLength(pageWidth);
                     }
                 }
 
-                ScrollViewer.ScrollToRightEnd();
+                if (StackGrid.ColumnDefinitions.Count>2)
+                    ScrollViewer.ScrollToRightEnd();
             }
         }
 
@@ -189,17 +187,17 @@ namespace TimePunch.StackedUI
         {
             // add a new column
             var column = StackGrid.ColumnDefinitions.Count - (StackedMode == StackedMode.Resizeable ? 1 : 0);
-            StackGrid.ColumnDefinitions.Insert(column,
-                new ColumnDefinition()
-                {
-                    Width = double.IsNaN(page.Width) || StackedMode == StackedMode.FullWidth
-                        ? GridLength.Auto
-                        : new GridLength(page.Width),
-                    MinWidth = page.MinWidth,
-                    MaxWidth = StackedMode == StackedMode.InPlace 
-                        ? double.PositiveInfinity
-                        : page.MaxWidth
-                });
+            var columnDefinition = new ColumnDefinition()
+            {
+                MinWidth = page.MinWidth,
+                MaxWidth = StackedMode == StackedMode.InPlace 
+                    ? double.PositiveInfinity
+                    : page.MaxWidth
+            };
+
+            var pageWidth = page.Width;
+
+            StackGrid.ColumnDefinitions.Insert(column, columnDefinition);
             Grid.SetColumn(frame, column);
             page.Width = double.NaN;
 
@@ -222,7 +220,7 @@ namespace TimePunch.StackedUI
             frameStack.Push(frame);
             StackGrid.Children.Add(frame);
 
-            AdjustColumnWidths();
+            AdjustColumnWidths(pageWidth);
             UpdateTopFrame();
             BreadCrumbs.Add(new BreadCrumbNavigation(eventAggregator, page));
 
@@ -276,8 +274,20 @@ namespace TimePunch.StackedUI
                 var splitter = splitters[removedSplitter]; // get the splitter to remove
                 column = Grid.GetColumn(splitter); // get the column in grid to remove
                 StackGrid.Children.Remove(splitter); // remove the splitter
-                splitters.Remove(removedSplitter); // remove the splitter / frame binding
                 StackGrid.ColumnDefinitions.RemoveAt(column); // remove the columne
+
+                splitters.Remove(removedSplitter); // remove the splitter / frame binding
+            }
+            // That might be a special case, when switching from InPlace to Resizeable
+            else if (StackedMode == StackedMode.Resizeable && splitters.Count == 1)
+            {
+                var splitter = splitters.First().Value;
+                
+                column = Grid.GetColumn(splitter); // get the column in grid to remove
+                StackGrid.Children.Remove(splitter); // remove the splitter
+                StackGrid.ColumnDefinitions.RemoveAt(column); // remove the columne
+
+                splitters.Clear();
             }
 
             if (removedFrame.Content is Page { DataContext: IDisposable vmPageDataContext })
@@ -286,8 +296,10 @@ namespace TimePunch.StackedUI
                 vmPageDataContext.Dispose();
             }
 
-            AdjustColumnWidths();
             UpdateTopFrame();
+
+            if (TopFrame?.Content is Page page)
+                AdjustColumnWidths(page.Width);
 
             lock (BreadCrumbs)
             {
@@ -356,20 +368,28 @@ namespace TimePunch.StackedUI
         /// <summary>
         /// Initializes the stacked frame by using the stacked mode
         /// </summary>
-        /// <param name="stackedMode">defines how the frames are beeing added</param>
-        public void Initialize(StackedMode stackedMode)
+        public void Initialize()
         {
             // add an empty column
-            if (stackedMode == StackedMode.Resizeable)
+            if (StackedMode == StackedMode.Resizeable)
                 StackGrid.ColumnDefinitions.Add(new ColumnDefinition());
-
-            StackedMode = stackedMode;
         }
+
+        #region Property StackedMode
+
+        public static readonly DependencyProperty StackedModeProperty =
+            DependencyProperty.RegisterAttached("StackedMode", typeof(StackedMode), typeof(StackedFrame), new PropertyMetadata(StackedMode.Resizeable));
 
         /// <summary>
         /// Gets or sets the stacked mode
         /// </summary>
-        public StackedMode StackedMode { get; internal set; }
+        public StackedMode StackedMode
+        {
+            get => (StackedMode)GetValue(StackedModeProperty);
+            set => SetValue(StackedModeProperty, value);
+        }
+
+        #endregion
 
         #region Property SplitterWith
 

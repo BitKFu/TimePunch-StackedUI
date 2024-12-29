@@ -1,0 +1,44 @@
+<Page
+    x:Class="TimePunch_WPF_StackedModern_Demo.Views.SettingsView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:extensions1="clr-namespace:TimePunch.StackedUI.Extensions;assembly=TpStackedUI"
+    xmlns:controls1="clr-namespace:TimePunch.StackedUI.Controls;assembly=TpStackedUI"
+    mc:Ignorable="d" Width="1000" MinWidth="400" 
+    DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=SettingsViewModel}"
+    extensions1:StackedFrameExtension.FrameKey="Settings">
+
+    <controls1:PageControl Title="Settings">
+        <controls1:PageControl.Content>
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch">
+                <controls1:GroupControl HeaderText="Theme">
+                    <ComboBox SelectedIndex="{Binding ApplicationTheme, Mode=TwoWay}"  Width="500">
+                        <ComboBoxItem Content="System"/>
+                        <ComboBoxItem Content="Light Mode"/>
+                        <ComboBoxItem Content="Dark Mode"/>
+                    </ComboBox>
+
+                </controls1:GroupControl>
+
+                <controls1:GroupControl HeaderText="Navigation" >
+                    <ComboBox SelectedIndex="{Binding NavigationStyle, Mode=TwoWay}"  Width="500">
+                        <ComboBoxItem Content="Expand right"/>
+                        <ComboBoxItem Content="In-Place"/>
+                    </ComboBox>
+                </controls1:GroupControl>
+
+                <controls1:GroupControl HeaderText="Animations">
+                    <StackPanel Orientation="Vertical"  Width="500">
+                        <Label Content="Fade In"></Label>
+                        <Slider Minimum="0" Maximum="500" Value="{Binding FadeInDuration, Mode=TwoWay}"></Slider>
+
+                        <Label Content="Fade Out"></Label>
+                        <Slider Minimum="0" Maximum="500" Value="{Binding FadeOutDuration, Mode=TwoWay}"></Slider>
+                    </StackPanel>
+                </controls1:GroupControl>
+            </StackPanel>
+        </controls1:PageControl.Content>
+    </controls1:PageControl>
+</Page>

@@ -96,7 +96,7 @@
                 </DataTemplate>
             </NavigationView.MenuItemTemplate>
 
-            <stackedUi:StackedFrame x:Name="StackedFrame" FadeInDuration="100" FadeOutDuration="100">
+            <stackedUi:StackedFrame x:Name="StackedFrame" FadeInDuration="100" FadeOutDuration="100" StackedMode="Resizeable">
             </stackedUi:StackedFrame>
 
         </NavigationView>

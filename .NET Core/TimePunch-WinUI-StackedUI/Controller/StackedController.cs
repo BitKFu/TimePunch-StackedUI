@@ -19,7 +19,6 @@ namespace TimePunch.StackedUI.Controller
         IHandleMessageAsync<GoBackPageNavigationRequest>, IStackedController
     {
         private StackedFrame? stackedFrame;
-        private StackedMode stackedMode;
         private readonly SemaphoreSlim navigationSemaphore = new(1);
 
         /// <summary>
@@ -27,13 +26,11 @@ namespace TimePunch.StackedUI.Controller
         /// </summary>
         /// <param name="eventAggregator">Event aggregation object</param>
         /// <param name="mode">Defines how the frames are added</param>
-        protected StackedController(IEventAggregator eventAggregator, StackedMode mode)
+        protected StackedController(IEventAggregator eventAggregator)
             : base(eventAggregator)
         {
             if (eventAggregator == null)
                 throw new ArgumentNullException(nameof(eventAggregator));
-
-            StackedMode = mode;
         }
 
         /// <summary>
@@ -54,15 +51,11 @@ namespace TimePunch.StackedUI.Controller
         /// </summary>
         public StackedMode StackedMode
         {
-            get => stackedMode;
+            get => StackedFrame?.StackedMode ?? StackedMode.Resizeable;
             set
             {
-                if (value != stackedMode && StackedFrame != null)
-                {
+                if (StackedFrame != null)
                     StackedFrame.StackedMode = value;
-                }
-
-                stackedMode = value;
             }
         }
 
@@ -333,13 +326,13 @@ namespace TimePunch.StackedUI.Controller
                     if (!await vm.InitializePageAsync(message, dispatcher))
                         return null;
 
+                    // Save the current page width before adding a new one
                     var pagePersister = GetPagePersister();
                     if (pagePersister != null && StackedMode == StackedMode.Resizeable)
                     {
                         // Try to store the current width
-                        var topPage = StackedFrame.TopFrame?.Content as Page;
                         string frameKey;
-                        if (topPage != null)
+                        if (StackedFrame.TopFrame?.Content is Page topPage)
                         {
                             frameKey = StackedFrameExtension.GetFrameKey(topPage);
                             pagePersister.SavePageWidth(frameKey, new GridLength(topPage.ActualWidth));

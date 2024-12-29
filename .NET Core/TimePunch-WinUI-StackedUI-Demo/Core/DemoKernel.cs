@@ -11,7 +11,7 @@ namespace TimePunch_WinUI_StackedUI_Demo.Core
         {
             EventAggregator = eventAggregator;
             MainWindow = mainWindow;
-            Controller = new DemoController(EventAggregator);
+            Controller = new DemoController(eventAggregator);
         }
 
         public override IEventAggregator EventAggregator { get; }

@@ -14,10 +14,14 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ModernWpf;
 using ModernWpf.Controls;
+using TimePunch_WPF_StackedModern_Demo.Events;
 using TimePunch.MVVM.Events;
+using TimePunch.StackedUI.Controller;
 using TimePunch.StackedUI.Demo.Core;
 using TimePunch.StackedUI.Demo.Events;
 using TimePunch.StackedUI.Events;
+using TimePunch.MVVM.Controller;
+using TimePunch.MVVM.EventAggregation;
 
 namespace TimePunch_WPF_StackedModern_Demo
 {
@@ -28,6 +32,7 @@ namespace TimePunch_WPF_StackedModern_Demo
     {
         public MainWindow()
         {
+            Kernel.Instance = new DemoKernel(new EventAggregator(), this);
             InitializeComponent();
 
             Loaded += OnLoaded;
@@ -42,7 +47,9 @@ namespace TimePunch_WPF_StackedModern_Demo
         /// <param name="e"></param>
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            DemoKernel.Instance.Controller.StackedFrame = StackedFrame;
+            if (DemoKernel.Instance.Controller is StackedController stackedController)
+                stackedController.StackedFrame = StackedFrame;
+
             DemoKernel.Instance.EventAggregator.PublishMessageAsync(new NavigateToStartView());
         }
 

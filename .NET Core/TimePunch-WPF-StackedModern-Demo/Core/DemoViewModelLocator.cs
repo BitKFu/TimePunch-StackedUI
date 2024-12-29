@@ -1,4 +1,5 @@
-﻿using TimePunch.StackedUI.Demo.Events;
+﻿using TimePunch_WPF_StackedModern_Demo.ViewModels;
+using TimePunch.StackedUI.Demo.Events;
 using TimePunch.StackedUI.Demo.ViewModels;
 
 namespace TimePunch.StackedUI.Demo.Core
@@ -11,6 +12,7 @@ namespace TimePunch.StackedUI.Demo.Core
         private static Demo4ViewModel backingDemo4ViewModel;
         private static LogonViewModel backingLogonViewModel;
         private static MainWindowViewModel backingMainWindowViewModel;
+        private static SettingsViewModel backingSettingsViewModel;
 
         public static Demo1ViewModel Demo1ViewModel
         {
@@ -71,5 +73,16 @@ namespace TimePunch.StackedUI.Demo.Core
                 return backingLogonViewModel;
             }
         }
+
+        public static SettingsViewModel SettingsViewModel
+        {
+            get
+            {
+                backingSettingsViewModel = new SettingsViewModel();
+                backingSettingsViewModel.Initialize();
+                return backingSettingsViewModel;
+            }
+        }
+
     }
 }

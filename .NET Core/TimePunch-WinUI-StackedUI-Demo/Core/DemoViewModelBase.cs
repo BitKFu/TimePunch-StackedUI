@@ -5,7 +5,8 @@ namespace TimePunch_WinUI_StackedUI_Demo.Core
 {
     public class DemoViewModelBase : StackedViewModelBase
     {
-        public DemoViewModelBase() : base(Kernel.Instance.EventAggregator)
+        public DemoViewModelBase() 
+            : base(Kernel.Instance.EventAggregator)
         {
         }
 

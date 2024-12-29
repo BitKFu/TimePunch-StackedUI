@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
+using TimePunch_WPF_StackedModern_Demo.Events;
 using TimePunch.StackedUI.Events;
 using TimePunch.StackedUI.Model;
 using TimePunch.StackedUI.Demo.Core;

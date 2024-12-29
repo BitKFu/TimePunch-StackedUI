@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Input;
+using TimePunch_WPF_StackedModern_Demo.Events;
 using TimePunch.StackedUI.Demo.Core;
 using TimePunch.StackedUI.Demo.Events;
 using TimePunch.StackedUI.Events;
@@ -32,6 +33,12 @@ namespace TimePunch.StackedUI.Demo.ViewModels
                 new PageLink() {Title = "Demo2", Icon="AddFriend",GoToPage = ()=>EventAggregator.PublishMessageAsync(new NavigateToDemo2View())},
             };
 
+
+            FooterPages = new List<PageLink>()
+            {
+                new() {Title = "Settings", Icon = "Setting", GoToPage = ()=>EventAggregator.PublishMessageAsync(new NavigateToSettingsView())},
+                //new() {Title = "Logon", Icon = "User", GoToPage = ()=>EventAggregator.PublishMessageAsync(new NavigateToLogonView())},
+            };
         }
 
         #endregion
@@ -103,6 +110,20 @@ namespace TimePunch.StackedUI.Demo.ViewModels
         {
             get { return GetPropertyValue(() => DemoPages); }
             set { SetPropertyValue(() => DemoPages, value); }
+        }
+
+        #endregion
+
+        #region Property FooterPages
+
+        /// <summary>
+        /// Gets or sets the PageLinks.
+        /// </summary>
+        /// <value>The PageLinks.</value>
+        public List<PageLink>? FooterPages
+        {
+            get { return GetPropertyValue(() => FooterPages); }
+            set { SetPropertyValue(() => FooterPages, value); }
         }
 
         #endregion

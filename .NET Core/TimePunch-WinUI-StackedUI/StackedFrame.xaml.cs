@@ -2,7 +2,6 @@
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Animation;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using CommunityToolkit.WinUI.Controls;
 using Microsoft.UI.Xaml.Input;
 using TimePunch.MVVM.EventAggregation;
@@ -11,7 +10,6 @@ using TimePunch.StackedUI.Extensions;
 using TimePunch.StackedUI.Model;
 using Windows.System;
 using TimePunch.MVVM.Controller;
-using TimePunch.MVVM.Events;
 using TimePunch.StackedUI.Events;
 
 namespace TimePunch.StackedUI
@@ -25,7 +23,6 @@ namespace TimePunch.StackedUI
         private readonly Dictionary<Frame, ContentSizer> splitters = new Dictionary<Frame, ContentSizer>();
 
         private readonly object fadeInOut = new object();
-        private StackedMode stackedMode;
 
         public StackedFrame()
         {
@@ -155,12 +152,12 @@ namespace TimePunch.StackedUI
                     var last = i == StackPanel.Children.Count - 1;
                     if (!last)
                     {
-                        element.MinWidth = 0;
-                        element.Width = 0;
+                        element.Visibility = Visibility.Collapsed;
                     }
                     else
                     {
-                        element.Width = Frame.ActualWidth;
+                        element.Width = Math.Min(Frame.ActualWidth,StackPanel.ActualWidth);
+                        element.Visibility = Visibility.Visible;
                     }
                 }
             }
@@ -195,7 +192,7 @@ namespace TimePunch.StackedUI
             try
             {
                 // add a new column
-                frame.Width = double.IsNaN(page.Width) //|| StackedMode == StackedMode.FullWidth
+                frame.Width = double.IsNaN(page.Width) 
                     ? page.MinWidth
                     : page.Width;
                 frame.MinWidth = page.MinWidth;
@@ -208,13 +205,18 @@ namespace TimePunch.StackedUI
                 if (StackedMode == StackedMode.InPlace)
                     page.MaxWidth = double.PositiveInfinity;
 
+                var topFrameMinWith = TopFrame?.MinWidth ?? 0;
+
                 // push the frame to the new column
                 frame.Opacity = FadeInDuration > 0 ? 0 : 1;
                 frame.Content = page;
                 frameStack.Push(frame);
                 StackPanel.Children.Add(frame);
 
-                AdjustColumnWidths(page.Width);
+                var pageWidth = double.IsNaN(page.Width)
+                    ? Math.Max(page.MinWidth, ScrollViewer.ActualWidth - 12 - topFrameMinWith) : page.Width;
+
+                AdjustColumnWidths(pageWidth);
                 page.Width = double.NaN; // Make page resizeable (otherwise content gets centered)
 
                 UpdateTopFrame();
@@ -378,18 +380,36 @@ namespace TimePunch.StackedUI
             StackedMode = stackedMode;
         }
 
+        #region Property StackedMode
+
+        public static readonly DependencyProperty StackedModeProperty =
+            DependencyProperty.RegisterAttached("StackedMode", typeof(StackedMode), typeof(StackedFrame), new PropertyMetadata(StackedMode.Resizeable));
+
         /// <summary>
         /// Gets or sets the stacked mode
         /// </summary>
         public StackedMode StackedMode
         {
-            get => stackedMode;
-            internal set
+            get => (StackedMode)GetValue(StackedModeProperty);
+            set
             {
-                stackedMode = value;
+                SetValue(StackedModeProperty, value);
+
+                // Remove all splitters
+                lock (splitters)
+                {
+                    foreach (var splitter in splitters.Values)
+                    {
+                        StackPanel.Children.Remove(splitter);
+                    }
+                    splitters.Clear();
+                }
+
                 Bindings.Update();
             }
         }
+        
+        #endregion
 
         #region Property SplitterWith
 

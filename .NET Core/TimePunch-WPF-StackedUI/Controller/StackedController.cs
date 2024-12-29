@@ -21,20 +21,17 @@ namespace TimePunch.StackedUI.Controller
         IHandleMessageAsync<GoBackPageNavigationRequest>, IStackedController
     {
         private StackedFrame? stackedFrame;
-        private StackedMode stackedMode;
 
         /// <summary>
         /// Creates a new instance of the StackedController
         /// </summary>
         /// <param name="eventAggregator">Event aggregation object</param>
         /// <param name="mode">Defines how the frames are added</param>
-        public StackedController(IEventAggregator eventAggregator, StackedMode mode)
+        public StackedController(IEventAggregator eventAggregator)
             : base(eventAggregator)
         {
             if (eventAggregator == null)
                 throw new ArgumentNullException(nameof(eventAggregator));
-
-            StackedMode = mode;
         }
 
         /// <summary>
@@ -46,7 +43,7 @@ namespace TimePunch.StackedUI.Controller
             set
             {
                 stackedFrame = value;
-                stackedFrame?.Initialize(StackedMode);
+                stackedFrame?.Initialize();
             }
         }
 
@@ -55,15 +52,11 @@ namespace TimePunch.StackedUI.Controller
         /// </summary>
         public StackedMode StackedMode
         {
-            get => stackedMode;
+            get => StackedFrame?.StackedMode ?? StackedMode.Resizeable;
             set
             {
-                if (value != stackedMode && StackedFrame != null)
-                {
+                if (StackedFrame != null)
                     StackedFrame.StackedMode = value;
-                }
-
-                stackedMode = value;
             }
         }
 
@@ -86,9 +79,6 @@ namespace TimePunch.StackedUI.Controller
             // if the page is modal, than disable the previous one
             if (isModal)
                 StackedFrame.DisableTop();
-
-            if (StackedMode == StackedMode.FullWidth && isResizable && StackedFrame.TopFrame != null)
-                StackedFrame.AddSplitter();
 
             // add the new page
             var frame = CreateFrame();
@@ -178,16 +168,23 @@ namespace TimePunch.StackedUI.Controller
                 if (!await vm.InitializePageAsync(message))
                     return null;
 
-                // Try to read the saved width
-                var pageWidth = GridLength.Auto;
-                if (StackedFrame.TopFrame?.Content is Page topPage)
+                // Save the current page width before adding a new one
+                var pagePersister = GetPagePersister();
+                if (pagePersister != null && StackedMode == StackedMode.Resizeable)
                 {
-                    var pagePersister = GetPagePersister();
-                    if (pagePersister != null)
+                    // Try to store the current width
+                    string frameKey;
+                    if (StackedFrame.TopFrame?.Content is Page topPage)
                     {
-                        var frameKey = StackedFrameExtension.GetFrameKey(topPage);
-                        pageWidth = pagePersister.GetPageWidth(frameKey);
+                        frameKey = StackedFrameExtension.GetFrameKey(topPage);
+                        pagePersister.SavePageWidth(frameKey, new GridLength(topPage.ActualWidth));
                     }
+
+                    // Try to read the saved width
+                    frameKey = StackedFrameExtension.GetFrameKey(pageToAdd);
+                    var pageWidth = pagePersister.GetPageWidth(frameKey);
+                    if (pageWidth.IsAbsolute)
+                        pageToAdd.Width = pageWidth.Value;
                 }
 
                 // Now add the page
@@ -204,16 +201,6 @@ namespace TimePunch.StackedUI.Controller
                         addedPage.Loaded += (_, _) => { AddMouseWheelListener(addedPage); };
                     else
                         AddMouseWheelListener(addedPage);
-                }
-
-                // Get the key of the new top page - to set the with
-                if (StackedFrame.TopFrame?.Parent is Grid surroundingGrid && StackedMode != StackedMode.InPlace)
-                {
-                    var currentColumn = Grid.GetColumn(StackedFrame.TopFrame);
-                    if (currentColumn > 1)
-                    {
-                        surroundingGrid.ColumnDefinitions[currentColumn - 2].Width = pageWidth;
-                    }
                 }
 
                 UpdateScrollPosition(addedPage);
@@ -393,29 +380,29 @@ namespace TimePunch.StackedUI.Controller
 
             var topPage = StackedFrame.TopFrame?.Content as Page;
 
-            // Store the grid size
-            var gridWithToSave = GridLength.Auto;
-            var gridMinWith = 0.0;
-            if (topPage != null && StackedFrame.TopFrame?.Parent is Grid surroundingGrid)
-            {
-                var currentColumn = Grid.GetColumn(StackedFrame.TopFrame);
-                if (currentColumn > 1 && StackedMode != StackedMode.InPlace) // if it's 0 its the last content 
-                {
-                    gridWithToSave = surroundingGrid.ColumnDefinitions[currentColumn - 2].Width;
-                    gridMinWith = surroundingGrid.ColumnDefinitions[currentColumn - 2].MinWidth;
-                }
-                else if (currentColumn > 0 && StackedMode == StackedMode.InPlace)
-                {
-                    // Inplace don't store
-                }
-                else
-                {
-                    // Prevent going back to a blank page
-                    if (message.ToPage == null)
-                        return message;
-                }
+            //// Store the grid size
+            //var gridWithToSave = GridLength.Auto;
+            //var gridMinWith = 0.0;
+            //if (topPage != null && StackedFrame.TopFrame?.Parent is Grid surroundingGrid)
+            //{
+            //    var currentColumn = Grid.GetColumn(StackedFrame.TopFrame);
+            //    if (currentColumn > 1 && StackedMode != StackedMode.InPlace) // if it's 0 its the last content 
+            //    {
+            //        gridWithToSave = surroundingGrid.ColumnDefinitions[currentColumn - 2].Width;
+            //        gridMinWith = surroundingGrid.ColumnDefinitions[currentColumn - 2].MinWidth;
+            //    }
+            //    else if (currentColumn > 0 && StackedMode == StackedMode.InPlace)
+            //    {
+            //        // Inplace don't store
+            //    }
+            //    else
+            //    {
+            //        // Prevent going back to a blank page
+            //        if (message.ToPage == null)
+            //            return message;
+            //    }
 
-            }
+            //}
 
             // Remove the top frame
             if (message.ToPage == null)
@@ -431,16 +418,21 @@ namespace TimePunch.StackedUI.Controller
 
             StackedFrame.EnableTop();
 
-            // Get the key of the new top page - after closing the previous
-            var newTopPage = StackedFrame?.TopFrame?.Content as Page;
-            if (newTopPage != null && newTopPage != topPage && StackedMode != StackedMode.InPlace)
+            var newTopFrame = StackedFrame?.TopFrame;
+            var newTopPage = newTopFrame?.Content as Page;
+            var pagePersister = GetPagePersister();
+            if (pagePersister != null && StackedMode == StackedMode.Resizeable)
             {
-                var pagePersister = GetPagePersister();
-                if (pagePersister != null)
+                // Get the key of the new top page - after closing the previous
+                if (newTopFrame != null && newTopPage != null)
                 {
                     var frameKey = StackedFrameExtension.GetFrameKey(newTopPage);
-                    if (Math.Abs(gridWithToSave.Value - gridMinWith) > 1)
-                        pagePersister.SavePageWidth(frameKey, gridWithToSave);
+                    var newWidth = pagePersister.GetPageWidth(frameKey);
+                    var currentColumn = Grid.GetColumn(newTopFrame);
+                    if (StackedMode != StackedMode.InPlace && newTopFrame?.Parent is Grid surroundingGrid) // if it's 0 its the last content
+                    {
+                        surroundingGrid.ColumnDefinitions[currentColumn].Width = newWidth;
+                    }
                 }
             }
 

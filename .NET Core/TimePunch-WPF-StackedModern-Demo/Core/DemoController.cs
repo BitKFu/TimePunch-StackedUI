@@ -6,8 +6,12 @@ using TimePunch.StackedUI.Demo.Events;
 using TimePunch.StackedUI.Demo.Views;
 using TimePunch_WPF_StackedModern_Demo.Views;
 using TimePunch_WinUI_StackedUI_Demo.Views;
+using TimePunch_WPF_StackedModern_Demo.Core;
+using TimePunch_WPF_StackedModern_Demo.Events;
 using TimePunch.StackedUI.Demo.ViewModels;
 using TimePunch.StackedUI.Model;
+using Windows.System;
+using TimePunch_WPF_StackedModern_Demo.ViewModels;
 
 namespace TimePunch.StackedUI.Demo.Core
 {
@@ -17,9 +21,12 @@ namespace TimePunch.StackedUI.Demo.Core
         , IHandleMessageAsync<NavigateToDemo3View>
         , IHandleMessageAsync<NavigateToDemo4View>
         , IHandleMessageAsync<NavigateToStartView>
+        , IHandleMessageAsync<NavigateToSettingsView>
     {
-        public DemoController() 
-            : base(DemoKernel.Instance.EventAggregator, StackedMode.Resizeable)
+        private readonly IPagePersister demoPagePersister = new DemoPagePersister();
+
+        public DemoController(IEventAggregator eventAggregator)
+            : base(eventAggregator)
         {
         }
 
@@ -84,7 +91,6 @@ namespace TimePunch.StackedUI.Demo.Core
 
         #endregion
 
-
         #region Implementation of IHandleMessage<NavigateToStartView>
 
         public async Task<NavigateToStartView> Handle(NavigateToStartView message)
@@ -100,6 +106,20 @@ namespace TimePunch.StackedUI.Demo.Core
 
         #endregion
 
+        #region Implementation of IHandleMessage<NavigateToSettingsView>
+
+        public async Task<NavigateToSettingsView> Handle(NavigateToSettingsView message)
+        {
+            var page = new SettingsView();
+            if (page.DataContext is SettingsViewModel viewModel)
+            {
+                await InitTopPageAsync(message, viewModel, page);
+            }
+            return message;
+        }
+
+        #endregion
+
         #region Overrides of StackedController
 
         protected override Frame CreateFrame()
@@ -109,8 +129,7 @@ namespace TimePunch.StackedUI.Demo.Core
 
         protected override IPagePersister GetPagePersister()
         {
-            // here we could offer a class to persist the page size
-            return null;
+            return demoPagePersister;
         }
 
         protected override void UpdatePropertyPanels(Page newTopPage)
