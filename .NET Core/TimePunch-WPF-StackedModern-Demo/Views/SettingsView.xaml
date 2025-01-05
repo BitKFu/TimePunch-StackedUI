@@ -6,7 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:extensions1="clr-namespace:TimePunch.StackedUI.Extensions;assembly=TpStackedUI"
     xmlns:controls1="clr-namespace:TimePunch.StackedUI.Controls;assembly=TpStackedUI"
-    mc:Ignorable="d" Width="1000" MinWidth="400" 
+    mc:Ignorable="d" Width="1000" MinWidth="400" MaxWidth="1000"
     DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=SettingsViewModel}"
     extensions1:StackedFrameExtension.FrameKey="Settings">
 

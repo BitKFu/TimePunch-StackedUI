@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using TimePunch.MVVM.Controller;
 using TimePunch.StackedUI.Demo.Core;
 using TimePunch.StackedUI.Events;
 
@@ -18,7 +19,7 @@ namespace TimePunch_WPF_StackedModern_Demo.Views
         private async void LogonView_OnLoaded(object sender, RoutedEventArgs e)
         {
             var result = await LogonDialog.ShowAsync();
-            await DemoKernel.Instance.EventAggregator.PublishMessageAsync(new GoBackPageNavigationRequest());
+            await Kernel.Instance.EventAggregator.PublishMessageAsync(new GoBackPageNavigationRequest());
         }
     }
 }

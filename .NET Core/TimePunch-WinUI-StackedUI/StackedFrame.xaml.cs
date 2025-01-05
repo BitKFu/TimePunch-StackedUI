@@ -196,9 +196,7 @@ namespace TimePunch.StackedUI
                     ? page.MinWidth
                     : page.Width;
                 frame.MinWidth = page.MinWidth;
-                frame.MaxWidth = StackedMode == StackedMode.InPlace
-                    ? double.PositiveInfinity
-                    : page.MaxWidth;
+                frame.MaxWidth = page.MaxWidth; 
                 frame.HorizontalContentAlignment = HorizontalAlignment.Stretch;
 
                 // Update max with of page - if it's an inplace update
@@ -231,16 +229,10 @@ namespace TimePunch.StackedUI
             }
         }
 
-        public void AddSplitter()
+        public void AddSplitter(Frame frame)
         {
             lock (splitters)
             {
-                // check if there is a frame
-                if (frameStack.Count == 0)
-                    return;
-
-                var frame = frameStack.Peek();
-
                 // check if there is already a splitter
                 if (splitters.ContainsKey(frame))
                     return;
@@ -329,12 +321,11 @@ namespace TimePunch.StackedUI
 
         public void EnableTop()
         {
-            if (!frameStack.Any())
+            if (frameStack.Count == 0)
                 return;
 
             var topFrame = frameStack.Peek();
-            if (topFrame != null)
-                topFrame.IsEnabled = true;
+            topFrame.IsEnabled = true;
         }
 
         public bool Contains(string frameKey)
@@ -433,7 +424,7 @@ namespace TimePunch.StackedUI
             DependencyProperty.RegisterAttached("PropertyPanelVisibility", typeof(Visibility), typeof(StackedFrame), new PropertyMetadata(Visibility.Collapsed));
 
         /// <summary>
-        /// Gets or sets the with of the splitter
+        /// Gets or sets the visibility of the property panel
         /// </summary>
         public Visibility PropertyPanelVisibility
         {

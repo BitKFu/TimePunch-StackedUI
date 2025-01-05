@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -22,6 +23,8 @@ namespace TimePunch.StackedUI
         private readonly Stack<Frame> frameStack = new Stack<Frame>();
         private readonly Dictionary<Frame, GridSplitter> splitters = new Dictionary<Frame, GridSplitter>();
 
+        private readonly object fadeInOut = new object();
+
         public StackedFrame()
         {
             InitializeComponent();
@@ -38,7 +41,7 @@ namespace TimePunch.StackedUI
         /// <value>The CanGoBack.</value>
         public bool CanGoBack
         {
-            get => (bool)GetValue(CanGoBackProperty);
+            get => (bool)GetValue(CanGoBackProperty) && !Monitor.IsEntered(fadeInOut);
             set => SetValue(CanGoBackProperty, value);
         }
 
@@ -172,139 +175,159 @@ namespace TimePunch.StackedUI
                     else
                     {
                         if (last && i % 2 == 0)
-                            StackGrid.ColumnDefinitions[i].Width = double.IsNaN(pageWidth) 
+                            StackGrid.ColumnDefinitions[i].Width = double.IsNaN(pageWidth)
                                 ? new GridLength(1, GridUnitType.Star)
                                 : new GridLength(pageWidth);
                     }
                 }
 
-                if (StackGrid.ColumnDefinitions.Count>2)
+                if (StackGrid.ColumnDefinitions.Count > 2)
                     ScrollViewer.ScrollToRightEnd();
             }
         }
 
         public async Task AddFrame(IEventAggregator eventAggregator, Frame frame, Page page)
         {
-            // add a new column
-            var column = StackGrid.ColumnDefinitions.Count - (StackedMode == StackedMode.Resizeable ? 1 : 0);
-            var columnDefinition = new ColumnDefinition()
+            Monitor.TryEnter(fadeInOut, -1);
+
+            try
             {
-                MinWidth = page.MinWidth,
-                MaxWidth = StackedMode == StackedMode.InPlace 
-                    ? double.PositiveInfinity
-                    : page.MaxWidth
-            };
+                // add a new column
+                var column = StackGrid.ColumnDefinitions.Count - (StackedMode == StackedMode.Resizeable ? 1 : 0);
+                var columnDefinition = new ColumnDefinition()
+                {
+                    MinWidth = page.MinWidth,
+                    MaxWidth = page.MaxWidth
+                };
 
-            var pageWidth = page.Width;
+                var pageWidth = page.Width;
 
-            StackGrid.ColumnDefinitions.Insert(column, columnDefinition);
-            Grid.SetColumn(frame, column);
-            page.Width = double.NaN;
+                StackGrid.ColumnDefinitions.Insert(column, columnDefinition);
+                Grid.SetColumn(frame, column);
+                page.Width = double.NaN;
 
-            // Update max with of page - if it's an inplace update
-            if (StackedMode == StackedMode.InPlace)
-                page.MaxWidth = double.PositiveInfinity;
+                // Update max with of page - if it's an inplace update
+                if (StackedMode == StackedMode.InPlace)
+                    page.MaxWidth = double.PositiveInfinity;
 
-            // Check if the page has an adorner decorator
-            if (!(page.Content is AdornerDecorator))
-            {
-                var content = page.Content as UIElement;
-                page.Content = null;
-                var adornerDecorator = new AdornerDecorator() { Child = content };
-                page.Content = adornerDecorator;
+                // Check if the page has an adorner decorator
+                if (!(page.Content is AdornerDecorator))
+                {
+                    var content = page.Content as UIElement;
+                    page.Content = null;
+                    var adornerDecorator = new AdornerDecorator() { Child = content };
+                    page.Content = adornerDecorator;
+                }
+
+                // push the frame to the new column
+                frame.Opacity = FadeInDuration > 0 ? 0 : 1;
+                frame.Content = page;
+                frameStack.Push(frame);
+                StackGrid.Children.Add(frame);
+
+                AdjustColumnWidths(pageWidth);
+                UpdateTopFrame();
+                BreadCrumbs.Add(new BreadCrumbNavigation(eventAggregator, page));
+
+                if (FadeInDuration > 0)
+                    await FadeIn(frame);
             }
-
-            // push the frame to the new column
-            frame.Opacity = FadeInDuration > 0 ? 0 : 1;
-            frame.Content = page;
-            frameStack.Push(frame);
-            StackGrid.Children.Add(frame);
-
-            AdjustColumnWidths(pageWidth);
-            UpdateTopFrame();
-            BreadCrumbs.Add(new BreadCrumbNavigation(eventAggregator, page));
-
-            if (FadeInDuration > 0)
-                await FadeIn(frame);
-        }
-
-        public void AddSplitter()
-        {
-            var splitter = new GridSplitter
+            finally
             {
-                ShowsPreview = false,
-                ResizeDirection = GridResizeDirection.Columns,
-                ResizeBehavior = GridResizeBehavior.PreviousAndNext,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                Margin = new Thickness(0, 0, 0, 20),
-            };
-
-            // add the splitter 
-            var column = StackGrid.ColumnDefinitions.Count - (StackedMode == StackedMode.Resizeable ? 1 : 0);
-            StackGrid.ColumnDefinitions.Insert(column, new ColumnDefinition() { Width = new GridLength(SplitterWidth) });
-            Grid.SetColumn(splitter, column);
-
-            StackGrid.Children.Add(splitter);
-
-            // push the splitter to the frame dictionary
-            splitters.Add(frameStack.Peek(), splitter);
+                Monitor.Exit(fadeInOut);
+            }
         }
 
-        public async Task GoBack(bool animate)
+        public void AddSplitter(Frame frame)
+        {
+            lock (splitters)
+            {
+                // check if there is already a splitter
+                if (splitters.ContainsKey(frame))
+                    return;
+
+                var splitter = new GridSplitter
+                {
+                    ShowsPreview = false,
+                    ResizeDirection = GridResizeDirection.Columns,
+                    ResizeBehavior = GridResizeBehavior.PreviousAndNext,
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    Margin = new Thickness(0, 0, 0, 20),
+                };
+
+                // add the splitter 
+                var column = StackGrid.ColumnDefinitions.Count - (StackedMode == StackedMode.Resizeable ? 1 : 0);
+                StackGrid.ColumnDefinitions.Insert(column, new ColumnDefinition() { Width = new GridLength(SplitterWidth) });
+                Grid.SetColumn(splitter, column);
+
+                StackGrid.Children.Add(splitter);
+
+                // push the splitter to the frame dictionary
+                splitters.Add(frame, splitter);
+            }
+        }
+
+        internal async Task GoBack(bool animate)
         {
             if (frameStack.Count == 0)
-            {
-                //UpdateTopFrame();
                 return;
-            }
 
-            // remove the frame
-            var removedFrame = frameStack.Pop(); // get the frame to remove
-            if (animate && FadeOutDuration>0)
-                await FadeOut(removedFrame);
+            Monitor.TryEnter(fadeInOut, -1);
 
-            var column = Grid.GetColumn(removedFrame); // get the column in grid to remove
-            StackGrid.Children.Remove(removedFrame); // remove the frame
-            StackGrid.ColumnDefinitions.RemoveAt(column); // remove the columne
-
-            // remove the splitter if there is one
-            var removedSplitter = StackedMode == StackedMode.Resizeable ? removedFrame : frameStack.Any() ? frameStack.Peek() : null;
-            if (removedSplitter != null && splitters.ContainsKey(removedSplitter))
+            try
             {
-                var splitter = splitters[removedSplitter]; // get the splitter to remove
-                column = Grid.GetColumn(splitter); // get the column in grid to remove
-                StackGrid.Children.Remove(splitter); // remove the splitter
+                // remove the frame
+                var removedFrame = frameStack.Pop(); // get the frame to remove
+                if (animate && FadeOutDuration > 0)
+                    await FadeOut(removedFrame);
+
+                var column = Grid.GetColumn(removedFrame); // get the column in grid to remove
+                StackGrid.Children.Remove(removedFrame); // remove the frame
                 StackGrid.ColumnDefinitions.RemoveAt(column); // remove the columne
 
-                splitters.Remove(removedSplitter); // remove the splitter / frame binding
+                // remove the splitter if there is one
+                var removedSplitter = StackedMode == StackedMode.Resizeable ? removedFrame : frameStack.Any() ? frameStack.Peek() : null;
+                if (removedSplitter != null && splitters.ContainsKey(removedSplitter))
+                {
+                    var splitter = splitters[removedSplitter]; // get the splitter to remove
+                    column = Grid.GetColumn(splitter); // get the column in grid to remove
+                    StackGrid.Children.Remove(splitter); // remove the splitter
+                    StackGrid.ColumnDefinitions.RemoveAt(column); // remove the columne
+
+                    splitters.Remove(removedSplitter); // remove the splitter / frame binding
+                }
+                // That might be a special case, when switching from InPlace to Resizeable
+                else if (StackedMode == StackedMode.Resizeable && splitters.Count == 1)
+                {
+                    var splitter = splitters.First().Value;
+
+                    column = Grid.GetColumn(splitter); // get the column in grid to remove
+                    StackGrid.Children.Remove(splitter); // remove the splitter
+                    StackGrid.ColumnDefinitions.RemoveAt(column); // remove the columne
+
+                    splitters.Clear();
+                }
+
+                if (removedFrame.Content is Page { DataContext: IDisposable vmPageDataContext })
+                {
+                    // Dispose the data model
+                    vmPageDataContext.Dispose();
+                }
+
+                UpdateTopFrame();
+
+                if (TopFrame?.Content is Page page)
+                    AdjustColumnWidths(page.Width);
+
+                lock (BreadCrumbs)
+                {
+                    if (BreadCrumbs.Count > 0)
+                        BreadCrumbs.RemoveAt(BreadCrumbs.Count - 1);
+                }
             }
-            // That might be a special case, when switching from InPlace to Resizeable
-            else if (StackedMode == StackedMode.Resizeable && splitters.Count == 1)
+            finally
             {
-                var splitter = splitters.First().Value;
-                
-                column = Grid.GetColumn(splitter); // get the column in grid to remove
-                StackGrid.Children.Remove(splitter); // remove the splitter
-                StackGrid.ColumnDefinitions.RemoveAt(column); // remove the columne
-
-                splitters.Clear();
-            }
-
-            if (removedFrame.Content is Page { DataContext: IDisposable vmPageDataContext })
-            {
-                // Dispose the data model
-                vmPageDataContext.Dispose();
-            }
-
-            UpdateTopFrame();
-
-            if (TopFrame?.Content is Page page)
-                AdjustColumnWidths(page.Width);
-
-            lock (BreadCrumbs)
-            {
-                if (BreadCrumbs.Count > 0)
-                    BreadCrumbs.RemoveAt(BreadCrumbs.Count - 1);
+                Monitor.Exit(fadeInOut);
             }
         }
 
@@ -323,12 +346,11 @@ namespace TimePunch.StackedUI
 
         public void EnableTop()
         {
-            if (!frameStack.Any())
+            if (frameStack.Count == 0)
                 return;
 
             var topFrame = frameStack.Peek();
-            if (topFrame != null)
-                topFrame.IsEnabled = true;
+            topFrame.IsEnabled = true;
         }
 
         public bool Contains(string frameKey)
@@ -424,33 +446,37 @@ namespace TimePunch.StackedUI
                 if (PropertyPanelVisibility == value)
                     return;
 
+                UpdatePropertyVisibility(value);
+            }
+        }
+
+        private async void UpdatePropertyVisibility(Visibility value)
+        {
+            Monitor.TryEnter(fadeInOut, -1);
+
+            try
+            {
                 // Change the visibility
                 if (value == Visibility.Visible)
                 {
                     SetValue(PropertyPanelVisibilityProperty, value);
                     if (FadeInDuration > 0)
-                        FadeIn(PropertyPanel);
+                        await FadeIn(PropertyPanel);
                 }
                 else
                 {
                     if (FadeOutDuration > 0)
-                    {
-                        FadeOut(PropertyPanel).ContinueWith((t) =>
-                        {
-                            Dispatcher.InvokeAsync(() =>
-                            {
-                                PropertyPanel.Opacity = 1;
-                                SetValue(PropertyPanelVisibilityProperty, value);
-                            });
-                        });
-                    }
-                    else
-                    {
-                        SetValue(PropertyPanelVisibilityProperty, value);
-                    }
+                        await FadeOut(PropertyPanel);
+
+                    SetValue(PropertyPanelVisibilityProperty, value);
                 }
             }
+            finally
+            {
+                Monitor.Exit(fadeInOut);
+            }
         }
+
         #endregion
     }
 }

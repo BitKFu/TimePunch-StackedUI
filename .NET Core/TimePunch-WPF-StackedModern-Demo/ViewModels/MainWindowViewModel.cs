@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Windows.Input;
 using TimePunch_WPF_StackedModern_Demo.Events;
+using TimePunch.MVVM.Controller;
+using TimePunch.StackedUI.Controller;
 using TimePunch.StackedUI.Demo.Core;
 using TimePunch.StackedUI.Demo.Events;
 using TimePunch.StackedUI.Events;
@@ -27,18 +29,18 @@ namespace TimePunch.StackedUI.Demo.ViewModels
             Demo1Command = RegisterCommand(ExecuteDemo1Command, CanExecuteDemo1Command, true);
             GoBackNavigationPageCommand = RegisterCommand(ExecuteGoBackNavigationPageCommand, CanExecuteGoBackNavigationPageCommand, true);
 
-            DemoPages = new List<PageLink>()
-            {
-                new PageLink() {Title = "Demo1", Icon="Home", GoToPage = ()=>EventAggregator.PublishMessageAsync(new NavigateToDemo1View())},
-                new PageLink() {Title = "Demo2", Icon="AddFriend",GoToPage = ()=>EventAggregator.PublishMessageAsync(new NavigateToDemo2View())},
-            };
+            DemoPages =
+            [
+                new PageLink { Title = "Demo1", Icon = "Home", GoToPage = () => EventAggregator.PublishMessageAsync(new NavigateToDemo1View()) },
+                new PageLink { Title = "Demo2", Icon = "AddFriend", GoToPage = () => EventAggregator.PublishMessageAsync(new NavigateToDemo2View()) }
+            ];
 
 
-            FooterPages = new List<PageLink>()
-            {
-                new() {Title = "Settings", Icon = "Setting", GoToPage = ()=>EventAggregator.PublishMessageAsync(new NavigateToSettingsView())},
+            FooterPages =
+            [
+                new PageLink { Title = "Settings", Icon = "Setting", GoToPage = () => EventAggregator.PublishMessageAsync(new NavigateToSettingsView()) }
                 //new() {Title = "Logon", Icon = "User", GoToPage = ()=>EventAggregator.PublishMessageAsync(new NavigateToLogonView())},
-            };
+            ];
         }
 
         #endregion
@@ -160,7 +162,8 @@ namespace TimePunch.StackedUI.Demo.ViewModels
         /// <param name="eventArgs">The event arguments</param>
         public void ExecuteGoBackNavigationPageCommand(object sender, ExecutedRoutedEventArgs eventArgs)
         {
-            EventAggregator.PublishMessageAsync(new GoBackPageNavigationRequest());
+            if (Kernel.Instance.Controller is StackedController { CanGoBackPage: true })
+                EventAggregator.PublishMessageAsync(new GoBackPageNavigationRequest());
         }
 
         #endregion

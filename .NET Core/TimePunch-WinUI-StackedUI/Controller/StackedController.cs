@@ -21,11 +21,44 @@ namespace TimePunch.StackedUI.Controller
         private StackedFrame? stackedFrame;
         private readonly SemaphoreSlim navigationSemaphore = new(1);
 
+        protected class DoPrevent : IDisposable
+        {
+            private readonly StackedController sc;
+
+            public DoPrevent(StackedController sc)
+            {
+                this.sc = sc;
+                sc.PreventReset = true;
+            }
+
+            public void Dispose()
+            {
+                sc.PreventReset = false;
+            }
+        }
+
+
+        private int preventResetCounter = 0;
+
+        /// <summary>
+        /// Smart Counter for preventing search
+        /// </summary>
+        protected bool PreventReset
+        {
+            get => preventResetCounter > 0;
+            set
+            {
+                if (value)
+                    preventResetCounter++;
+                else
+                    preventResetCounter--;
+            }
+        }
+
         /// <summary>
         /// Creates a new instance of the StackedController
         /// </summary>
         /// <param name="eventAggregator">Event aggregation object</param>
-        /// <param name="mode">Defines how the frames are added</param>
         protected StackedController(IEventAggregator eventAggregator)
             : base(eventAggregator)
         {
@@ -59,8 +92,6 @@ namespace TimePunch.StackedUI.Controller
             }
         }
 
-        #region Implementation of IHandleMessage<NavigateToNewFrame>
-
         /// <summary>
         /// Used to navigate to a new Frame, e.g. add a frame with a new page
         /// </summary>
@@ -84,7 +115,7 @@ namespace TimePunch.StackedUI.Controller
             await StackedFrame.AddFrame(EventAggregator, frame, page);
 
             if (StackedMode == StackedMode.Resizeable && isResizable)
-                StackedFrame.AddSplitter();
+                StackedFrame.AddSplitter(frame);
 
             return page;
         }
@@ -99,15 +130,13 @@ namespace TimePunch.StackedUI.Controller
             return frame;
         }
 
-        #endregion
+        #region Page Handling
 
         /// <summary>
         /// Abstract method to retrieve the page persister
         /// </summary>
         /// <returns></returns>
         protected abstract IPagePersister? GetPagePersister();
-
-        #region Page Handling
 
         /// <summary>
         /// Gets a value indicating whether the user can go back one page
@@ -123,8 +152,7 @@ namespace TimePunch.StackedUI.Controller
                     return StackedFrame.CanGoBack;
 
                 //  Try to evaluate async
-                bool result = false;
-
+                var result = false;
                 var waitHandle = new ManualResetEvent(false);
                 ApplicationDispatcher.TryEnqueue(() =>
                 {
@@ -137,6 +165,25 @@ namespace TimePunch.StackedUI.Controller
             }
         }
 
+
+        /// <summary>
+        /// Goes back to the top frame
+        /// </summary>
+        protected async Task GoBackPageTop()
+        {
+            if (StackedFrame == null)
+                return;
+
+            // Save the current page width before adding a new one
+            var pagePersister = GetPagePersister();
+            SaveCurrentPageWidth(pagePersister);
+
+            // Go back to top
+            while (StackedFrame.TopFrame != null)
+                await StackedFrame.GoBack(false);
+
+            EventAggregator.PublishMessage(new GoBackPageTopEvent());
+        }
 
         public virtual async Task<GoBackPageNavigationRequest> Handle(GoBackPageNavigationRequest message)
         {
@@ -155,126 +202,77 @@ namespace TimePunch.StackedUI.Controller
                 return message;
             }
 
-            var topPage = StackedFrame.TopFrame?.Content as Page;
-
-            // Remove the top frame
-            if (message.ToPage == null)
-                await StackedFrame.GoBack(true);
-            else
-            {
-                // ReSharper disable once PossibleUnintendedReferenceComparison
-#pragma warning disable CS0252 // Possible unintended reference comparison; left hand side needs cast
-                while (StackedFrame.TopFrame != null && StackedFrame.TopFrame.Content != message.ToPage)
-                    await StackedFrame.GoBack(true);
-#pragma warning restore CS0252 // Possible unintended reference comparison; left hand side needs cast
-            }
-
-            StackedFrame.EnableTop();
-
-            var newTopFrame = StackedFrame?.TopFrame;
-            var newTopPage = newTopFrame?.Content as Page;
-            var pagePersister = GetPagePersister();
-            if (pagePersister != null && StackedMode == StackedMode.Resizeable)
-            {
-                // Get the key of the new top page - after closing the previous
-                if (newTopFrame != null && newTopPage != null)
-                {
-                    var frameKey = StackedFrameExtension.GetFrameKey(newTopPage);
-                    newTopFrame.Width = pagePersister.GetPageWidth(frameKey);
-                }
-            }
-
-            // Reset the last fired command, if the user goes back with breadcrumb
-            if (message.ToPage != topPage && message.ToPage?.DataContext is StackedViewModelBase vm)
-            {
-                if (!PreventReset)      // This will be true, if the a sub dialog gets opened due to a internal page change
-                    vm.ResetLastFiredCommand();
-            }
-            else
-            {
-                // Reset the last fired command, if the dialog gets closed
-                if (message.ToPage == null)
-                {
-                    topPage = StackedFrame?.TopFrame?.Content as Page;
-                    if (topPage?.DataContext is StackedViewModelBase vm2)
-                        vm2.ResetLastFiredCommand();
-                }
-            }
-
-            // Maybe closed a page and the underlying page contains a grid, then the grid needs the focus
-            if (newTopPage != null)
-            {
-                UpdateScrollPosition(newTopPage);
-
-                // Set the focus to the page
-                SetPageFocus(newTopPage);
-
-                // Eventually Hides the property panels
-                UpdatePropertyPanels(newTopPage);
-            }
-
-            return message;
-        }
-
-
-        protected class DoPrevent : IDisposable
-        {
-            private StackedController sc;
-
-            public DoPrevent(StackedController sc)
-            {
-                this.sc = sc;
-                sc.PreventReset = true;
-            }
-
-            public void Dispose()
-            {
-                sc.PreventReset = false;
-            }
-        }
-
-
-        private int preventResetCounter = 0;
-
-        /// <summary>
-        /// Smart Counter for preventing search
-        /// </summary>
-        protected bool PreventReset
-        {
-            get => preventResetCounter > 0;
-            set
-            {
-                if (value)
-                    preventResetCounter++;
-                else
-                    preventResetCounter--;
-            }
-        }
-
-        /// <summary>
-        /// Goes back to the top frame
-        /// </summary>
-        protected async Task GoBackPageTop(bool takeLock = true)
-        {
-            if (StackedFrame == null)
-                return;
-
             // wait to get the navigation handle
-            if (takeLock)
-                await navigationSemaphore.WaitAsync();
+            await navigationSemaphore.WaitAsync();
             try
             {
-                // Go back to top
-                while (StackedFrame.TopFrame != null)
-                    await StackedFrame.GoBack(false);
+                var topPage = StackedFrame.TopFrame?.Content as Page;
+
+                // Save the current page width before adding a new one
+                var pagePersister = GetPagePersister();
+                SaveCurrentPageWidth(pagePersister);
+
+                // Remove the top frame
+                if (message.ToPage == null)
+                    await StackedFrame.GoBack(true);
+                else
+                {
+                    // ReSharper disable once PossibleUnintendedReferenceComparison
+#pragma warning disable CS0252 // Possible unintended reference comparison; left hand side needs cast
+                    while (StackedFrame.TopFrame != null && StackedFrame.TopFrame.Content != message.ToPage)
+                        await StackedFrame.GoBack(true);
+#pragma warning restore CS0252 // Possible unintended reference comparison; left hand side needs cast
+                }
+
+                StackedFrame.EnableTop();
+
+                var newTopFrame = StackedFrame?.TopFrame;
+                var newTopPage = newTopFrame?.Content as Page;
+                if (pagePersister != null && StackedMode == StackedMode.Resizeable)
+                {
+                    // Get the key of the new top page - after closing the previous
+                    if (newTopFrame != null && newTopPage != null)
+                    {
+                        var frameKey = StackedFrameExtension.GetFrameKey(newTopPage);
+                        newTopFrame.Width = pagePersister.GetPageWidth(frameKey);
+                    }
+                }
+
+                // Reset the last fired command, if the user goes back with breadcrumb
+                if (message.ToPage != topPage && message.ToPage?.DataContext is StackedViewModelBase vm)
+                {
+                    if (!PreventReset)      // This will be true, if the a sub dialog gets opened due to a internal page change
+                        vm.ResetLastFiredCommand();
+                }
+                else
+                {
+                    // Reset the last fired command, if the dialog gets closed
+                    if (message.ToPage == null)
+                    {
+                        topPage = StackedFrame?.TopFrame?.Content as Page;
+                        if (topPage?.DataContext is StackedViewModelBase vm2)
+                            vm2.ResetLastFiredCommand();
+                    }
+                }
+
+                // Maybe closed a page and the underlying page contains a grid, then the grid needs the focus
+                if (newTopPage != null)
+                {
+                    UpdateScrollPosition(newTopPage);
+
+                    // Set the focus to the page
+                    SetPageFocus(newTopPage);
+
+                    // Eventually Hides the property panels
+                    UpdatePropertyPanels(newTopPage);
+                }
             }
             finally
             {
-                if (takeLock)
-                    navigationSemaphore.Release();
+                navigationSemaphore.Release();
             }
 
-            EventAggregator.PublishMessage(new GoBackPageTopEvent());
+            return message;
         }
 
         /// <summary>
@@ -297,7 +295,7 @@ namespace TimePunch.StackedUI.Controller
             await navigationSemaphore.WaitAsync();
             try
             {
-                await GoBackPageTop(false);
+                await GoBackPageTop();
                 return await ProtectedInitSubPageAsync(dispatcher, message, vm, pageToAdd, null, isResizable, isModal, false);
             }
             finally
@@ -328,18 +326,13 @@ namespace TimePunch.StackedUI.Controller
 
                     // Save the current page width before adding a new one
                     var pagePersister = GetPagePersister();
+                    SaveCurrentPageWidth(pagePersister);
+
+                    // Try to evaluate the page width of the new page
                     if (pagePersister != null && StackedMode == StackedMode.Resizeable)
                     {
-                        // Try to store the current width
-                        string frameKey;
-                        if (StackedFrame.TopFrame?.Content is Page topPage)
-                        {
-                            frameKey = StackedFrameExtension.GetFrameKey(topPage);
-                            pagePersister.SavePageWidth(frameKey, new GridLength(topPage.ActualWidth));
-                        }
-
                         // Try to read the saved width
-                        frameKey = StackedFrameExtension.GetFrameKey(pageToAdd);
+                        var frameKey = StackedFrameExtension.GetFrameKey(pageToAdd);
                         var pageWidth = pagePersister.GetPageWidth(frameKey);
                         if (!double.IsNaN(pageWidth))
                             pageToAdd.Width = pageWidth;
@@ -369,6 +362,22 @@ namespace TimePunch.StackedUI.Controller
             {
                 if (takeLock)
                     navigationSemaphore.Release();
+            }
+        }
+
+        private void SaveCurrentPageWidth(IPagePersister? pagePersister)
+        {
+            if (StackedFrame == null)
+                return;
+
+            if (pagePersister != null && StackedMode == StackedMode.Resizeable)
+            {
+                // Try to store the current width
+                if (StackedFrame.TopFrame?.Content is Page topPage)
+                {
+                    var frameKey = StackedFrameExtension.GetFrameKey(topPage);
+                    pagePersister.SavePageWidth(frameKey, new GridLength(topPage.ActualWidth));
+                }
             }
         }
 
