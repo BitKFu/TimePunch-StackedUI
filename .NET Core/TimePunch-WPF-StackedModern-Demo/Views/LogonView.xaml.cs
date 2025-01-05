@@ -19,7 +19,7 @@ namespace TimePunch_WPF_StackedModern_Demo.Views
         private async void LogonView_OnLoaded(object sender, RoutedEventArgs e)
         {
             var result = await LogonDialog.ShowAsync();
-            await Kernel.Instance.EventAggregator.PublishMessageAsync(new GoBackPageNavigationRequest());
+            await DemoKernel.Instance.EventAggregator.PublishMessageAsync(new GoBackPageNavigationRequest());
         }
     }
 }

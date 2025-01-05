@@ -241,7 +241,7 @@ namespace TimePunch.StackedUI.Controller
                 // Reset the last fired command, if the user goes back with breadcrumb
                 if (message.ToPage != topPage && message.ToPage?.DataContext is StackedViewModelBase vm)
                 {
-                    if (!PreventReset)      // This will be true, if the a sub dialog gets opened due to a internal page change
+                    if (!PreventReset)      // This will be true, if the sub dialog gets opened due to a internal page change
                         vm.ResetLastFiredCommand();
                 }
                 else
@@ -419,7 +419,10 @@ namespace TimePunch.StackedUI.Controller
         /// Used to set the focus in the page
         /// </summary>
         /// <param name="addedPage"></param>
-        protected abstract void SetPageFocus(Page addedPage);
+        protected virtual void SetPageFocus(Page addedPage)
+        {
+            addedPage.Focus(FocusState.Programmatic);
+        }
 
         #endregion
 

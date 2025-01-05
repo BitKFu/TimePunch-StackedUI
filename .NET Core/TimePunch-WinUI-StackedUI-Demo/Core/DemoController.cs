@@ -6,6 +6,7 @@ using TimePunch.StackedUI.Model;
 using Microsoft.UI.Xaml.Controls;
 using System.Threading.Tasks;
 using Microsoft.UI.Dispatching;
+using Microsoft.UI.Xaml;
 using TimePunch_WinUI_StackedUI_Demo.ViewModels;
 
 namespace TimePunch_WinUI_StackedUI_Demo.Core
@@ -20,8 +21,8 @@ namespace TimePunch_WinUI_StackedUI_Demo.Core
     {
         private readonly IPagePersister demoPagePersister = new DemoPagePersister();
 
-        public DemoController(IEventAggregator eventAggregator) 
-            : base(eventAggregator)
+        public DemoController() 
+            : base(DemoKernel.Instance.EventAggregator)
         {
         }
 
@@ -122,6 +123,7 @@ namespace TimePunch_WinUI_StackedUI_Demo.Core
         protected override void SetPageFocus(Page addedPage)
         {
             // here we could update the focus of the added page
+            base.SetPageFocus(addedPage);
         }
 
         #endregion

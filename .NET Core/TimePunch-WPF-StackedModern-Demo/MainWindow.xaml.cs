@@ -32,7 +32,7 @@ namespace TimePunch_WPF_StackedModern_Demo
     {
         public MainWindow()
         {
-            Kernel.Instance = new DemoKernel(new EventAggregator(), this);
+            DemoKernel.Instance.MainWindow = this;
             InitializeComponent();
 
             Loaded += OnLoaded;

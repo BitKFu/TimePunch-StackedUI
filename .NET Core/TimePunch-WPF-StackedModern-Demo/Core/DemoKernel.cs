@@ -5,18 +5,8 @@ using TimePunch.StackedUI.Controller;
 
 namespace TimePunch.StackedUI.Demo.Core
 {
-    public class DemoKernel : Kernel
+    public class DemoKernel : Kernel<DemoKernel, DemoController>
     {
-        public DemoKernel(IEventAggregator eventAggregator, Window mainWindow)
-        {
-            EventAggregator = eventAggregator;
-            MainWindow = mainWindow;
-            Controller = new DemoController(eventAggregator);
-        }
-
-        public override IEventAggregator EventAggregator { get; }
-        public override IBaseController Controller { get; }
-
-        public Window MainWindow { get; }
+        public Window MainWindow { get; set; }
     }
 }

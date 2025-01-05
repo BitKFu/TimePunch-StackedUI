@@ -25,8 +25,8 @@ namespace TimePunch.StackedUI.Demo.Core
     {
         private readonly IPagePersister demoPagePersister = new DemoPagePersister();
 
-        public DemoController(IEventAggregator eventAggregator)
-            : base(eventAggregator)
+        public DemoController()
+            : base(DemoKernel.Instance.EventAggregator)
         {
         }
 

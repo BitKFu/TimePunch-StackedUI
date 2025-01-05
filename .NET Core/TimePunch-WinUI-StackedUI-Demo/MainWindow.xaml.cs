@@ -22,7 +22,7 @@ namespace TimePunch_WinUI_StackedUI_Demo
     {
         public MainWindow()
         {
-            Kernel.Instance = new DemoKernel(new EventAggregator(), this);
+            DemoKernel.Instance.MainWindow = this;
             this.InitializeComponent();
         }
 

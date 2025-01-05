@@ -1,7 +1,6 @@
 ﻿using System;
 using ModernWpf;
 using System.Threading.Tasks;
-using TimePunch.MVVM.Controller;
 using TimePunch.StackedUI.Controller;
 using TimePunch.StackedUI.Demo.Core;
 
@@ -11,23 +10,20 @@ namespace TimePunch_WPF_StackedModern_Demo.ViewModels
     {
         public override Task<bool> InitializePageAsync(object extraData)
         {
-            if (Kernel.Instance!.Controller is StackedController stackedController)
+            if (DemoKernel.Instance!.Controller is StackedController stackedController)
             {
                 SetPropertyValue(() => NavigationStyle, (int)stackedController.StackedMode);
                 SetPropertyValue(() => FadeInDuration, stackedController.StackedFrame!.FadeInDuration);
                 SetPropertyValue(() => FadeOutDuration, stackedController.StackedFrame!.FadeOutDuration);
             }
 
-            if (Kernel.Instance is DemoKernel demoKernel)
-            { 
-                var theme = ThemeManager.Current.ApplicationTheme;
-                if (theme == ModernWpf.ApplicationTheme.Light)
-                    SetPropertyValue(() => ApplicationTheme, 1);
-                else if (theme == ModernWpf.ApplicationTheme.Dark)
-                    SetPropertyValue(() => ApplicationTheme, 2);
-                else
-                    SetPropertyValue(() => ApplicationTheme, 0);
-            }
+            var theme = ThemeManager.Current.ApplicationTheme;
+            if (theme == ModernWpf.ApplicationTheme.Light)
+                SetPropertyValue(() => ApplicationTheme, 1);
+            else if (theme == ModernWpf.ApplicationTheme.Dark)
+                SetPropertyValue(() => ApplicationTheme, 2);
+            else
+                SetPropertyValue(() => ApplicationTheme, 0);
 
             return base.InitializePageAsync(extraData);
         }
@@ -66,7 +62,7 @@ namespace TimePunch_WPF_StackedModern_Demo.ViewModels
             {
                 if (SetPropertyValue(() => FadeInDuration, value))
                 {
-                    if (Kernel.Instance!.Controller is StackedController stackedController)
+                    if (DemoKernel.Instance!.Controller is StackedController stackedController)
                         stackedController.StackedFrame!.FadeInDuration = value;
                 }
             }
@@ -87,7 +83,7 @@ namespace TimePunch_WPF_StackedModern_Demo.ViewModels
             {
                 if (SetPropertyValue(() => FadeOutDuration, value))
                 {
-                    if (Kernel.Instance!.Controller is StackedController stackedController)
+                    if (DemoKernel.Instance!.Controller is StackedController stackedController)
                         stackedController.StackedFrame!.FadeOutDuration = value;
                 }
             }
@@ -106,8 +102,7 @@ namespace TimePunch_WPF_StackedModern_Demo.ViewModels
             get { return GetPropertyValue(() => ApplicationTheme); }
             set
             {
-                if (SetPropertyValue(() => ApplicationTheme, value) && 
-                    Kernel.Instance is DemoKernel demoKernel)
+                if (SetPropertyValue(() => ApplicationTheme, value)) 
                 {
                     ApplicationTheme? theme = value switch
                     {

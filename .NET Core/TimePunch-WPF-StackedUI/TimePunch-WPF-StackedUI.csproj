@@ -35,7 +35,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="TimePunch-MVVM" Version="0.8.2" />
+    <PackageReference Include="TimePunch-MVVM" Version="0.9.1" />
   </ItemGroup>
 
   <ItemGroup>

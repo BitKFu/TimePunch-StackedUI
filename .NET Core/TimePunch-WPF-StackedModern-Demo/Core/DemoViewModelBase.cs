@@ -13,7 +13,7 @@ namespace TimePunch.StackedUI.Demo.Core
     public class DemoViewModelBase : StackedViewModelBase
     {
         public DemoViewModelBase() 
-            : base(Kernel.Instance.EventAggregator)
+            : base(DemoKernel.Instance.EventAggregator)
         {
         }
 

@@ -474,8 +474,8 @@ namespace TimePunch.StackedUI
         {
             args.Handled = true;
 
-            if (CanGoBack)
-                await Kernel.Instance!.EventAggregator.PublishMessageAsync(new GoBackPageNavigationRequest());
+            if (CanGoBack && GenericKernel.Instance != null)
+                await GenericKernel.Instance.EventAggregator.PublishMessageAsync(new GoBackPageNavigationRequest());
         }
 
         #endregion

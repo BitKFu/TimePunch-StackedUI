@@ -162,7 +162,7 @@ namespace TimePunch.StackedUI.Demo.ViewModels
         /// <param name="eventArgs">The event arguments</param>
         public void ExecuteGoBackNavigationPageCommand(object sender, ExecutedRoutedEventArgs eventArgs)
         {
-            if (Kernel.Instance.Controller is StackedController { CanGoBackPage: true })
+            if (DemoKernel.Instance.Controller is StackedController { CanGoBackPage: true })
                 EventAggregator.PublishMessageAsync(new GoBackPageNavigationRequest());
         }
 
