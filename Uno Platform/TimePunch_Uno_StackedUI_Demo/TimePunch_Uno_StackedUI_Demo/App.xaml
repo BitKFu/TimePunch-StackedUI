@@ -1,0 +1,22 @@
+﻿<Application x:Class="TimePunch_Uno_StackedUI_Demo.App"
+       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+       xmlns:converter="clr-namespace:TimePunch.StackedUI.Converter;assembly=TpStackedUnoUI"
+       xmlns:core="clr-namespace:TimePunch_WinUI_StackedUI_Demo.Core">
+
+  <Application.Resources>
+      <ResourceDictionary>
+          <core:DemoViewModelLocator x:Key="ViewModelLocator"/>
+          <converter:IconConverter x:Key="IconConverter"/>
+
+          <ResourceDictionary.MergedDictionaries>
+              <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
+              <!-- Other merged dictionaries here -->
+              <ResourceDictionary Source="ms-appx:///CommunityToolkit.WinUI.Controls.SettingsControls/SettingsExpander/SettingsExpander.xaml" />
+          </ResourceDictionary.MergedDictionaries>
+
+          <!-- Other app resources here -->
+      </ResourceDictionary>
+  </Application.Resources>
+
+</Application>

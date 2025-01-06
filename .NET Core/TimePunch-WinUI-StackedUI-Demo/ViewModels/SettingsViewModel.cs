@@ -21,7 +21,7 @@ namespace TimePunch_WinUI_StackedUI_Demo.ViewModels
                 SetPropertyValue(() => FadeOutDuration, stackedController.StackedFrame!.FadeOutDuration);
             }
 
-            var windowContent = DemoKernel.Instance.MainWindow.Content as FrameworkElement;
+            var windowContent = DemoKernel.Instance.AppWindow.Content as FrameworkElement;
             if (windowContent != null)
                 SetPropertyValue(() => ApplicationTheme, (int)windowContent.RequestedTheme);
 
@@ -118,7 +118,7 @@ namespace TimePunch_WinUI_StackedUI_Demo.ViewModels
             {
                 if (SetPropertyValue(() => ApplicationTheme, value)) 
                 {
-                    var windowContent = DemoKernel.Instance.MainWindow.Content as FrameworkElement;
+                    var windowContent = DemoKernel.Instance.AppWindow.Content as FrameworkElement;
                     if (windowContent == null)
                         return;
 

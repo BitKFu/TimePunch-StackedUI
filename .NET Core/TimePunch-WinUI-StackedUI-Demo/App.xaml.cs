@@ -1,4 +1,5 @@
 ﻿using Microsoft.UI.Xaml;
+using TimePunch_WinUI_StackedUI_Demo.Core;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -27,6 +28,8 @@ namespace TimePunch_WinUI_StackedUI_Demo
         {
             m_window = new MainWindow();
             m_window.Activate();
+
+            DemoKernel.Instance.AppWindow = m_window;
         }
 
         private Window? m_window;

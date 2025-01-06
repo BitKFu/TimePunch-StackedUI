@@ -7,6 +7,7 @@ namespace TimePunch_WinUI_StackedUI_Demo.Core
 {
     public class DemoKernel : Kernel<DemoKernel, DemoController>
     {
+        public Window AppWindow { get; set; }
         public MainWindow MainWindow { get; set; }
     }
 }

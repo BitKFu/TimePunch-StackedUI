@@ -1,0 +1,101 @@
+﻿<Page
+    x:Class="TimePunch_WinUI_StackedUI_Demo.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:l="using:TimePunch.StackedUI.Model"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:stackedUi="using:TimePunch.StackedUI"
+    DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=MainWindowViewModel}"
+    Loaded="FrameworkElement_OnLoaded"
+    xmlns:controls="using:TimePunch.StackedUI.Controls"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <controls:DpiDecorator Scale="1" x:Name="DpiDecorator" x:FieldModifier="public">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <!-- Title Bar -->
+            <Grid x:Name="AppTitleBar"
+              Height="48">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition x:Name="LeftPaddingColumn" Width="0"/>
+                    <ColumnDefinition x:Name="IconColumn" Width="Auto"/>
+                    <ColumnDefinition x:Name="TitleColumn" Width="Auto"/>
+                    <ColumnDefinition x:Name="LeftDragColumn" Width="*"/>
+                    <ColumnDefinition x:Name="SearchColumn" Width="4*" MinWidth="220"/>
+                    <ColumnDefinition x:Name="RightDragColumn" Width="*" MinWidth="48"/>
+                    <ColumnDefinition x:Name="AccountColumn" Width="Auto"/>
+                    <ColumnDefinition x:Name="RightPaddingColumn" Width="136"/>
+                </Grid.ColumnDefinitions>
+                <Image x:Name="TitleBarIcon" 
+                   Source="ms-appx:///Assets/StoreLogo.png"
+                   Grid.Column="1"
+                   Width="16" Height="16"
+                   Margin="8,0,4,0"/>
+                <TextBlock x:Name="TitleBarTextBlock"
+                       Text="App title" 
+                       Style="{StaticResource CaptionTextBlockStyle}"
+                       Grid.Column="2"
+                       VerticalAlignment="Center">
+                </TextBlock>
+                <AutoSuggestBox x:Name="TitleBarSearchBox" 
+                            Grid.Column="4" 
+                            QueryIcon="Find"
+                            PlaceholderText="Search"
+                            VerticalAlignment="Center"
+                            MaxWidth="600"/>
+                <PersonPicture x:Name="PersonPic" 
+                           Grid.Column="6" 
+                           Height="32" Margin="0,0,16,0"/>
+
+            </Grid>
+
+            <!-- Breadcrumb navigation -->
+            <BreadcrumbBar Grid.Row="1" ItemsSource="{Binding ElementName=StackedFrame, Path=BreadCrumbs}" ItemClicked="OnBreadcrumbClick" Margin="16 0">
+                <BreadcrumbBar.ItemTemplate>
+                    <DataTemplate x:DataType="l:BreadCrumbNavigation">
+                        <BreadcrumbBarItem Content="{Binding}" AutomationProperties.Name="{Binding FrameTitle}">
+                            <BreadcrumbBarItem.ContentTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding FrameTitle}"/>
+                                </DataTemplate>
+                            </BreadcrumbBarItem.ContentTemplate>
+                        </BreadcrumbBarItem>
+                    </DataTemplate>
+                </BreadcrumbBar.ItemTemplate>
+            </BreadcrumbBar>
+
+            <!-- Navigation View is in the second row -->
+            <NavigationView Grid.Row="2" Grid.Column="0"  
+                    IsBackButtonVisible="Collapsed"
+                    IsBackEnabled="False"
+                    IsPaneOpen="True"
+                    IsSettingsVisible="False"
+                    SelectedItem="{Binding Path=SelectedMenuItem, Mode=TwoWay}"
+                    FooterMenuItemsSource="{Binding Path=FooterPages, Mode=OneWay}"
+                    MenuItemsSource="{Binding Path=DemoPages, Mode=OneWay}">
+
+                <NavigationView.MenuItemTemplate>
+                    <DataTemplate>
+                        <NavigationViewItem Icon="{Binding Path=Icon, Converter={StaticResource IconConverter}}" Content="{Binding Path=Title}" AutomationProperties.Name="{Binding Path=Title}"/>
+                    </DataTemplate>
+                </NavigationView.MenuItemTemplate>
+
+                <stackedUi:StackedFrame x:Name="StackedFrame" FadeInDuration="100" FadeOutDuration="100" StackedMode="Resizeable">
+                </stackedUi:StackedFrame>
+
+            </NavigationView>
+        </Grid>
+    </controls:DpiDecorator>
+
+</Page>

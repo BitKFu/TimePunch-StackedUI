@@ -1,0 +1,10 @@
+{
+  "background_color": "#ffffff",
+  "description": "TimePunch_Uno_StackedUI_Demo",
+  "display": "standalone",
+  "name": "TimePunch_Uno_StackedUI_Demo",
+  "short_name": "TimePunch_Uno_StackedUI_Demo",
+  "start_url": "/index.html",
+  "theme_color": "#ffffff",
+  "scope": "/"
+}
