@@ -1,0 +1,17 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:TimePunch.StackedUI.Controls">
+
+    <Style TargetType="controls:DpiDecorator" >
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="controls:DpiDecorator">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      x:Name="PART_ContentPresenter">
+                    </ContentPresenter>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

@@ -8,6 +8,7 @@
         xmlns:stackedUi="clr-namespace:TimePunch.StackedUI;assembly=TpStackedUI"
         xmlns:controls="clr-namespace:Windows.UI.Xaml.Controls;assembly=Windows.Foundation.UniversalApiContract"
         xmlns:model="clr-namespace:TimePunch.StackedUI.Model;assembly=TpStackedUI"
+        xmlns:controls1="clr-namespace:TimePunch.StackedUI.Controls;assembly=TpStackedUI"
         mc:Ignorable="d"
         Background="{DynamicResource SystemControlPageBackgroundAltHighBrush}"
         Foreground="{DynamicResource SystemControlPageTextBaseHighBrush}"
@@ -20,49 +21,50 @@
     <Window.InputBindings>
         <KeyBinding Key="Escape" Command="{Binding GoBackNavigationPageCommand}"></KeyBinding>
     </Window.InputBindings>
-    <Grid>
+    <controls1:DpiDecorator x:Name="DpiDecorator" x:FieldModifier="public">
+        <Grid>
 
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-        </Grid.RowDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
 
-        <ui:SimpleStackPanel Grid.Row="0" Grid.Column="0">
-            <ListView VerticalAlignment="Center" ItemsSource="{Binding ElementName=StackedFrame, Path=BreadCrumbs}">
-                <ListView.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel Orientation="Horizontal"></StackPanel>
-                    </ItemsPanelTemplate>
-                </ListView.ItemsPanel>
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ui:HyperlinkButton Content="{Binding FrameTitle}" Command="{Binding Command}" />
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-        </ui:SimpleStackPanel>
+            <ui:SimpleStackPanel Grid.Row="0" Grid.Column="0">
+                <ListView VerticalAlignment="Center" ItemsSource="{Binding ElementName=StackedFrame, Path=BreadCrumbs}">
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"></StackPanel>
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ui:HyperlinkButton Content="{Binding FrameTitle}" Command="{Binding Command}" />
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </ui:SimpleStackPanel>
 
-        <Menu Grid.Row="1" Grid.Column="0"
+            <Menu Grid.Row="1" Grid.Column="0"
               x:Name="TopMenu"
               Visibility="{Binding ElementName=StackedFrame, Path=TopFrame.Content.DataContext.MenuItems, Converter={StaticResource NotIsEmptyCollectionConverter}}"
               ItemsSource="{Binding ElementName=StackedFrame, Path=TopFrame.Content.DataContext.MenuItems}">
 
-            <Menu.ItemContainerStyle>
-                <Style TargetType="{x:Type MenuItem}" BasedOn="{StaticResource DefaultMenuItemStyle}">
-                    <Setter Property="InputGestureText" Value="{Binding InputGestureText}"/>
-                    <Setter Property="Command" Value="{Binding Command}"/>
-                </Style>
-            </Menu.ItemContainerStyle>
+                <Menu.ItemContainerStyle>
+                    <Style TargetType="{x:Type MenuItem}" BasedOn="{StaticResource DefaultMenuItemStyle}">
+                        <Setter Property="InputGestureText" Value="{Binding InputGestureText}"/>
+                        <Setter Property="Command" Value="{Binding Command}"/>
+                    </Style>
+                </Menu.ItemContainerStyle>
 
-            <Menu.ItemTemplate>
-                <HierarchicalDataTemplate DataType="{x:Type model:MenuItemModel}" ItemsSource="{Binding Path=MenuItems}">
-                    <TextBlock Text="{Binding Header}" />
-                </HierarchicalDataTemplate>
-            </Menu.ItemTemplate>
-        </Menu>
+                <Menu.ItemTemplate>
+                    <HierarchicalDataTemplate DataType="{x:Type model:MenuItemModel}" ItemsSource="{Binding Path=MenuItems}">
+                        <TextBlock Text="{Binding Header}" />
+                    </HierarchicalDataTemplate>
+                </Menu.ItemTemplate>
+            </Menu>
 
-        <ui:NavigationView Grid.Row="2" Grid.Column="0"       
+            <ui:NavigationView Grid.Row="2" Grid.Column="0"       
                            IsBackButtonVisible="Collapsed"
                            IsBackEnabled="False"
                            IsPaneOpen="False"
@@ -72,16 +74,17 @@
                            MenuItemsSource="{Binding DemoPages}"
                            >
 
-            <ui:NavigationView.MenuItemTemplate>
-                <DataTemplate>
-                    <ui:NavigationViewItem Icon="{Binding Icon}" Content="{Binding Title}" AutomationProperties.Name="{Binding Title}"/>
-                </DataTemplate>
-            </ui:NavigationView.MenuItemTemplate>
+                <ui:NavigationView.MenuItemTemplate>
+                    <DataTemplate>
+                        <ui:NavigationViewItem Icon="{Binding Icon}" Content="{Binding Title}" AutomationProperties.Name="{Binding Title}"/>
+                    </DataTemplate>
+                </ui:NavigationView.MenuItemTemplate>
 
-            <stackedUi:StackedFrame Name="StackedFrame" FadeInDuration="100" FadeOutDuration="100">
-            </stackedUi:StackedFrame>
+                <stackedUi:StackedFrame Name="StackedFrame" FadeInDuration="100" FadeOutDuration="100">
+                </stackedUi:StackedFrame>
 
-        </ui:NavigationView>
+            </ui:NavigationView>
 
-    </Grid>
+        </Grid>
+    </controls1:DpiDecorator>
 </Window>

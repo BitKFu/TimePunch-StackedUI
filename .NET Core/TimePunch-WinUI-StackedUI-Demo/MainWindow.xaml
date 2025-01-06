@@ -8,6 +8,7 @@
     xmlns:stackedUi="using:TimePunch.StackedUI"
     xmlns:window="using:TimePunch.StackedUI.Window"
     xmlns:l="using:TimePunch.StackedUI.Model"
+    xmlns:controls="using:TimePunch.StackedUI.Controls"
     Title="MainWindow" 
     mc:Ignorable="d">
 
@@ -15,7 +16,8 @@
         <DesktopAcrylicBackdrop/>
     </Window.SystemBackdrop>
 
-    <Grid DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=MainWindowViewModel}"
+    <controls:DpiDecorator Scale="1" x:Name="DpiDecorator" x:FieldModifier="public">
+       <Grid DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=MainWindowViewModel}"
           x:Name="ContentGrid"
           Loaded="FrameworkElement_OnLoaded"
     >
@@ -101,5 +103,6 @@
 
         </NavigationView>
     </Grid>
+    </controls:DpiDecorator>
 
 </window:StackedWindow>

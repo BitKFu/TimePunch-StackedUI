@@ -1,8 +1,10 @@
 ﻿using System;
 using ModernWpf;
 using System.Threading.Tasks;
+using TimePunch_WPF_StackedModern_Demo.Models;
 using TimePunch.StackedUI.Controller;
 using TimePunch.StackedUI.Demo.Core;
+using System.Collections.ObjectModel;
 
 namespace TimePunch_WPF_StackedModern_Demo.ViewModels
 {
@@ -24,6 +26,20 @@ namespace TimePunch_WPF_StackedModern_Demo.ViewModels
                 SetPropertyValue(() => ApplicationTheme, 2);
             else
                 SetPropertyValue(() => ApplicationTheme, 0);
+
+            ScaleModes =
+            [
+                new Resource<int>("Extra small size", 60),
+                new Resource<int>("Small size", 80),
+                new Resource<int>("Normal size", 100)
+            ];
+
+            if (DemoKernel.Instance.MainWindow.DpiDecorator.Scale == 0.6)
+                SelectedScaleMode = ScaleModes[0];
+            else if (DemoKernel.Instance.MainWindow.DpiDecorator.Scale == 0.8)
+                SelectedScaleMode = ScaleModes[1];
+            else
+                SelectedScaleMode = ScaleModes[2];
 
             return base.InitializePageAsync(extraData);
         }
@@ -112,6 +128,40 @@ namespace TimePunch_WPF_StackedModern_Demo.ViewModels
                         _ => throw new ArgumentOutOfRangeException(nameof(value), value, null)
                     };
                     ThemeManager.Current.ApplicationTheme = theme;
+                }
+            }
+        }
+
+        #endregion
+
+        #region Property ScaleModes
+
+        /// <summary>
+        /// Gets or sets the ScaleModes.
+        /// </summary>
+        /// <value>The ScaleModes.</value>
+        public ObservableCollection<Resource<int>> ScaleModes
+        {
+            get { return GetPropertyValue(() => ScaleModes); }
+            set { SetPropertyValue(() => ScaleModes, value); }
+        }
+
+        #endregion
+
+        #region Property SelectedScaleMode
+
+        /// <summary>
+        /// Gets or sets the SelectedScaleMode.
+        /// </summary>
+        /// <value>The SelectedScaleMode.</value>
+        public Resource<int> SelectedScaleMode
+        {
+            get { return GetPropertyValue(() => SelectedScaleMode); }
+            set
+            {
+                if (SetPropertyValue(() => SelectedScaleMode, value))
+                {
+                    DemoKernel.Instance.MainWindow.DpiDecorator.Scale = value.Value / 100.0;
                 }
             }
         }
