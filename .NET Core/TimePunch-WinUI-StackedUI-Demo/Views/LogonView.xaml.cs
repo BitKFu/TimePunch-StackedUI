@@ -19,7 +19,11 @@ namespace TimePunch_WinUI_StackedUI_Demo.Views
 
         private async void LogonView_OnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
-            var result = await LogonDialog.ShowAsync();
+            var logonDialog = new LogonDialog()
+            {
+                XamlRoot = this.XamlRoot
+            };
+            var result = await logonDialog.ShowAsync();
             await DemoKernel.Instance.EventAggregator.PublishMessageAsync(new GoBackPageNavigationRequest());
         }
     }

@@ -13,6 +13,6 @@
       Loaded="LogonView_OnLoaded">
 
     <controls:PageControl Title="Logon">
-        <views:LogonDialog x:Name="LogonDialog"></views:LogonDialog>
+        <!--<views:LogonDialog x:Name="LogonDialog"></views:LogonDialog>-->
     </controls:PageControl>
 </Page>

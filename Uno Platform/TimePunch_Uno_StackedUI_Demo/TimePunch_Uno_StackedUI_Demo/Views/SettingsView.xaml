@@ -40,7 +40,7 @@
                         </controls1:SettingsCard>
 
                         <controls1:SettingsCard Header="Scaling">
-                            <ComboBox ItemsSource="{Binding ScaleModes}" Width="500"
+                            <ComboBox ItemsSource="{Binding ScaleModes}" 
                                       AutomationProperties.LabeledBy="{Binding ElementName=ScaleMode}"
                                       DisplayMemberPath="Text"
                                       SelectedItem="{Binding SelectedScaleMode, Mode=TwoWay}">

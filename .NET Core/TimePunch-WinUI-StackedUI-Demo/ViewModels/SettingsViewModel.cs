@@ -32,9 +32,10 @@ namespace TimePunch_WinUI_StackedUI_Demo.ViewModels
                 new Resource<int>("Normal size", 100)
             ];
 
-            if (DemoKernel.Instance.MainWindow.DpiDecorator.Scale == 0.6)
+            var dpiDecoratorScale = DemoKernel.Instance.MainWindow.DpiDecorator.Scale;
+            if (dpiDecoratorScale == 0.6)
                 SelectedScaleMode = ScaleModes[0];
-            else if (DemoKernel.Instance.MainWindow.DpiDecorator.Scale == 0.8)
+            else if (dpiDecoratorScale == 0.8)
                 SelectedScaleMode = ScaleModes[1];
             else
                 SelectedScaleMode = ScaleModes[2];
@@ -160,7 +161,7 @@ namespace TimePunch_WinUI_StackedUI_Demo.ViewModels
             get { return GetPropertyValue(() => SelectedScaleMode); }
             set
             {
-                if (SetPropertyValue(() => SelectedScaleMode, value))
+                if (SetPropertyValue(() => SelectedScaleMode, value) && value != null)
                 {
                     DemoKernel.Instance.MainWindow.DpiDecorator.Scale = value.Value/100.0;
                 }
