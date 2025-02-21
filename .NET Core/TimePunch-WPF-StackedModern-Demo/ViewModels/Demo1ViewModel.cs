@@ -22,7 +22,7 @@ namespace TimePunch.StackedUI.Demo.ViewModels
                 Header = "File",
                 MenuItems = new ObservableCollection<MenuItemModel>()
                 {
-                    new MenuItemModel(){Header = "Open"},
+                    new MenuItemModel(){Header = "Open", IsCheckable = true, IsChecked = true},
                     new MenuItemModel() { Header = "Close" },
                 }
             });

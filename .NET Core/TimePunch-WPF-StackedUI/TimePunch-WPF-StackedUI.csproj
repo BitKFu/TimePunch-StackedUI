@@ -10,7 +10,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Company>TimePunch KG</Company>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageVersion>0.9.4.0</PackageVersion>
+    <PackageVersion>0.9.6.0</PackageVersion>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>

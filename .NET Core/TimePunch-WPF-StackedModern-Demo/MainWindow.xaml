@@ -54,6 +54,8 @@
                     <Style TargetType="{x:Type MenuItem}" BasedOn="{StaticResource DefaultMenuItemStyle}">
                         <Setter Property="InputGestureText" Value="{Binding InputGestureText}"/>
                         <Setter Property="Command" Value="{Binding Command}"/>
+                        <Setter Property="IsCheckable" Value="{Binding IsCheckable}"/>
+                        <Setter Property="IsChecked" Value="{Binding IsChecked}"/>
                     </Style>
                 </Menu.ItemContainerStyle>
 

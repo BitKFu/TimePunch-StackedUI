@@ -23,6 +23,40 @@ namespace TimePunch.StackedUI.Model
 
         #endregion
 
+        #region Property IsCheckable
+
+        public static readonly DependencyProperty IsCheckableProperty =
+            DependencyProperty.RegisterAttached("IsCheckable", typeof(bool), typeof(MenuItemModel), new PropertyMetadata(false));
+
+        /// <summary>
+        /// Gets or sets the IsCheckable.
+        /// </summary>
+        /// <value>The IsCheckable.</value>
+        public bool IsCheckable
+        {
+            get => (bool)GetValue(IsCheckableProperty);
+            set => SetValue(IsCheckableProperty, value);
+        }
+
+        #endregion
+
+        #region Property IsChecked
+
+        public static readonly DependencyProperty IsCheckedProperty =
+            DependencyProperty.RegisterAttached("IsChecked", typeof(bool), typeof(MenuItemModel), new PropertyMetadata(false));
+
+        /// <summary>
+        /// Gets or sets the IsChecked.
+        /// </summary>
+        /// <value>The IsChecked.</value>
+        public bool IsChecked
+        {
+            get => (bool)GetValue(IsCheckedProperty);
+            set => SetValue(IsCheckedProperty, value);
+        }
+
+        #endregion
+
         #region Property Command
 
         public static readonly DependencyProperty CommandProperty =
