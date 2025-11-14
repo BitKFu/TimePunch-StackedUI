@@ -17,15 +17,19 @@ namespace TimePunch.StackedUI.Demo.ViewModels
             NextCommand = RegisterCommand(ExecuteNextCommand, CanExecuteNextCommand, true);
             LastCommand = RegisterCommand(ExecuteLastCommand, CanExecuteLastCommand, true);
 
-            MenuItems.Add(new MenuItemModel()
-            {
-                Header = "File",
-                MenuItems = new ObservableCollection<MenuItemModel>()
+            MenuItems =
+            [
+                new MenuItemModel()
                 {
-                    new MenuItemModel(){Header = "Open", IsCheckable = true, IsChecked = true},
-                    new MenuItemModel() { Header = "Close" },
+                    Header = "File",
+                    MenuItems = new ObservableCollection<MenuItemModel>()
+                    {
+                        new MenuItemModel() { Header = "Open", IsCheckable = true, IsChecked = true },
+                        new MenuItemModel() { Header = "Close" },
+                    }
                 }
-            });
+
+            ];
         }
 
         #endregion

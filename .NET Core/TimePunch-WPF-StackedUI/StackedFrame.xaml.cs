@@ -175,7 +175,9 @@ namespace TimePunch.StackedUI
                     else
                     {
                         if (last && i % 2 == 0)
-                            StackGrid.ColumnDefinitions[i].Width = double.IsNaN(pageWidth)
+                            StackGrid.ColumnDefinitions[i].Width = IsNextToTopFrame 
+                                ? new GridLength(1, GridUnitType.Star)
+                                : double.IsNaN(pageWidth)
                                 ? new GridLength(1, GridUnitType.Star)
                                 : new GridLength(pageWidth);
                     }
@@ -193,7 +195,7 @@ namespace TimePunch.StackedUI
             try
             {
                 // add a new column
-                var column = StackGrid.ColumnDefinitions.Count - (StackedMode == StackedMode.Resizeable ? 1 : 0);
+                var column = StackGrid.ColumnDefinitions.Count;// - (StackedMode == StackedMode.Resizeable && !IsTopFrame ? 1 : 0);
                 var columnDefinition = new ColumnDefinition()
                 {
                     MinWidth = page.MinWidth,
@@ -207,7 +209,7 @@ namespace TimePunch.StackedUI
                 page.Width = double.NaN;
 
                 // Update max with of page - if it's an inplace update
-                if (StackedMode == StackedMode.InPlace)
+                if (StackedMode == StackedMode.InPlace || IsTopFrame)
                     page.MaxWidth = double.PositiveInfinity;
 
                 // Check if the page has an adorner decorator
@@ -250,13 +252,13 @@ namespace TimePunch.StackedUI
                 {
                     ShowsPreview = false,
                     ResizeDirection = GridResizeDirection.Columns,
-                    ResizeBehavior = GridResizeBehavior.PreviousAndNext,
+                    ResizeBehavior = GridResizeBehavior.PreviousAndCurrent,
                     HorizontalAlignment = HorizontalAlignment.Stretch,
                     Margin = new Thickness(0, 0, 0, 20),
                 };
 
                 // add the splitter 
-                var column = StackGrid.ColumnDefinitions.Count - (StackedMode == StackedMode.Resizeable ? 1 : 0);
+                var column = StackGrid.ColumnDefinitions.Count;
                 StackGrid.ColumnDefinitions.Insert(column, new ColumnDefinition() { Width = new GridLength(SplitterWidth) });
                 Grid.SetColumn(splitter, column);
 
@@ -267,7 +269,7 @@ namespace TimePunch.StackedUI
             }
         }
 
-        internal async Task GoBack(bool animate)
+        public async Task GoBack(bool animate)
         {
             if (frameStack.Count == 0)
                 return;
@@ -292,9 +294,20 @@ namespace TimePunch.StackedUI
                     var splitter = splitters[removedSplitter]; // get the splitter to remove
                     column = Grid.GetColumn(splitter); // get the column in grid to remove
                     StackGrid.Children.Remove(splitter); // remove the splitter
-                    StackGrid.ColumnDefinitions.RemoveAt(column); // remove the columne
+                    StackGrid.ColumnDefinitions.RemoveAt(column-1); // remove the columne
 
                     splitters.Remove(removedSplitter); // remove the splitter / frame binding
+
+                    // remove the last splitter, because the first one has none
+                    if (splitters.Count == 1)
+                    {
+                        splitter = splitters.First().Value; // get the splitter to remove
+                        column = Grid.GetColumn(splitter); // get the column in grid to remove
+                        StackGrid.Children.Remove(splitter); // remove the splitter
+                        StackGrid.ColumnDefinitions.RemoveAt(column); // remove the columne
+
+                        splitters.Clear();
+                    }
                 }
                 // That might be a special case, when switching from InPlace to Resizeable
                 else if (StackedMode == StackedMode.Resizeable && splitters.Count == 1)
@@ -330,6 +343,10 @@ namespace TimePunch.StackedUI
                 Monitor.Exit(fadeInOut);
             }
         }
+
+        public bool IsTopFrame => !frameStack.Any();
+
+        public bool IsNextToTopFrame => frameStack.Count() == 1;
 
         private void UpdateTopFrame()
         {
@@ -369,6 +386,41 @@ namespace TimePunch.StackedUI
             return false;
         }
 
+        public void ResetWidth()
+        {
+            return;
+            if (StackedMode == StackedMode.InPlace)
+                return;
+
+            var width = CalcWidth();
+
+            if (!IsNextToTopFrame && width > 0)
+            {
+                StackGrid.Width = width;
+                HorizontalAlignment = HorizontalAlignment.Left;
+            }
+            else
+            {
+                StackGrid.Width = double.NaN;
+                HorizontalAlignment = HorizontalAlignment.Stretch;
+            }
+        }
+
+        public int CalcWidth()
+        {
+            var width = 0;
+            foreach (var child in StackGrid.Children)
+            {
+                if (child is GridSplitter)
+                    width += 3;
+
+                if (child is Frame frame)
+                    width += (int)frame.ActualWidth;
+            }
+
+            return width;
+        }
+
 
         #region Property BreadCrumbs
 
@@ -392,9 +444,9 @@ namespace TimePunch.StackedUI
         /// </summary>
         public void Initialize()
         {
-            // add an empty column
-            if (StackedMode == StackedMode.Resizeable)
-                StackGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            //// add an empty column
+            //if (StackedMode == StackedMode.Resizeable)
+            //    StackGrid.ColumnDefinitions.Add(new ColumnDefinition());
         }
 
         #region Property StackedMode

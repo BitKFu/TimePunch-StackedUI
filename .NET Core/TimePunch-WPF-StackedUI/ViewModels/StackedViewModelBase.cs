@@ -15,7 +15,6 @@ namespace TimePunch.StackedUI.ViewModels
         protected StackedViewModelBase(IEventAggregator eventAggregator) 
             : base(eventAggregator)
         {
-            MenuItems = [];
         }
 
         #region Property MenuItems
@@ -24,12 +23,11 @@ namespace TimePunch.StackedUI.ViewModels
         /// Gets or sets the $Property$.
         /// </summary>
         /// <value>The $Property$.</value>
-        public ObservableCollection<MenuItemModel> MenuItems
+        public ObservableCollection<MenuItemModel>? MenuItems
         {
             get
             {
-                var menuItems = GetPropertyValue(() => MenuItems);
-                return menuItems ?? [];
+                return GetPropertyValue(() => MenuItems);
             }
             set
             {

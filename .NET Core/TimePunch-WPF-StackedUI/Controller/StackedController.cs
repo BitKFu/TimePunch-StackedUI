@@ -101,7 +101,7 @@ namespace TimePunch.StackedUI.Controller
         {
             // if a base frame is set, go back to it
             if (basePage != null)
-                await EventAggregator.PublishMessageAsync(new GoBackPageNavigationRequest(basePage));
+                await EventAggregator.PublishMessageAsync(new GoBackPageNavigationRequest(basePage, false));
 
             // Check if the frame is already created
             var frameKey = StackedFrameExtension.GetFrameKey(page);
@@ -112,13 +112,20 @@ namespace TimePunch.StackedUI.Controller
             if (isModal)
                 StackedFrame.DisableTop();
 
+            // It add a splitter before the new frame, if the mode is resizeable and the new frame is not the top one
+            if (StackedMode == StackedMode.Resizeable && isResizable && StackedFrame.IsNextToTopFrame)
+                StackedFrame.AddSplitter(StackedFrame.TopFrame);
+
+            var isTopFrame = StackedFrame.IsTopFrame;
+
             // add the new page
             var frame = CreateFrame();
             await StackedFrame.AddFrame(EventAggregator, frame, page);
 
-            if (StackedMode == StackedMode.Resizeable && isResizable)
+            if (StackedMode == StackedMode.Resizeable && isResizable && !isTopFrame)
                 StackedFrame.AddSplitter(frame);
 
+            StackedFrame.ResetWidth();
             return page;
         }
 
@@ -189,7 +196,8 @@ namespace TimePunch.StackedUI.Controller
             }
 
             // wait to get the navigation handle
-            await navigationSemaphore.WaitAsync();
+            if (message.TakeLock)
+                await navigationSemaphore.WaitAsync();
             try
             {
                 var topPage = StackedFrame.TopFrame?.Content as Page;
@@ -212,9 +220,9 @@ namespace TimePunch.StackedUI.Controller
 
                 StackedFrame.EnableTop();
 
-                var newTopFrame = StackedFrame?.TopFrame;
+                var newTopFrame = StackedFrame.TopFrame;
                 var newTopPage = newTopFrame?.Content as Page;
-                if (pagePersister != null && StackedMode == StackedMode.Resizeable)
+                if (!StackedFrame.IsNextToTopFrame && pagePersister != null && StackedMode == StackedMode.Resizeable)
                 {
                     // Get the key of the new top page - after closing the previous
                     if (newTopFrame != null && newTopPage != null)
@@ -228,6 +236,9 @@ namespace TimePunch.StackedUI.Controller
                         }
                     }
                 }
+
+                // Reset the width of the stacked frame
+                StackedFrame.ResetWidth();
 
                 // Reset the last fired command, if the user goes back with breadcrumb
                 if (message.ToPage != topPage && message.ToPage?.DataContext is StackedViewModelBase vm)
@@ -260,7 +271,8 @@ namespace TimePunch.StackedUI.Controller
             }
             finally
             {
-                navigationSemaphore.Release();
+                if (message.TakeLock)
+                    navigationSemaphore.Release();
             }
 
             return message;
@@ -341,6 +353,9 @@ namespace TimePunch.StackedUI.Controller
                             AddMouseWheelListener(addedPage);
                     }
 
+                    // Reset the width of the stacked frame
+                    StackedFrame.ResetWidth();
+                    
                     UpdateScrollPosition(addedPage);
 
                     // Set the focus to the page
@@ -382,7 +397,7 @@ namespace TimePunch.StackedUI.Controller
             }
         }
 
-        private void SaveCurrentPageWidth(IPagePersister? pagePersister)
+        protected void SaveCurrentPageWidth(IPagePersister? pagePersister)
         {
             if (StackedFrame == null)
                 return;
@@ -418,7 +433,8 @@ namespace TimePunch.StackedUI.Controller
                 var currentColumn = panel.Children.IndexOf(StackedFrame.TopFrame);
                 if (currentColumn > 1)
                 {
-                    scroll.ScrollToHorizontalOffset(double.PositiveInfinity);
+                    //scroll.ScrollToHorizontalOffset(double.PositiveInfinity);
+                    scroll.ScrollToHorizontalOffset(StackedFrame.CalcWidth());
                 }
                 else
                 {

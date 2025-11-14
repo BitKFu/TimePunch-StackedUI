@@ -1,16 +1,17 @@
-﻿using Microsoft.UI.Xaml;
+﻿using CommunityToolkit.WinUI.Controls;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media.Animation;
 using System.Collections.ObjectModel;
-using CommunityToolkit.WinUI.Controls;
-using Microsoft.UI.Xaml.Input;
+using System.Data.Common;
+using TimePunch.MVVM.Controller;
 using TimePunch.MVVM.EventAggregation;
 using TimePunch.StackedUI.Controller;
+using TimePunch.StackedUI.Events;
 using TimePunch.StackedUI.Extensions;
 using TimePunch.StackedUI.Model;
 using Windows.System;
-using TimePunch.MVVM.Controller;
-using TimePunch.StackedUI.Events;
 
 namespace TimePunch.StackedUI
 {
@@ -27,6 +28,14 @@ namespace TimePunch.StackedUI
         public StackedFrame()
         {
             InitializeComponent();
+
+            SizeChanged += StackedFrame_SizeChanged;
+        }
+
+        private void StackedFrame_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (IsNextToTopFrame && TopFrame != null && StackedMode == StackedMode.Resizeable)
+                AdjustColumnWidths(TopFrame?.Width ?? Double.NaN);
         }
 
         #region Property CanGoBack
@@ -179,7 +188,15 @@ namespace TimePunch.StackedUI
                     else
                     {
                         if (last && i % 2 == 0)
-                            element.Width = pageWidth;
+                        {
+                            var checkSize
+                                = IsNextToTopFrame
+                                ? ((ScrollViewer)((StackPanel)element.Parent).Parent).ActualWidth
+                                : pageWidth;
+
+                            while (Math.Abs(element.Width - checkSize) > 1)
+                                element.Width = checkSize;
+                        }
                     }
                 }
             }
@@ -251,7 +268,7 @@ namespace TimePunch.StackedUI
             }
         }
 
-        internal async Task GoBack(bool animate)
+        public async Task GoBack(bool animate)
         {
             if (frameStack.Count == 0)
                 return;
@@ -274,6 +291,16 @@ namespace TimePunch.StackedUI
                     var splitter = splitters[removedSplitter]; // get the splitter to remove
                     StackPanel.Children.Remove(splitter); // remove the splitter
                     splitters.Remove(removedSplitter); // remove the splitter / frame binding
+
+                    // remove the last splitter, because the first one has none
+                    if (splitters.Count == 1)
+                    {
+                        splitter = splitters.First().Value; // get the splitter to remove
+                        StackPanel.Children.Remove(splitter); // remove the splitter
+                        splitters.Remove(removedSplitter); // remove the splitter / frame binding
+
+                        splitters.Clear();
+                    }
                 }
                 // That might be a special case, when switching from InPlace to Resizeable
                 else if (StackedMode == StackedMode.Resizeable && splitters.Count == 1)
@@ -305,6 +332,11 @@ namespace TimePunch.StackedUI
                 Monitor.Exit(fadeInOut);
             }
         }
+
+        public bool IsTopFrame => !frameStack.Any();
+
+        public bool IsNextToTopFrame => frameStack.Count() == 1;
+
 
         private void UpdateTopFrame()
         {
@@ -510,6 +542,12 @@ namespace TimePunch.StackedUI
         {
             if (StackedMode == StackedMode.InPlace && TopFrame?.Content is Page page)
                 AdjustColumnWidths(page.ActualWidth);
+        }
+
+        public void ResetWidth()
+        {
+            return;
+            Width = ScrollViewer.ActualWidth;
         }
     }
 }

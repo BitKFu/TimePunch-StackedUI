@@ -24,6 +24,7 @@ namespace TimePunch.StackedUI.Demo.Core
         , IHandleMessageAsync<NavigateToSettingsView>
     {
         private readonly IPagePersister demoPagePersister = new DemoPagePersister();
+        private Page basePage2;
 
         public DemoController()
             : base(DemoKernel.Instance.EventAggregator)
@@ -37,7 +38,7 @@ namespace TimePunch.StackedUI.Demo.Core
             var page = new Demo1View();
             if (page.DataContext is Demo1ViewModel viewModel)
             {
-                await InitTopPageAsync(message, viewModel, page);
+                basePage2 = await InitTopPageAsync(message, viewModel, page);
             }
 
             return message;
@@ -52,7 +53,7 @@ namespace TimePunch.StackedUI.Demo.Core
             var page = new Demo2View();
             if (page.DataContext is Demo2ViewModel viewModel)
             {
-                await InitTopPageAsync(message, viewModel, page);
+                basePage2 = await InitTopPageAsync(message, viewModel, page);
             }
 
             return message;
@@ -67,7 +68,7 @@ namespace TimePunch.StackedUI.Demo.Core
             var page = new Demo3View();
             if (page.DataContext is Demo3ViewModel viewModel)
             {
-                await InitSubPageAsync(message, viewModel, page);
+                await InitSubPageAsync(message, viewModel, page, basePage2);
             }
 
             return message;
