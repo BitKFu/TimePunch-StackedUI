@@ -18,18 +18,10 @@
                       VerticalScrollBarVisibility="Disabled"
                       x:Name="ScrollViewer"
                       Grid.Column="0">
-            <Grid Name="StackGrid">
+            <StackPanel Name="StackPanel" Orientation="Horizontal">
 
-            </Grid>
+            </StackPanel>
         </ScrollViewer>
-
-        <!-- Grid Splitter shown, if the property panel is visible 
-        <GridSplitter Grid.Column="1" 
-                      HorizontalAlignment="Stretch"
-                      ResizeDirection="Columns" 
-                      ResizeBehavior="PreviousAndNext"
-                      Visibility="{Binding ElementName=PropertyPanel, Path=Visibility}"
-                      ></GridSplitter>-->
 
         <Grid Grid.Column="2"
               Visibility="{Binding ElementName=Frame, Path=PropertyPanelVisibility}"

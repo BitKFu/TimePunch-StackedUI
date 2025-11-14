@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.WinUI.Controls;
+﻿using CommunityToolkit.WinUI;
+using CommunityToolkit.WinUI.Controls;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
@@ -12,6 +13,7 @@ using TimePunch.StackedUI.Events;
 using TimePunch.StackedUI.Extensions;
 using TimePunch.StackedUI.Model;
 using Windows.System;
+using DispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue;
 
 namespace TimePunch.StackedUI
 {
@@ -20,8 +22,8 @@ namespace TimePunch.StackedUI
     /// </summary>
     public partial class StackedFrame : UserControl
     {
-        private readonly Stack<Frame> frameStack = new Stack<Frame>();
-        private readonly Dictionary<Frame, ContentSizer> splitters = new Dictionary<Frame, ContentSizer>();
+        private readonly Stack<Frame> frameStack = new();
+        private readonly Dictionary<Frame, ContentSizer> splitters = new();
 
         private readonly object fadeInOut = new object();
 
@@ -36,6 +38,29 @@ namespace TimePunch.StackedUI
         {
             if (IsNextToTopFrame && TopFrame != null && StackedMode == StackedMode.Resizeable)
                 AdjustColumnWidths(TopFrame?.Width ?? Double.NaN);
+        }
+
+        public void UpdateScrollPosition()
+        {
+            // we only need to scroll to the end, if the page does not contain a grid!
+            var scroll = this.FindDescendant<ScrollViewer>();
+            if (scroll == null)
+                return;
+
+            // Get the key of the new top page - to set the with
+            if (TopFrame?.Parent is StackPanel panel)
+            {
+                var currentColumn = panel.Children.IndexOf(TopFrame);
+                if (currentColumn > 1)
+                {
+                    scroll.ScrollToHorizontalOffset(double.PositiveInfinity);
+                }
+                else
+                {
+                    // Top Page always starts at position 0
+                    scroll.ScrollToHorizontalOffset(0);
+                }
+            }
         }
 
         #region Property CanGoBack
@@ -467,11 +492,24 @@ namespace TimePunch.StackedUI
                 if (PropertyPanelVisibility == value)
                     return;
 
-                UpdatePropertyVisibility(value);
+                UpdatePropertyVisibilityNonAsync(value);
             }
         }
 
-        private async void UpdatePropertyVisibility(Visibility value)
+        private async void UpdatePropertyVisibilityNonAsync(Visibility value)
+        {
+            await UpdatePropertyVisibility(value);
+            if (TopFrame != null && StackedMode == StackedMode.Resizeable)
+            {
+                await Task.Delay(50).ContinueWith(t => DispatcherQueue.GetForCurrentThread().TryEnqueue(() =>
+                {
+                    AdjustColumnWidths(TopFrame?.Width ?? Double.NaN);
+                    UpdateScrollPosition();
+                }));
+            }
+        }
+
+        private async Task UpdatePropertyVisibility(Visibility value)
         {
             Monitor.TryEnter(fadeInOut, -1);
 
@@ -544,10 +582,5 @@ namespace TimePunch.StackedUI
                 AdjustColumnWidths(page.ActualWidth);
         }
 
-        public void ResetWidth()
-        {
-            return;
-            Width = ScrollViewer.ActualWidth;
-        }
     }
 }

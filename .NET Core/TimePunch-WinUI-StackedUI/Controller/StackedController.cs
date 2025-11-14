@@ -112,7 +112,7 @@ namespace TimePunch.StackedUI.Controller
 
             // It add a splitter before the new frame, if the mode is resizeable and the new frame is not the top one
             if (StackedMode == StackedMode.Resizeable && isResizable && StackedFrame.IsNextToTopFrame)
-                StackedFrame.AddSplitter(CreateFrame());
+                StackedFrame.AddSplitter(StackedFrame.TopFrame);
 
             var isTopFrame = StackedFrame.IsTopFrame;
 
@@ -245,9 +245,6 @@ namespace TimePunch.StackedUI.Controller
                     }
                 }
 
-                // Reset the width of the stacked frame
-                StackedFrame.ResetWidth();
-
                 // Reset the last fired command, if the user goes back with breadcrumb
                 if (message.ToPage != topPage && message.ToPage?.DataContext is StackedViewModelBase vm)
                 {
@@ -268,7 +265,7 @@ namespace TimePunch.StackedUI.Controller
                 // Maybe closed a page and the underlying page contains a grid, then the grid needs the focus
                 if (newTopPage != null)
                 {
-                    UpdateScrollPosition(newTopPage);
+                    UpdateScrollPosition();
 
                     // Set the focus to the page
                     SetPageFocus(newTopPage);
@@ -335,19 +332,19 @@ namespace TimePunch.StackedUI.Controller
                     if (!await vm.InitializePageAsync(message, dispatcher))
                         return null;
 
-                    // Save the current page width before adding a new one
-                    var pagePersister = GetPagePersister();
-                    SaveCurrentPageWidth(pagePersister);
+                    //// Save the current page width before adding a new one
+                    //var pagePersister = GetPagePersister();
+                    //SaveCurrentPageWidth(pagePersister);
 
-                    // Try to evaluate the page width of the new page
-                    if (pagePersister != null && StackedMode == StackedMode.Resizeable)
-                    {
-                        // Try to read the saved width
-                        var frameKey = StackedFrameExtension.GetFrameKey(pageToAdd);
-                        var pageWidth = pagePersister.GetPageWidth(frameKey);
-                        if (!double.IsNaN(pageWidth))
-                            pageToAdd.Width = pageWidth;
-                    }
+                    //// Try to evaluate the page width of the new page
+                    //if (pagePersister != null && StackedMode == StackedMode.Resizeable)
+                    //{
+                    //    // Try to read the saved width
+                    //    var frameKey = StackedFrameExtension.GetFrameKey(pageToAdd);
+                    //    var pageWidth = pagePersister.GetPageWidth(frameKey);
+                    //    if (!double.IsNaN(pageWidth))
+                    //        pageToAdd.Width = pageWidth;
+                    //}
 
                     // Now add the page
                     var addedPage = await AddPage(pageToAdd, basePage, isResizable, isModal);
@@ -357,10 +354,7 @@ namespace TimePunch.StackedUI.Controller
                     // wait a short moment to be sure, that the page has been displayed
                     await Task.Delay(50).ContinueWith(t => dispatcher.TryEnqueue(() =>
                         {
-                            // Reset the width of the stacked frame
-                            StackedFrame.ResetWidth();
-
-                            UpdateScrollPosition(addedPage);
+                            UpdateScrollPosition();
 
                             // Set the focus to the page
                             SetPageFocus(addedPage);
@@ -399,30 +393,9 @@ namespace TimePunch.StackedUI.Controller
 
         #region Scrollbar Handling
 
-        protected virtual void UpdateScrollPosition(Page addedPage)
+        protected virtual void UpdateScrollPosition()
         {
-            if (StackedFrame == null)
-                return;
-
-            // we only need to scroll to the end, if the page does not contain a grid!
-            var scroll = StackedFrame.FindDescendant<ScrollViewer>();
-            if (scroll == null)
-                return;
-
-            // Get the key of the new top page - to set the with
-            if (StackedFrame.TopFrame?.Parent is StackPanel panel)
-            {
-                var currentColumn = panel.Children.IndexOf(StackedFrame.TopFrame);
-                if (currentColumn > 1)
-                {
-                    scroll.ScrollToHorizontalOffset(double.PositiveInfinity);
-                }
-                else
-                {
-                    // Top Page always starts at position 0
-                    scroll.ScrollToHorizontalOffset(0);
-                }
-            }
+            StackedFrame?.UpdateScrollPosition();
         }
 
         #endregion
