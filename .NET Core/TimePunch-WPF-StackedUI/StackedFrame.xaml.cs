@@ -59,6 +59,23 @@ namespace TimePunch.StackedUI
 
         #endregion
 
+        #region Property IsLoading
+
+        public static readonly DependencyProperty IsLoadingProperty =
+            DependencyProperty.RegisterAttached("IsLoading", typeof(bool), typeof(StackedFrame), new PropertyMetadata(false));
+
+        /// <summary>
+        /// Gets or sets the IsLoading.
+        /// </summary>
+        /// <value>The IsLoading.</value>
+        public bool IsLoading
+        {
+            get => (bool)GetValue(IsLoadingProperty);
+            set => SetValue(IsLoadingProperty, value);
+        }
+
+        #endregion
+
         #region Property TopFrame
 
         public static readonly DependencyProperty TopFrameProperty =

@@ -1,3 +1,4 @@
+using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia;
 
 namespace TimePunch_Uno_StackedUI_Demo;
@@ -8,7 +9,7 @@ public class Program
     {
         App.InitializeLogging();
 
-        var host = SkiaHostBuilder.Create()
+        var host = UnoPlatformHostBuilder.Create()
             .App(() => new App())
             .UseX11()
             .UseLinuxFrameBuffer()

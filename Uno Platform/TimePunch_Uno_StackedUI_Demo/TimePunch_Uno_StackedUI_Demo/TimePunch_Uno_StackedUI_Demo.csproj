@@ -1,7 +1,9 @@
 <Project Sdk="Uno.Sdk">
   <PropertyGroup>
-      <!--<TargetFrameworks>net8.0-android;net8.0-ios;net8.0-maccatalyst;net8.0-windows10.0.26100;net8.0-browserwasm;net8.0-desktop</TargetFrameworks>-->
-      <TargetFrameworks>net8.0-android;net8.0-ios;net8.0-maccatalyst;net8.0-browserwasm;net8.0-desktop</TargetFrameworks>
+      <!--<TargetFrameworks>net10.0-android;net10.0-ios;net10.0-maccatalyst;net10.0-windows10.0.26100;net10.0-browserwasm;net10.0-desktop</TargetFrameworks>-->
+      <!--<TargetFrameworks>net10.0-android;net10.0-ios;net10.0-maccatalyst;net10.0-browserwasm;net10.0-desktop</TargetFrameworks>-->
+
+      <TargetFrameworks>net10.0-android;net10.0-ios;net10.0-browserwasm;net10.0-desktop</TargetFrameworks>
       <OutputType>Exe</OutputType>
     <UnoSingleProject>true</UnoSingleProject>
 
@@ -14,7 +16,7 @@
     <ApplicationVersion>1</ApplicationVersion>
     <!-- Package Publisher -->
     <ApplicationPublisher>BitKFu</ApplicationPublisher>
-      <MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>
+      <!--<MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>-->
     <!-- Package Description -->
     <Description>TimePunch_Uno_StackedUI_Demo powered by Uno Platform.</Description>
     <!--
@@ -34,36 +36,38 @@
       https://aka.platform.uno/singleproject-features
     -->
     <UnoFeatures>
+      Hosting;
+        SkiaRenderer;
     </UnoFeatures>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-android|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0-android|AnyCPU'">
     <NoWarn>$(NoWarn);NU1507;NETSDK1201;PRI257;UNOB0013;UNOB0014</NoWarn>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-ios|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0-ios|AnyCPU'">
     <NoWarn>$(NoWarn);NU1507;NETSDK1201;PRI257;UNOB0013;UNOB0014</NoWarn>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-maccatalyst|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0-maccatalyst|AnyCPU'">
     <NoWarn>$(NoWarn);NU1507;NETSDK1201;PRI257;UNOB0013;UNOB0014</NoWarn>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-browserwasm|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0-browserwasm|AnyCPU'">
     <NoWarn>$(NoWarn);NU1507;NETSDK1201;PRI257;UNOB0013;UNOB0014</NoWarn>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-desktop|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0-desktop|AnyCPU'">
     <NoWarn>$(NoWarn);NU1507;NETSDK1201;PRI257;UNOB0013;UNOB0014</NoWarn>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0-android|AnyCPU'">
     <NoWarn>$(NoWarn);NU1507;NETSDK1201;PRI257;UNOB0013;UNOB0014</NoWarn>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-ios|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0-ios|AnyCPU'">
     <NoWarn>$(NoWarn);NU1507;NETSDK1201;PRI257;UNOB0013;UNOB0014</NoWarn>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-maccatalyst|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0-maccatalyst|AnyCPU'">
     <NoWarn>$(NoWarn);NU1507;NETSDK1201;PRI257;UNOB0013;UNOB0014</NoWarn>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-browserwasm|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0-browserwasm|AnyCPU'">
     <NoWarn>$(NoWarn);NU1507;NETSDK1201;PRI257;UNOB0013;UNOB0014</NoWarn>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-desktop|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0-desktop|AnyCPU'">
     <NoWarn>$(NoWarn);NU1507;NETSDK1201;PRI257;UNOB0013;UNOB0014</NoWarn>
   </PropertyGroup>
   <ItemGroup>
@@ -99,7 +103,6 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" />
-    <PackageReference Include="System.Private.Uri" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="..\..\..\.NET Core\TimePunch-WinUI-StackedUI-Demo\Views\Demo1View.xaml" Link="Views\Demo1View.xaml">

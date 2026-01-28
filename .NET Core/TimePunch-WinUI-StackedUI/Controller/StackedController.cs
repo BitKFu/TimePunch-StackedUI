@@ -329,8 +329,16 @@ namespace TimePunch.StackedUI.Controller
             {
                 using (new DoPrevent(this))
                 {
-                    if (!await vm.InitializePageAsync(message, dispatcher))
-                        return null;
+                    StackedFrame.IsLoading = true;
+                    try
+                    {
+                        if (!await vm.InitializePageAsync(message, dispatcher))
+                            return null;
+                    }
+                    finally
+                    {
+                        StackedFrame.IsLoading = false;
+                    }
 
                     //// Save the current page width before adding a new one
                     //var pagePersister = GetPagePersister();

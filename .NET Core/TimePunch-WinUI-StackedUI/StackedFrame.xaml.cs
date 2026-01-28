@@ -5,7 +5,6 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media.Animation;
 using System.Collections.ObjectModel;
-using System.Data.Common;
 using TimePunch.MVVM.Controller;
 using TimePunch.MVVM.EventAggregation;
 using TimePunch.StackedUI.Controller;
@@ -76,6 +75,23 @@ namespace TimePunch.StackedUI
         {
             get => (bool)GetValue(CanGoBackProperty) && !Monitor.IsEntered(fadeInOut);
             set => SetValue(CanGoBackProperty, value);
+        }
+
+        #endregion
+
+        #region Property IsLoading
+
+        public static readonly DependencyProperty IsLoadingProperty =
+            DependencyProperty.RegisterAttached("IsLoading", typeof(bool), typeof(StackedFrame), new PropertyMetadata(false));
+
+        /// <summary>
+        /// Gets or sets the IsLoading.
+        /// </summary>
+        /// <value>The IsLoading.</value>
+        public bool IsLoading
+        {
+            get => (bool)GetValue(IsLoadingProperty);
+            set => SetValue(IsLoadingProperty, value);
         }
 
         #endregion

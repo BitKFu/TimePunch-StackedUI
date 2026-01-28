@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.11.35327.3
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11205.157 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimePunch_Uno_StackedUI", "TimePunch_Uno_StackedUI.csproj", "{CD9BD4D7-CD9B-4E7A-903C-A714B8DB58D6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimePunch_Uno_StackedUI_Demo", "..\TimePunch_Uno_StackedUI_Demo\TimePunch_Uno_StackedUI_Demo\TimePunch_Uno_StackedUI_Demo.csproj", "{3AC01DAF-5258-4CC9-B362-42D4CAB4B87E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimePunch_WinUI_Uno_StackedUI_Demo", "..\TimePunch_WinUI_Uno_StackedUI_Demo\TimePunch_WinUI_Uno_StackedUI_Demo\TimePunch_WinUI_Uno_StackedUI_Demo.csproj", "{90909854-C2C5-459E-B879-FD5B3D87856B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,8 +21,13 @@ Global
 		{CD9BD4D7-CD9B-4E7A-903C-A714B8DB58D6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3AC01DAF-5258-4CC9-B362-42D4CAB4B87E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3AC01DAF-5258-4CC9-B362-42D4CAB4B87E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3AC01DAF-5258-4CC9-B362-42D4CAB4B87E}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{3AC01DAF-5258-4CC9-B362-42D4CAB4B87E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3AC01DAF-5258-4CC9-B362-42D4CAB4B87E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90909854-C2C5-459E-B879-FD5B3D87856B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90909854-C2C5-459E-B879-FD5B3D87856B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90909854-C2C5-459E-B879-FD5B3D87856B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90909854-C2C5-459E-B879-FD5B3D87856B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

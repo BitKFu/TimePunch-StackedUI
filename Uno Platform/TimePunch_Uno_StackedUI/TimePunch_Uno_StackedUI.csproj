@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Uno.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net8.0;net8.0-ios;net8.0-maccatalyst;net8.0-android;net8.0-browserwasm;net8.0-desktop;</TargetFrameworks>
+    <TargetFrameworks>net10.0;net10.0-ios;net10.0-maccatalyst;net10.0-android;net10.0-browserwasm;net10.0-desktop;</TargetFrameworks>
     <UnoSingleProject>true</UnoSingleProject>
     <OutputType>Library</OutputType>
     <!-- Ensures the .xr.xml files are generated in a proper layout folder -->
@@ -11,13 +11,13 @@
     <RootNamespace>TimePunch.StackedUI</RootNamespace>
     <Company>TimePunch KG</Company>
     <Authors>BitKFu</Authors>
-    <PackageVersion>0.9.4.0</PackageVersion>
+    <PackageVersion>0.9.5.0</PackageVersion>
     <IncludeSymbols>True</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <PackageTags>uno;winui;stacked</PackageTags>
     <BaseOutputPath>..\..\output</BaseOutputPath>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>0.9.4</Version>
+    <Version>0.9.5</Version>
 
     <!--
       UnoFeatures let's you quickly add and manage implicit package references based on the features you want to use.
@@ -79,9 +79,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommunityToolkit.WinUI.Controls.Primitives" Version="8.1.240916" />
-    <PackageReference Include="CommunityToolkit.WinUI.Controls.Sizers" Version="8.1.240916" />
-    <PackageReference Include="TimePunch-Uno-MVVM" Version="0.9.1" />
+    <PackageReference Include="CommunityToolkit.WinUI.Controls.Primitives" Version="8.2.250402" />
+    <PackageReference Include="CommunityToolkit.WinUI.Controls.Sizers" Version="8.2.250402" />
+    <PackageReference Include="TimePunch-Uno-MVVM" Version="0.9.4" />
   </ItemGroup>
 
   <ItemGroup>

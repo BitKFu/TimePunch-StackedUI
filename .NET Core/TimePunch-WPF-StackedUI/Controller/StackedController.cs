@@ -5,7 +5,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Threading;
 using TimePunch.MVVM.Controller;
 using TimePunch.MVVM.EventAggregation;
 using TimePunch.MVVM.ViewModels;
@@ -317,21 +316,20 @@ namespace TimePunch.StackedUI.Controller
             {
                 using (new DoPrevent(this))
                 {
-                    if (!await vm.InitializePageAsync(message))
-                        return null;
+                    StackedFrame.IsLoading = true;
+                    try
+                    {
+                        if (!await vm.InitializePageAsync(message))
+                            return null;
+                    }
+                    finally
+                    {
+                        StackedFrame.IsLoading = false;
+                    }
 
                     // Save the current page width before adding a new one
                     var pagePersister = GetPagePersister();
                     SaveCurrentPageWidth(pagePersister);
-
-                    //if (pagePersister != null && StackedMode == StackedMode.Resizeable)
-                    //{
-                    //    // Try to read the saved width
-                    //    var frameKey = StackedFrameExtension.GetFrameKey(pageToAdd);
-                    //    var pageWidth = pagePersister.GetPageWidth(frameKey);
-                    //    if (pageWidth.IsAbsolute)
-                    //        pageToAdd.Width = pageWidth.Value;
-                    //}
 
                     // Now add the page
                     var addedPage = await AddPage(pageToAdd, basePage, isResizable, isModal);
