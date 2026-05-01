@@ -10,11 +10,12 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Company>TimePunch KG</Company>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageVersion>1.1.0.0</PackageVersion>
+    <PackageVersion>1.2.0.0</PackageVersion>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
     <AssemblyName>TpStackedUI</AssemblyName>
+    <RunAnalyzersDuringBuild>False</RunAnalyzersDuringBuild>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

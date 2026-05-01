@@ -6,6 +6,7 @@
     <RootNamespace>TimePunch_WPF_StackedModern_Demo</RootNamespace>
     <UseWPF>true</UseWPF>
     <LangVersion>latest</LangVersion>
+    <RunAnalyzersDuringBuild>False</RunAnalyzersDuringBuild>
   </PropertyGroup>
 
   <ItemGroup>

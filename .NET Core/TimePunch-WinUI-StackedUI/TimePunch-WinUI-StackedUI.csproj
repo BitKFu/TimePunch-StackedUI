@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
     <RuntimeIdentifiers>win-x64;win-x86;win-arm64</RuntimeIdentifiers>
     <UseWinUI>true</UseWinUI>
     <Authors>BitKFu</Authors>
@@ -14,7 +14,7 @@
     <AssemblyOriginatorKeyFile>TpStackedUI.snk</AssemblyOriginatorKeyFile>
     <Company>TimePunch KG</Company>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageVersion>1.1.0.0</PackageVersion>
+    <PackageVersion>1.2.0.0</PackageVersion>
     <IncludeSymbols>True</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <PackageTags>framework;winui;stacked</PackageTags>
@@ -32,6 +32,7 @@
   <PropertyGroup>
     <NoWarn>$(NoWarn);CS8002</NoWarn>
     <AssemblyName>TpStackedWinUI</AssemblyName>
+    <RunAnalyzersDuringBuild>False</RunAnalyzersDuringBuild>
   </PropertyGroup>
 
   <ItemGroup>
