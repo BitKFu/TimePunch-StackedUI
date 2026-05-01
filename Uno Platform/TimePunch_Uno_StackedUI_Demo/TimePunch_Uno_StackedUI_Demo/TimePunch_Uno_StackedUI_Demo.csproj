@@ -92,7 +92,12 @@
     <Compile Include="..\..\..\.NET Core\TimePunch-WinUI-StackedUI-Demo\Views\LogonDialog.xaml.cs" Link="Views\LogonDialog.xaml.cs" />
     <Compile Include="..\..\..\.NET Core\TimePunch-WinUI-StackedUI-Demo\Views\LogonView.xaml.cs" Link="Views\LogonView.xaml.cs" />
   </ItemGroup>
-  <ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-browserwasm'">
+    <ProjectReference Include="..\..\TimePunch_Uno_StackedUI\TimePunch_Uno_StackedUI.csproj"
+                      SkipGetTargetFrameworkProperties="true"
+                      SetTargetFramework="TargetFramework=net10.0" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' != 'net10.0-browserwasm'">
     <ProjectReference Include="..\..\TimePunch_Uno_StackedUI\TimePunch_Uno_StackedUI.csproj" />
   </ItemGroup>
   <ItemGroup>
@@ -103,6 +108,8 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" />
+    <PackageReference Include="Uno.WinUI.Graphics2DSK" />
+    <PackageReference Include="Uno.WinUI.Lottie" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="..\..\..\.NET Core\TimePunch-WinUI-StackedUI-Demo\Views\Demo1View.xaml" Link="Views\Demo1View.xaml">

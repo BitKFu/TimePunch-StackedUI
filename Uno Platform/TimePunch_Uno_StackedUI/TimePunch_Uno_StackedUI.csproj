@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Uno.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net10.0;net10.0-ios;net10.0-maccatalyst;net10.0-android;net10.0-browserwasm;net10.0-desktop;</TargetFrameworks>
+    <TargetFrameworks>net10.0;net10.0-ios;net10.0-maccatalyst;net10.0-android;net10.0-desktop;</TargetFrameworks>
     <UnoSingleProject>true</UnoSingleProject>
     <OutputType>Library</OutputType>
     <!-- Ensures the .xr.xml files are generated in a proper layout folder -->
@@ -79,9 +79,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommunityToolkit.WinUI.Controls.Primitives" Version="8.2.250402" />
-    <PackageReference Include="CommunityToolkit.WinUI.Controls.Sizers" Version="8.2.250402" />
+    <PackageReference Include="CommunityToolkit.WinUI.Controls.Primitives" Version="8.2.251219" />
+    <PackageReference Include="CommunityToolkit.WinUI.Controls.Sizers" Version="8.2.251219" />
     <PackageReference Include="TimePunch-Uno-MVVM" Version="0.9.4" />
+    <PackageReference Include="SkiaSharp.Views.Uno.WinUI" Version="3.119.1" />
+    <PackageReference Include="Uno.WinUI" Version="6.5.153" />
+    <PackageReference Include="Uno.WinUI.Graphics2DSK" Version="6.5.153" />
+    <PackageReference Include="Uno.WinUI.Lottie" Version="6.5.153" />
   </ItemGroup>
 
   <ItemGroup>

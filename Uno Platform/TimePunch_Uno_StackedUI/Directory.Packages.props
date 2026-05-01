@@ -1,0 +1,12 @@
+<Project>
+  <ItemGroup>
+    <PackageVersion Include="CommunityToolkit.WinUI.Controls.Primitives" Version="8.2.251219" />
+    <PackageVersion Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.2.251219" />
+    <PackageVersion Include="CommunityToolkit.WinUI.Controls.Sizers" Version="8.2.251219" />
+    <PackageVersion Include="SkiaSharp.Views.Uno.WinUI" Version="3.119.1" />
+    <PackageVersion Include="TimePunch-Uno-MVVM" Version="0.9.4" />
+    <PackageVersion Include="Uno.WinUI" Version="6.5.153" />
+    <PackageVersion Include="Uno.WinUI.Graphics2DSK" Version="6.5.153" />
+    <PackageVersion Include="Uno.WinUI.Lottie" Version="6.5.153" />
+  </ItemGroup>
+</Project>

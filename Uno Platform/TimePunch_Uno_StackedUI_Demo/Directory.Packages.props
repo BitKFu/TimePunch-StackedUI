@@ -9,6 +9,8 @@
   </ItemGroup>
   <ItemGroup>
     <PackageVersion Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.2.251219" />
+    <PackageVersion Include="Uno.WinUI.Graphics2DSK" Version="6.5.153" />
+    <PackageVersion Include="Uno.WinUI.Lottie" Version="6.5.153" />
     <PackageVersion Include="System.Private.Uri" Version="4.3.2" />
     <PackageVersion Include="Uno.UI.Runtime.Skia" Version="5.6.99" />
   </ItemGroup>
