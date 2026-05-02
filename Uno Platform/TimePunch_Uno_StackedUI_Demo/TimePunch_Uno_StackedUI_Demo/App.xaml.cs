@@ -16,40 +16,32 @@ public partial class App : Application
         this.InitializeComponent();
     }
 
-    protected Window? MainWindow { get; private set; }
+    private Window? _window;
 
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
-        MainWindow = new Window();
+        _window = new Window();
 #if DEBUG
-        MainWindow.EnableHotReload();
+        _window.EnableHotReload();
 #endif
-        DemoKernel.Instance.AppWindow = MainWindow;
+        DemoKernel.Instance.AppWindow = _window;
 
-        // Do not repeat app initialization when the Window already has content,
-        // just ensure that the window is active
-        if (MainWindow.Content is not Frame rootFrame)
+        if (_window.Content is not Frame rootFrame)
         {
-            // Create a Frame to act as the navigation context and navigate to the first page
             rootFrame = new Frame();
-
-            // Place the frame in the current Window
-            MainWindow.Content = rootFrame;
-
+            _window.Content = rootFrame;
             rootFrame.NavigationFailed += OnNavigationFailed;
         }
 
         if (rootFrame.Content == null)
         {
-            // When the navigation stack isn't restored navigate to the first page,
-            // configuring the new page by passing required information as a navigation
-            // parameter
             rootFrame.Navigate(typeof(MainWindow), args.Arguments);
         }
 
-        MainWindow.SetWindowIcon();
-        // Ensure the current window is active
-        MainWindow.Activate();
+#if !__WASM__
+        _window.SetWindowIcon();
+#endif
+        _window.Activate();
     }
 
     /// <summary>

@@ -13,9 +13,11 @@ namespace TimePunch.StackedUI.Window
     {
         public StackedWindow()
         {
+#if !(__WASM__)
             ExtendsContentIntoTitleBar = true;
             AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
             AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Tall;
+#endif
         }
 
     }

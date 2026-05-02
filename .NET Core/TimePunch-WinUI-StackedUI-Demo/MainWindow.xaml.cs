@@ -28,8 +28,10 @@ namespace TimePunch_WinUI_StackedUI_Demo
 
         private void FrameworkElement_OnLoaded(object sender, RoutedEventArgs e)
         {
+#if !__WASM__
             Activated += MainWindow_Activated;
             SetTitleBar(AppTitleBar);
+#endif
 
             if (DemoKernel.Instance.Controller is StackedController stackedController)
                 stackedController.StackedFrame = StackedFrame;

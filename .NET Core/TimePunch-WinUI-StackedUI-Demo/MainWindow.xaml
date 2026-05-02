@@ -12,10 +12,6 @@
     Title="MainWindow" 
     mc:Ignorable="d">
 
-    <Window.SystemBackdrop>
-        <DesktopAcrylicBackdrop/>
-    </Window.SystemBackdrop>
-
     <controls:DpiDecorator Scale="1" x:Name="DpiDecorator" x:FieldModifier="public">
        <Grid DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=MainWindowViewModel}"
           x:Name="ContentGrid"
