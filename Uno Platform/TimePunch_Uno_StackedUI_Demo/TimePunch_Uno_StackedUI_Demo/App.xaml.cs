@@ -21,7 +21,7 @@ public partial class App : Application
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
         _window = new Window();
-#if DEBUG
+#if DEBUG && !__WASM__
         _window.EnableHotReload();
 #endif
         DemoKernel.Instance.AppWindow = _window;

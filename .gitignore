@@ -259,3 +259,6 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+/Uno Platform/TimePunch_Uno_StackedUI/browser-runtime-output.txt
+/Uno Platform/TimePunch_Uno_StackedUI/browser-server.pid
+/Uno Platform/TimePunch_Uno_StackedUI/package-lock.json

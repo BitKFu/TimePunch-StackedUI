@@ -8,6 +8,8 @@
     <UnoSingleProject>true</UnoSingleProject>
     <BaseIntermediateOutputPath>obj\tpuno\</BaseIntermediateOutputPath>
     <BaseOutputPath>bin\tpuno\</BaseOutputPath>
+    <WasmEnableHotReload>false</WasmEnableHotReload>
+    <MetadataUpdaterSupport>false</MetadataUpdaterSupport>
 
     <!-- Display name -->
     <ApplicationTitle>TimePunch_Uno_StackedUI_Demo</ApplicationTitle>
