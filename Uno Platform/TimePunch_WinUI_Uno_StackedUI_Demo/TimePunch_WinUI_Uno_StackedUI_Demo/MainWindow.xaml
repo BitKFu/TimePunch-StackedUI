@@ -26,6 +26,7 @@
                             IsBackEnabled="False"
                             IsPaneOpen="True"
                             IsSettingsVisible="False"
+                            ItemInvoked="NavigationView_OnItemInvoked"
                             SelectedItem="{Binding Path=SelectedMenuItem, Mode=TwoWay}"
                             FooterMenuItemsSource="{Binding Path=FooterPages, Mode=OneWay}"
                             MenuItemsSource="{Binding Path=DemoPages, Mode=OneWay}">

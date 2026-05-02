@@ -26,4 +26,17 @@ public sealed partial class MainWindow : UserControl
             _ = viewModel.InitializePageAsync(this, DispatcherQueue);
         }
     }
+
+    private void NavigationView_OnItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
+    {
+        if (ContentGrid.DataContext is not MainWindowViewModel viewModel)
+        {
+            return;
+        }
+
+        if (args.InvokedItemContainer?.DataContext is PageLink pageLink)
+        {
+            viewModel.SelectedMenuItem = pageLink;
+        }
+    }
 }
