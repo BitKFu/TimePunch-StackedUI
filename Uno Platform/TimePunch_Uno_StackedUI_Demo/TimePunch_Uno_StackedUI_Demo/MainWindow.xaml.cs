@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using TimePunch_WinUI_StackedUI_Demo.Core;
 using TimePunch_WinUI_StackedUI_Demo.ViewModels;
 using TimePunch.StackedUI.Controller;
@@ -16,17 +17,37 @@ namespace TimePunch_WinUI_StackedUI_Demo
     {
         public MainWindow()
         {
+            Console.WriteLine("[TPUNO] MainWindow ctor start");
+            Debug.WriteLine("[TPUNO] MainWindow ctor start");
             DemoKernel.Instance.MainWindow = this;
             this.InitializeComponent();
 
             if (DemoKernel.Instance.Controller is StackedController stackedController)
+            {
                 stackedController.StackedFrame = StackedFrame;
+                Console.WriteLine("[TPUNO] MainWindow ctor assigned StackedFrame");
+                Debug.WriteLine("[TPUNO] MainWindow ctor assigned StackedFrame");
+            }
+
+            Console.WriteLine("[TPUNO] MainWindow ctor done");
+            Debug.WriteLine("[TPUNO] MainWindow ctor done");
         }
 
         private void FrameworkElement_OnLoaded(object sender, RoutedEventArgs e)
         {
+            Console.WriteLine("[TPUNO] MainWindow loaded");
+            Debug.WriteLine("[TPUNO] MainWindow loaded");
             if (DataContext is MainWindowViewModel viewModel)
+            {
+                Console.WriteLine("[TPUNO] MainWindow loaded initialize MainWindowViewModel");
+                Debug.WriteLine("[TPUNO] MainWindow loaded initialize MainWindowViewModel");
                 viewModel.InitializePageAsync(this, DispatcherQueue);
+            }
+            else
+            {
+                Console.WriteLine("[TPUNO] MainWindow loaded missing MainWindowViewModel");
+                Debug.WriteLine("[TPUNO] MainWindow loaded missing MainWindowViewModel");
+            }
         }
 
 

@@ -3,6 +3,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <BaseIntermediateOutputPath>obj\tpuno\</BaseIntermediateOutputPath>
+    <BaseOutputPath>bin\tpuno\</BaseOutputPath>
+    <WasmEnableHotReload>false</WasmEnableHotReload>
+    <MetadataUpdaterSupport>false</MetadataUpdaterSupport>
 
     <!--
       Adding NoWarn to remove build warnings

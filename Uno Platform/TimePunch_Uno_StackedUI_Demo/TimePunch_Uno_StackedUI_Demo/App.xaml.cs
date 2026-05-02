@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using Microsoft.Extensions.Logging;
 using TimePunch_WinUI_StackedUI_Demo;
 using TimePunch_WinUI_StackedUI_Demo.Core;
@@ -13,21 +14,43 @@ public partial class App : Application
     /// </summary>
     public App()
     {
+        Console.WriteLine("[TPUNO] App ctor start");
         this.InitializeComponent();
+        Console.WriteLine("[TPUNO] App ctor done");
     }
 
     private Window? _window;
 
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
+        Console.WriteLine("[TPUNO] App.OnLaunched start");
+        Debug.WriteLine("[TPUNO] App.OnLaunched start");
+
+#if __WASM__
+        Console.WriteLine("[TPUNO] App.OnLaunched before CreateBuilder");
+        var builder = this.CreateBuilder(args);
+        _window = builder.Window;
+        Console.WriteLine("[TPUNO] App.OnLaunched after CreateBuilder");
+#else
+        Console.WriteLine("[TPUNO] App.OnLaunched before base.OnLaunched");
+        base.OnLaunched(args);
+        Console.WriteLine("[TPUNO] App.OnLaunched after base.OnLaunched");
+        Console.WriteLine("[TPUNO] App.OnLaunched before new Window");
         _window = new Window();
+        Console.WriteLine("[TPUNO] App.OnLaunched after new Window");
+#endif
+
 #if DEBUG && !__WASM__
         _window.EnableHotReload();
 #endif
+        Console.WriteLine("[TPUNO] App.OnLaunched before DemoKernel.Instance");
         DemoKernel.Instance.AppWindow = _window;
+        Console.WriteLine("[TPUNO] App.OnLaunched after DemoKernel.Instance");
 
         if (_window.Content is not Frame rootFrame)
         {
+            Console.WriteLine("[TPUNO] App.OnLaunched create root Frame");
+            Debug.WriteLine("[TPUNO] App.OnLaunched create root Frame");
             rootFrame = new Frame();
             _window.Content = rootFrame;
             rootFrame.NavigationFailed += OnNavigationFailed;
@@ -35,13 +58,19 @@ public partial class App : Application
 
         if (rootFrame.Content == null)
         {
+            Console.WriteLine("[TPUNO] App.OnLaunched navigate MainWindow");
+            Debug.WriteLine("[TPUNO] App.OnLaunched navigate MainWindow");
             rootFrame.Navigate(typeof(MainWindow), args.Arguments);
         }
 
 #if !__WASM__
         _window.SetWindowIcon();
 #endif
+        Console.WriteLine("[TPUNO] App.OnLaunched activate window");
+        Debug.WriteLine("[TPUNO] App.OnLaunched activate window");
         _window.Activate();
+        Console.WriteLine("[TPUNO] App.OnLaunched done");
+        Debug.WriteLine("[TPUNO] App.OnLaunched done");
     }
 
     /// <summary>
@@ -60,13 +89,6 @@ public partial class App : Application
     public static void InitializeLogging()
     {
 #if DEBUG
-        // Logging is disabled by default for release builds, as it incurs a significant
-        // initialization cost from Microsoft.Extensions.Logging setup. If startup performance
-        // is a concern for your application, keep this disabled. If you're running on the web or
-        // desktop targets, you can use URL or command line parameters to enable it.
-        //
-        // For more performance documentation: https://platform.uno/docs/articles/Uno-UI-Performance.html
-
         var factory = LoggerFactory.Create(builder =>
         {
 #if __WASM__
@@ -76,41 +98,10 @@ public partial class App : Application
 #else
             builder.AddConsole();
 #endif
-
-            // Exclude logs below this level
             builder.SetMinimumLevel(LogLevel.Information);
-
-            // Default filters for Uno Platform namespaces
             builder.AddFilter("Uno", LogLevel.Warning);
             builder.AddFilter("Windows", LogLevel.Warning);
             builder.AddFilter("Microsoft", LogLevel.Warning);
-
-            // Generic Xaml events
-            // builder.AddFilter("Microsoft.UI.Xaml", LogLevel.Debug );
-            // builder.AddFilter("Microsoft.UI.Xaml.VisualStateGroup", LogLevel.Debug );
-            // builder.AddFilter("Microsoft.UI.Xaml.StateTriggerBase", LogLevel.Debug );
-            // builder.AddFilter("Microsoft.UI.Xaml.UIElement", LogLevel.Debug );
-            // builder.AddFilter("Microsoft.UI.Xaml.FrameworkElement", LogLevel.Trace );
-
-            // Layouter specific messages
-            // builder.AddFilter("Microsoft.UI.Xaml.Controls", LogLevel.Debug );
-            // builder.AddFilter("Microsoft.UI.Xaml.Controls.Layouter", LogLevel.Debug );
-            // builder.AddFilter("Microsoft.UI.Xaml.Controls.Panel", LogLevel.Debug );
-
-            // builder.AddFilter("Windows.Storage", LogLevel.Debug );
-
-            // Binding related messages
-            // builder.AddFilter("Microsoft.UI.Xaml.Data", LogLevel.Debug );
-            // builder.AddFilter("Microsoft.UI.Xaml.Data", LogLevel.Debug );
-
-            // Binder memory references tracking
-            // builder.AddFilter("Uno.UI.DataBinding.BinderReferenceHolder", LogLevel.Debug );
-
-            // DevServer and HotReload related
-            // builder.AddFilter("Uno.UI.RemoteControl", LogLevel.Information);
-
-            // Debug JS interop
-            // builder.AddFilter("Uno.Foundation.WebAssemblyRuntime", LogLevel.Debug );
         });
 
         global::Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory = factory;

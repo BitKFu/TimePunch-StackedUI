@@ -91,8 +91,8 @@ namespace TimePunch_WinUI_StackedUI_Demo.Core
 
         public async Task<NavigateToStartView> Handle(NavigateToStartView message)
         {
-            var page = new LogonView();
-            if (page.DataContext is LogonViewModel viewModel)
+            var page = new Demo1View();
+            if (page.DataContext is Demo1ViewModel viewModel)
             {
                 await InitTopPageAsync(DispatcherQueue.GetForCurrentThread(), message, viewModel, page);
             }

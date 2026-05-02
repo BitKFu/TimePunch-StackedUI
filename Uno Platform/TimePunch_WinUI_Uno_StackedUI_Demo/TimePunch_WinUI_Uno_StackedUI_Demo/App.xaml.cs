@@ -1,5 +1,7 @@
 using Uno.Resizetizer;
 
+using TimePunch_WinUI_StackedUI_Demo.Core;
+
 namespace TimePunch_WinUI_Uno_StackedUI_Demo;
 
 public partial class App : Application
@@ -79,6 +81,7 @@ public partial class App : Application
                 .UseNavigation(RegisterRoutes)
             );
         MainWindow = builder.Window;
+        DemoKernel.Instance.AppWindow = MainWindow;
 
 #if DEBUG
         MainWindow.UseStudio();

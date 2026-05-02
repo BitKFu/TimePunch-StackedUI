@@ -6,5 +6,8 @@
     See https://aka.platform.uno/using-uno-sdk#implicit-packages for more information regarding the Implicit Packages.
   -->
   <ItemGroup>
+    <PackageVersion Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.2.251219" />
+    <PackageVersion Include="Uno.WinUI.Graphics2DSK" Version="6.5.153" />
+    <PackageVersion Include="Uno.WinUI.Lottie" Version="6.5.153" />
   </ItemGroup>
 </Project>

@@ -1,55 +1,30 @@
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media;
-using TimePunch_WinUI_StackedUI_Demo.Core;
 using Microsoft.UI.Xaml.Controls;
-using TimePunch_WinUI_StackedUI_Demo.ViewModels;
-using TimePunch.MVVM.Controller;
-using TimePunch.MVVM.EventAggregation;
 using TimePunch.StackedUI.Controller;
 using TimePunch.StackedUI.Model;
-using TimePunch.StackedUI.Window;
-using WindowActivatedEventArgs = Microsoft.UI.Xaml.WindowActivatedEventArgs;
+using TimePunch_WinUI_StackedUI_Demo.Core;
+using TimePunch_WinUI_StackedUI_Demo.ViewModels;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
 namespace TimePunch_WinUI_StackedUI_Demo
 {
-    /// <summary>
-    /// An empty window that can be used on its own or navigated to within a Frame.
-    /// </summary>
-    public sealed partial class MainWindow : StackedWindow
+    public sealed partial class MainWindow : UserControl
     {
         public MainWindow()
         {
-            DemoKernel.Instance.MainWindow = this;
             this.InitializeComponent();
+            DemoKernel.Instance.MainWindow = this;
         }
 
         private void FrameworkElement_OnLoaded(object sender, RoutedEventArgs e)
         {
-#if !__WASM__
-            Activated += MainWindow_Activated;
-            SetTitleBar(AppTitleBar);
-#endif
-
             if (DemoKernel.Instance.Controller is StackedController stackedController)
                 stackedController.StackedFrame = StackedFrame;
             
             if (ContentGrid.DataContext is MainWindowViewModel viewModel)
-                viewModel.InitializePageAsync(this, DispatcherQueue);
-        }
-
-        private void MainWindow_Activated(object sender, WindowActivatedEventArgs args)
-        {
-            if (args.WindowActivationState == WindowActivationState.Deactivated)
-            {
-                TitleBarTextBlock.Foreground = (SolidColorBrush)App.Current.Resources["WindowCaptionForegroundDisabled"];
-            }
-            else
-            {
-                TitleBarTextBlock.Foreground = (SolidColorBrush)App.Current.Resources["WindowCaptionForeground"];
-            }
+                _ = viewModel.InitializePageAsync(this, DispatcherQueue);
         }
 
         private void OnBreadcrumbClick(BreadcrumbBar sender, BreadcrumbBarItemClickedEventArgs args)

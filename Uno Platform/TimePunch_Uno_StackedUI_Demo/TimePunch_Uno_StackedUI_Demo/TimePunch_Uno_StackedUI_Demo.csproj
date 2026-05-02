@@ -6,10 +6,6 @@
       <TargetFrameworks>net10.0-android;net10.0-ios;net10.0-browserwasm;net10.0-desktop</TargetFrameworks>
       <OutputType>Exe</OutputType>
     <UnoSingleProject>true</UnoSingleProject>
-    <BaseIntermediateOutputPath>obj\tpuno\</BaseIntermediateOutputPath>
-    <BaseOutputPath>bin\tpuno\</BaseOutputPath>
-    <WasmEnableHotReload>false</WasmEnableHotReload>
-    <MetadataUpdaterSupport>false</MetadataUpdaterSupport>
 
     <!-- Display name -->
     <ApplicationTitle>TimePunch_Uno_StackedUI_Demo</ApplicationTitle>
@@ -55,6 +51,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0-browserwasm|AnyCPU'">
     <NoWarn>$(NoWarn);NU1507;NETSDK1201;PRI257;UNOB0013;UNOB0014</NoWarn>
+    <MonoRuntimeDebuggerEnabled>false</MonoRuntimeDebuggerEnabled>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0-desktop|AnyCPU'">
     <NoWarn>$(NoWarn);NU1507;NETSDK1201;PRI257;UNOB0013;UNOB0014</NoWarn>

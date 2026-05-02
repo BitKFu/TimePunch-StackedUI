@@ -37,4 +37,54 @@
     </UnoFeatures>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\TimePunch_Uno_StackedUI\TimePunch_Uno_StackedUI.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\..\.NET Core\TimePunch-WinUI-StackedUI-Demo\Core\DemoController.cs" Link="Core\DemoController.cs" />
+    <Compile Include="..\..\..\.NET Core\TimePunch-WinUI-StackedUI-Demo\Core\DemoKernel.cs" Link="Core\DemoKernel.cs" />
+    <Compile Include="..\..\..\.NET Core\TimePunch-WinUI-StackedUI-Demo\Core\DemoPagePersister.cs" Link="Core\DemoPagePersister.cs" />
+    <Compile Include="..\..\..\.NET Core\TimePunch-WinUI-StackedUI-Demo\Core\DemoViewModelBase.cs" Link="Core\DemoViewModelBase.cs" />
+    <Compile Include="..\..\..\.NET Core\TimePunch-WinUI-StackedUI-Demo\Core\DemoViewModelLocator.cs" Link="Core\DemoViewModelLocator.cs" />
+    <Compile Include="..\..\..\.NET Core\TimePunch-WinUI-StackedUI-Demo\Events\NavigationEvents.cs" Link="Events\NavigationEvents.cs" />
+    <Compile Include="..\..\..\.NET Core\TimePunch-WinUI-StackedUI-Demo\Models\Resource.cs" Link="Models\Resource.cs" />
+    <Compile Include="..\..\..\.NET Core\TimePunch-WinUI-StackedUI-Demo\ViewModels\Demo1ViewModel.cs" Link="ViewModels\Demo1ViewModel.cs" />
+    <Compile Include="..\..\..\.NET Core\TimePunch-WinUI-StackedUI-Demo\ViewModels\Demo2ViewModel.cs" Link="ViewModels\Demo2ViewModel.cs" />
+    <Compile Include="..\..\..\.NET Core\TimePunch-WinUI-StackedUI-Demo\ViewModels\Demo3ViewModel.cs" Link="ViewModels\Demo3ViewModel.cs" />
+    <Compile Include="..\..\..\.NET Core\TimePunch-WinUI-StackedUI-Demo\ViewModels\Demo4ViewModel.cs" Link="ViewModels\Demo4ViewModel.cs" />
+    <Compile Include="..\..\..\.NET Core\TimePunch-WinUI-StackedUI-Demo\ViewModels\MainWindowViewModel.cs" Link="ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="..\..\..\.NET Core\TimePunch-WinUI-StackedUI-Demo\ViewModels\SettingsViewModel.cs" Link="ViewModels\SettingsViewModel.cs" />
+    <Compile Include="..\..\..\.NET Core\TimePunch-WinUI-StackedUI-Demo\Views\Demo1View.xaml.cs" Link="Views\Demo1View.xaml.cs" />
+    <Compile Include="..\..\..\.NET Core\TimePunch-WinUI-StackedUI-Demo\Views\Demo2View.xaml.cs" Link="Views\Demo2View.xaml.cs" />
+    <Compile Include="..\..\..\.NET Core\TimePunch-WinUI-StackedUI-Demo\Views\Demo3View.xaml.cs" Link="Views\Demo3View.xaml.cs" />
+    <Compile Include="..\..\..\.NET Core\TimePunch-WinUI-StackedUI-Demo\Views\Demo4View.xaml.cs" Link="Views\Demo4View.xaml.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" />
+    <PackageReference Include="Uno.WinUI.Graphics2DSK" />
+    <PackageReference Include="Uno.WinUI.Lottie" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Include="..\..\..\.NET Core\TimePunch-WinUI-StackedUI-Demo\Views\Demo1View.xaml" Link="Views\Demo1View.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="..\..\..\.NET Core\TimePunch-WinUI-StackedUI-Demo\Views\Demo2View.xaml" Link="Views\Demo2View.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="..\..\..\.NET Core\TimePunch-WinUI-StackedUI-Demo\Views\Demo3View.xaml" Link="Views\Demo3View.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="..\..\..\.NET Core\TimePunch-WinUI-StackedUI-Demo\Views\Demo4View.xaml" Link="Views\Demo4View.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\SettingsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
 </Project>
