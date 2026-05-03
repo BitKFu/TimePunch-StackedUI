@@ -231,11 +231,17 @@ namespace TimePunch.StackedUI
                     {
                         if (last && i % 2 == 0)
                         {
+#if HAS_UNO
+                            var checkSize
+                                = IsNextToTopFrame
+                                ? ((ScrollContentPresenter)((StackPanel)element.Parent).Parent).ActualWidth
+                                : pageWidth;
+#else
                             var checkSize
                                 = IsNextToTopFrame
                                 ? ((ScrollViewer)((StackPanel)element.Parent).Parent).ActualWidth
                                 : pageWidth;
-
+#endif
                             while (Math.Abs(element.Width - checkSize) > 1)
                                 element.Width = checkSize;
                         }
