@@ -24,7 +24,8 @@ namespace TimePunch.StackedUI
         private readonly Stack<Frame> frameStack = new();
         private readonly Dictionary<Frame, ContentSizer> splitters = new();
 
-        private readonly object fadeInOut = new object();
+        private readonly SemaphoreSlim fadeInOut = new(1, 1);
+        private int fadeInOutCounter;
 
         public StackedFrame()
         {
@@ -73,7 +74,7 @@ namespace TimePunch.StackedUI
         /// <value>The CanGoBack.</value>
         public bool CanGoBack
         {
-            get => (bool)GetValue(CanGoBackProperty) && !Monitor.IsEntered(fadeInOut);
+            get => (bool)GetValue(CanGoBackProperty) && Volatile.Read(ref fadeInOutCounter) == 0;
             set => SetValue(CanGoBackProperty, value);
         }
 
@@ -245,7 +246,7 @@ namespace TimePunch.StackedUI
 
         public async Task AddFrame(IEventAggregator eventAggregator, Frame frame, Page page)
         {
-            Monitor.TryEnter(fadeInOut, -1);
+            await EnterFadeScopeAsync();
 
             try
             {
@@ -283,7 +284,7 @@ namespace TimePunch.StackedUI
             }
             finally
             {
-                Monitor.Exit(fadeInOut);
+                ExitFadeScope();
             }
         }
 
@@ -314,7 +315,7 @@ namespace TimePunch.StackedUI
             if (frameStack.Count == 0)
                 return;
 
-            Monitor.TryEnter(fadeInOut, -1);
+            await EnterFadeScopeAsync();
 
             try
             {
@@ -370,7 +371,7 @@ namespace TimePunch.StackedUI
             }
             finally
             {
-                Monitor.Exit(fadeInOut);
+                ExitFadeScope();
             }
         }
 
@@ -527,7 +528,7 @@ namespace TimePunch.StackedUI
 
         private async Task UpdatePropertyVisibility(Visibility value)
         {
-            Monitor.TryEnter(fadeInOut, -1);
+            await EnterFadeScopeAsync();
 
             try
             {
@@ -548,8 +549,20 @@ namespace TimePunch.StackedUI
             }
             finally
             {
-                Monitor.Exit(fadeInOut);
+                ExitFadeScope();
             }
+        }
+
+        private async Task EnterFadeScopeAsync()
+        {
+            await fadeInOut.WaitAsync();
+            Interlocked.Increment(ref fadeInOutCounter);
+        }
+
+        private void ExitFadeScope()
+        {
+            Interlocked.Decrement(ref fadeInOutCounter);
+            fadeInOut.Release();
         }
 
         #endregion

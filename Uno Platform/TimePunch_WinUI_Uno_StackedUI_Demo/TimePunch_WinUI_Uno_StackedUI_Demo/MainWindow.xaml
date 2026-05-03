@@ -39,9 +39,9 @@
                 </NavigationView.MenuItemTemplate>
 
                 <stackedUi:StackedFrame x:Name="StackedFrame"
-                                        FadeInDuration="100"
-                                        FadeOutDuration="100"
-                                        StackedMode="Resizeable" />
+                                        FadeInDuration="0"
+                                        FadeOutDuration="0"
+                                        StackedMode="InPlace" />
             </NavigationView>
         </Grid>
     </controls:DpiDecorator>
