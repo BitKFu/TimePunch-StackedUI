@@ -3,6 +3,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <BaseIntermediateOutputPath>..\..\..\obj\</BaseIntermediateOutputPath>
+    <BaseOutputPath>..\..\..\bin\</BaseOutputPath>
 
     <!--
       Adding NoWarn to remove build warnings

@@ -59,6 +59,8 @@
     <Compile Include="..\..\.NET Core\TimePunch-WinUI-StackedUI\Controller\IStackedController.cs" Link="Controller\IStackedController.cs" />
     <Compile Include="..\..\.NET Core\TimePunch-WinUI-StackedUI\Controller\StackedController.cs" Link="Controller\StackedController.cs" />
     <Compile Include="..\..\.NET Core\TimePunch-WinUI-StackedUI\Controller\StackedMode.cs" Link="Controller\StackedMode.cs" />
+    <Compile Include="..\..\.NET Core\TimePunch-WinUI-StackedUI\Controls\AttachedProperties.cs" Link="Controls\AttachedProperties.cs" />
+    <Compile Include="..\..\.NET Core\TimePunch-WinUI-StackedUI\Controls\ModalDialog.cs" Link="Controls\ModalDialog.cs" />
     <Compile Include="..\..\.NET Core\TimePunch-WinUI-StackedUI\Controls\DpiDecorator.cs" Link="Controls\DpiDecorator.cs" />
     <Compile Include="..\..\.NET Core\TimePunch-WinUI-StackedUI\Controls\PageControl.cs" Link="Controls\PageControl.cs" />
     <Compile Include="..\..\.NET Core\TimePunch-WinUI-StackedUI\Converter\IconConverter.cs" Link="Converter\IconConverter.cs" />
@@ -76,6 +78,10 @@
     <Compile Include="..\..\.NET Core\TimePunch-WinUI-StackedUI\StackedFrame.xaml.cs" Link="StackedFrame.xaml.cs" />
     <Compile Include="..\..\.NET Core\TimePunch-WinUI-StackedUI\ViewModels\StackedViewModelBase.cs" Link="ViewModels\StackedViewModelBase.cs" />
     <Compile Include="..\..\.NET Core\TimePunch-WinUI-StackedUI\Window\StackedWindow.cs" Link="Window\StackedWindow.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include=".github\copilot-instructions.md" />
   </ItemGroup>
 
   <ItemGroup>

@@ -5,7 +5,7 @@ using TimePunch.StackedUI.ViewModels;
 
 namespace TimePunch.StackedUI.Controls
 {
-    public class ModalDialog : ContentDialog
+    public partial class ModalDialog : ContentDialog
     {
         private bool? dialogResult;
         private StackedViewModelBase? viewModel;

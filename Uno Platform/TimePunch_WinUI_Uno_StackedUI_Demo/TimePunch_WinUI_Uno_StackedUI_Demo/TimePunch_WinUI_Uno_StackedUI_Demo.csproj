@@ -55,10 +55,13 @@
     <Compile Include="..\..\..\.NET Core\TimePunch-WinUI-StackedUI-Demo\ViewModels\Demo4ViewModel.cs" Link="ViewModels\Demo4ViewModel.cs" />
     <Compile Include="..\..\..\.NET Core\TimePunch-WinUI-StackedUI-Demo\ViewModels\MainWindowViewModel.cs" Link="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="..\..\..\.NET Core\TimePunch-WinUI-StackedUI-Demo\ViewModels\SettingsViewModel.cs" Link="ViewModels\SettingsViewModel.cs" />
+    <Compile Include="..\..\..\.NET Core\TimePunch-WinUI-StackedUI-Demo\ViewModels\LogonViewModel.cs" Link="ViewModels\LogonViewModel.cs" />
     <Compile Include="..\..\..\.NET Core\TimePunch-WinUI-StackedUI-Demo\Views\Demo1View.xaml.cs" Link="Views\Demo1View.xaml.cs" />
     <Compile Include="..\..\..\.NET Core\TimePunch-WinUI-StackedUI-Demo\Views\Demo2View.xaml.cs" Link="Views\Demo2View.xaml.cs" />
     <Compile Include="..\..\..\.NET Core\TimePunch-WinUI-StackedUI-Demo\Views\Demo3View.xaml.cs" Link="Views\Demo3View.xaml.cs" />
     <Compile Include="..\..\..\.NET Core\TimePunch-WinUI-StackedUI-Demo\Views\Demo4View.xaml.cs" Link="Views\Demo4View.xaml.cs" />
+    <Compile Include="..\..\..\.NET Core\TimePunch-WinUI-StackedUI-Demo\Views\LogonDialog.xaml.cs" Link="Views\LogonDialog.xaml.cs" />
+    <Compile Include="..\..\..\.NET Core\TimePunch-WinUI-StackedUI-Demo\Views\LogonView.xaml.cs" Link="Views\LogonView.xaml.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -78,6 +81,12 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="..\..\..\.NET Core\TimePunch-WinUI-StackedUI-Demo\Views\Demo4View.xaml" Link="Views\Demo4View.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="..\..\..\.NET Core\TimePunch-WinUI-StackedUI-Demo\Views\LogonDialog.xaml" Link="Views\LogonDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="..\..\..\.NET Core\TimePunch-WinUI-StackedUI-Demo\Views\LogonView.xaml" Link="Views\LogonView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="MainWindow.xaml">
