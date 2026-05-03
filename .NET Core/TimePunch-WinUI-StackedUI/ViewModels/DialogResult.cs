@@ -27,7 +27,7 @@ namespace TimePunch.StackedUI.ViewModels
             return (bool?)dp.GetValue(DialogResultProperty);
         }
 
-        public static void SetDialogResult(DependencyObject dp, object value)
+        public static void SetDialogResult(DependencyObject dp, bool? value)
         {
             if (dp == null) throw new ArgumentNullException(nameof(dp));
 
