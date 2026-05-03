@@ -1,13 +1,14 @@
-﻿using TimePunch.StackedUI.Controller;
-using TimePunch_WinUI_StackedUI_Demo.Events;
-using TimePunch_WinUI_StackedUI_Demo.Views;
-using TimePunch.MVVM.EventAggregation;
-using TimePunch.StackedUI.Model;
-using Microsoft.UI.Xaml.Controls;
-using System.Threading.Tasks;
-using Microsoft.UI.Dispatching;
+﻿using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using System;
+using System.Threading.Tasks;
+using TimePunch.MVVM.EventAggregation;
+using TimePunch.StackedUI.Controller;
+using TimePunch.StackedUI.Model;
+using TimePunch_WinUI_StackedUI_Demo.Events;
 using TimePunch_WinUI_StackedUI_Demo.ViewModels;
+using TimePunch_WinUI_StackedUI_Demo.Views;
 
 namespace TimePunch_WinUI_StackedUI_Demo.Core
 {
@@ -16,8 +17,8 @@ namespace TimePunch_WinUI_StackedUI_Demo.Core
         , IHandleMessageAsync<NavigateToDemo2View>
         , IHandleMessageAsync<NavigateToDemo3View>
         , IHandleMessageAsync<NavigateToDemo4View>
-        , IHandleMessageAsync<NavigateToStartView>
         , IHandleMessageAsync<NavigateToSettingsView>
+        , IHandleMessageAsync<NavigateToLogonView>
     {
         private readonly IPagePersister demoPagePersister = new DemoPagePersister();
 
@@ -86,22 +87,6 @@ namespace TimePunch_WinUI_StackedUI_Demo.Core
 
         #endregion
 
-
-        #region Implementation of IHandleMessage<NavigateToStartView>
-
-        public async Task<NavigateToStartView> Handle(NavigateToStartView message)
-        {
-            var page = new Demo1View();
-            if (page.DataContext is Demo1ViewModel viewModel)
-            {
-                await InitTopPageAsync(DispatcherQueue.GetForCurrentThread(), message, viewModel, page);
-            }
-
-            return message;
-        }
-
-        #endregion
-
         #region Overrides of StackedController
 
         protected override Frame CreateFrame()
@@ -136,6 +121,27 @@ namespace TimePunch_WinUI_StackedUI_Demo.Core
             {
                 await InitTopPageAsync(DispatcherQueue.GetForCurrentThread(), message, viewModel, page);
             }
+            return message;
+        }
+
+        public async Task<NavigateToLogonView> Handle(NavigateToLogonView message)
+        {
+            await GoBackPageTop();
+
+            // Show the logon dialog
+            var logOn = new LogonDialog()
+            {
+                XamlRoot = StackedFrame?.XamlRoot
+            };
+            
+            if (logOn.DataContext is LogonViewModel vm && logOn.DialogResult == null)
+            {
+                if (await vm.InitializePageAsync(message, DispatcherQueue.GetForCurrentThread()))
+                {
+                    await logOn.ShowAsync();
+                }
+            }
+
             return message;
         }
     }

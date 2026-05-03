@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Windows.Input;
 using TimePunch_WPF_StackedModern_Demo.Events;
-using TimePunch.MVVM.Controller;
 using TimePunch.StackedUI.Controller;
 using TimePunch.StackedUI.Demo.Core;
-using TimePunch.StackedUI.Demo.Events;
 using TimePunch.StackedUI.Events;
 
 namespace TimePunch.StackedUI.Demo.ViewModels
@@ -35,11 +33,10 @@ namespace TimePunch.StackedUI.Demo.ViewModels
                 new PageLink { Title = "Demo2", Icon = "AddFriend", GoToPage = () => EventAggregator.PublishMessageAsync(new NavigateToDemo2View()) }
             ];
 
-
             FooterPages =
             [
-                new PageLink { Title = "Settings", Icon = "Setting", GoToPage = () => EventAggregator.PublishMessageAsync(new NavigateToSettingsView()) }
-                //new() {Title = "Logon", Icon = "User", GoToPage = ()=>EventAggregator.PublishMessageAsync(new NavigateToLogonView())},
+                new PageLink { Title = "Settings", Icon = "Setting", GoToPage = () => EventAggregator.PublishMessageAsync(new NavigateToSettingsView()) },
+                new PageLink {Title = "Logon", Icon = "OtherUser", GoToPage = ()=>EventAggregator.PublishMessageAsync(new NavigateToLogonView()) }
             ];
         }
 

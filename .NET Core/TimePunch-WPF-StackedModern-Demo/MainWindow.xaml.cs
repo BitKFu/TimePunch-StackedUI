@@ -50,7 +50,7 @@ namespace TimePunch_WPF_StackedModern_Demo
             if (DemoKernel.Instance.Controller is StackedController stackedController)
                 stackedController.StackedFrame = StackedFrame;
 
-            DemoKernel.Instance.EventAggregator.PublishMessageAsync(new NavigateToStartView());
+            DemoKernel.Instance.EventAggregator.PublishMessageAsync(new NavigateToLogonView());
         }
 
         /// <summary>

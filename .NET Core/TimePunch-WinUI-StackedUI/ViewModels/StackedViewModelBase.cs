@@ -82,5 +82,19 @@ namespace TimePunch.StackedUI.ViewModels
 
         #endregion
 
+
+        #region Property DialogResult
+
+        /// <summary>
+        /// Gets or sets the DialogResult.
+        /// </summary>
+        /// <value>The DialogResult.</value>
+        public bool? DialogResult
+        {
+            get { return GetPropertyValue(() => DialogResult); }
+            set { SetPropertyValue(() => DialogResult, value); }
+        }
+
+        #endregion
     }
 }

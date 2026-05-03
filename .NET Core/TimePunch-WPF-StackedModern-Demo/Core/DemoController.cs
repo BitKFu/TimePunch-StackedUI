@@ -20,8 +20,8 @@ namespace TimePunch.StackedUI.Demo.Core
         , IHandleMessageAsync<NavigateToDemo2View>
         , IHandleMessageAsync<NavigateToDemo3View>
         , IHandleMessageAsync<NavigateToDemo4View>
-        , IHandleMessageAsync<NavigateToStartView>
         , IHandleMessageAsync<NavigateToSettingsView>
+        , IHandleMessageAsync<NavigateToLogonView>
     {
         private readonly IPagePersister demoPagePersister = new DemoPagePersister();
         private Page basePage2;
@@ -92,21 +92,6 @@ namespace TimePunch.StackedUI.Demo.Core
 
         #endregion
 
-        #region Implementation of IHandleMessage<NavigateToStartView>
-
-        public async Task<NavigateToStartView> Handle(NavigateToStartView message)
-        {
-            var page = new LogonView();
-            if (page.DataContext is LogonViewModel viewModel)
-            {
-                await InitTopPageAsync(message, viewModel, page);
-            }
-
-            return message;
-        }
-
-        #endregion
-
         #region Implementation of IHandleMessage<NavigateToSettingsView>
 
         public async Task<NavigateToSettingsView> Handle(NavigateToSettingsView message)
@@ -145,5 +130,22 @@ namespace TimePunch.StackedUI.Demo.Core
 
         #endregion
 
+        public async Task<NavigateToLogonView> Handle(NavigateToLogonView message)
+        {
+            await GoBackPageTop();
+
+            // Show the logon dialog
+            var logOn = new LogonDialog();
+            if (logOn.DataContext is LogonViewModel vm && logOn.DialogResult == null)
+            {
+                if (await vm.InitializePageAsync(message) )
+                {
+                    await logOn.ShowAsync();
+                }
+            }
+
+            return message;
+        }
     }
 }
+    

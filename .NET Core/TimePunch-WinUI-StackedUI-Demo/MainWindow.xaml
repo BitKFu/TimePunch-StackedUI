@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Window
+<window:StackedWindow
     x:Class="TimePunch_WinUI_StackedUI_Demo.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -8,6 +8,7 @@
     xmlns:stackedUi="using:TimePunch.StackedUI"
     xmlns:l="using:TimePunch.StackedUI.Model"
     xmlns:controls="using:TimePunch.StackedUI.Controls"
+    xmlns:window="using:TimePunch.StackedUI.Window"
     mc:Ignorable="d">
 
     <controls:DpiDecorator Scale="1" x:Name="DpiDecorator" x:FieldModifier="public">
@@ -86,4 +87,4 @@
     </Grid>
     </controls:DpiDecorator>
 
-</Window>
+</window:StackedWindow>

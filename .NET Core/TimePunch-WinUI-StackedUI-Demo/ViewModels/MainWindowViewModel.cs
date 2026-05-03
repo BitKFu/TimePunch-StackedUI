@@ -37,14 +37,14 @@ namespace TimePunch_WinUI_StackedUI_Demo.ViewModels
             FooterPages = new List<PageLink>()
             {
                 new() {Title = "Settings", Icon = "Setting", GoToPage = ()=>EventAggregator.PublishMessageAsync(new NavigateToSettingsView())},
-                //new() {Title = "Logon", Icon = "User", GoToPage = ()=>EventAggregator.PublishMessageAsync(new NavigateToLogonView())},
+                new() {Title = "Logon", Icon = "OtherUser", GoToPage = ()=>EventAggregator.PublishMessageAsync(new NavigateToLogonView())},
             };
         }
 
         public override Task<bool> InitializePageAsync(object extraData, DispatcherQueue dispatcher)
         {
             var result = base.InitializePageAsync(extraData, dispatcher);
-            EventAggregator.PublishMessageAsync(new NavigateToStartView());
+            EventAggregator.PublishMessageAsync(new NavigateToLogonView());
             return result;
         }
 
