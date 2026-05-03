@@ -10,7 +10,7 @@ using TimePunch_WinUI_StackedUI_Demo.ViewModels;
 
 namespace TimePunch_WinUI_StackedUI_Demo
 {
-    public sealed partial class MainWindow : UserControl
+    public sealed partial class MainWindow : Window
     {
         public MainWindow()
         {
