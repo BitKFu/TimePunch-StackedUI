@@ -1,4 +1,4 @@
-<Project Sdk="Uno.Sdk">
+﻿<Project Sdk="Uno.Sdk">
   <PropertyGroup>
     <TargetFrameworks>net10.0-android;net10.0-ios;net10.0-browserwasm;net10.0-desktop</TargetFrameworks>
 
@@ -22,18 +22,17 @@
       https://aka.platform.uno/singleproject-features
     -->
     <UnoFeatures>
-      Lottie;
-      Hosting;
-      Toolkit;
-      Logging;
-      Mvvm;
-      Configuration;
-      HttpKiota;
-      Serialization;
-      Localization;
-      Navigation;
-      ThemeService;
-      SkiaRenderer;
+        Lottie;
+        Hosting;
+        Toolkit;
+        Logging;
+        Configuration;
+        HttpKiota;
+        Serialization;
+        Localization;
+        ThemeService;
+        SkiaRenderer;
+        Navigation
     </UnoFeatures>
   </PropertyGroup>
 

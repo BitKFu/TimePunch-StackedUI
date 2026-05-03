@@ -1,3 +1,4 @@
+using TimePunch_WinUI_StackedUI_Demo;
 using Uno.Resizetizer;
 
 using TimePunch_WinUI_StackedUI_Demo.Core;
@@ -78,7 +79,7 @@ public partial class App : Application
                     // TODO: Register your services
                     //services.AddSingleton<IMyService, MyService>();
                 })
-                .UseNavigation(RegisterRoutes)
+                //.UseNavigation(RegisterRoutes)
             );
         MainWindow = builder.Window;
         DemoKernel.Instance.AppWindow = MainWindow;
@@ -88,25 +89,6 @@ public partial class App : Application
 #endif
         MainWindow.SetWindowIcon();
 
-        Host = await builder.NavigateAsync<Shell>();
-    }
-
-    private static void RegisterRoutes(IViewRegistry views, IRouteRegistry routes)
-    {
-        views.Register(
-            new ViewMap(ViewModel: typeof(ShellViewModel)),
-            new ViewMap<MainPage, MainViewModel>(),
-            new DataViewMap<SecondPage, SecondViewModel, Entity>()
-        );
-
-        routes.Register(
-            new RouteMap("", View: views.FindByViewModel<ShellViewModel>(),
-                Nested:
-                [
-                    new ("Main", View: views.FindByViewModel<MainViewModel>(), IsDefault:true),
-                    new ("Second", View: views.FindByViewModel<SecondViewModel>()),
-                ]
-            )
-        );
+        Host = await builder.NavigateAsync<MainWindow>();
     }
 }

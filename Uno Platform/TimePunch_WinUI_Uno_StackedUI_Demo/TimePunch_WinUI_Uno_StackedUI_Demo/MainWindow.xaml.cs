@@ -14,17 +14,13 @@ public sealed partial class MainWindow : UserControl
         DemoKernel.Instance.MainWindow = this;
     }
 
-    private void FrameworkElement_OnLoaded(object sender, RoutedEventArgs e)
+    private async void FrameworkElement_OnLoaded(object sender, RoutedEventArgs e)
     {
         if (DemoKernel.Instance.Controller is StackedController stackedController)
-        {
             stackedController.StackedFrame = StackedFrame;
-        }
-
+        
         if (ContentGrid.DataContext is MainWindowViewModel viewModel)
-        {
-            _ = viewModel.InitializePageAsync(this, DispatcherQueue);
-        }
+            await viewModel.InitializePageAsync(this, DispatcherQueue);
     }
 
     private void NavigationView_OnItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)

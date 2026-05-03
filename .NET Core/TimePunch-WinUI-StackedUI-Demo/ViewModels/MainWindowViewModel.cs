@@ -41,10 +41,10 @@ namespace TimePunch_WinUI_StackedUI_Demo.ViewModels
             };
         }
 
-        public override Task<bool> InitializePageAsync(object extraData, DispatcherQueue dispatcher)
+        public override async Task<bool> InitializePageAsync(object extraData, DispatcherQueue dispatcher)
         {
-            var result = base.InitializePageAsync(extraData, dispatcher);
-            EventAggregator.PublishMessageAsync(new NavigateToLogonView());
+            var result = await base.InitializePageAsync(extraData, dispatcher);
+            await EventAggregator.PublishMessageAsync(new NavigateToLogonView());
             return result;
         }
 
