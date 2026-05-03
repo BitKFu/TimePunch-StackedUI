@@ -11,7 +11,7 @@
     <RootNamespace>TimePunch.StackedUI</RootNamespace>
     <Company>TimePunch KG</Company>
     <Authors>BitKFu</Authors>
-    <PackageVersion>0.9.5.0</PackageVersion>
+    <PackageVersion>1.3.0.0</PackageVersion>
     <IncludeSymbols>True</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <PackageTags>uno;winui;stacked</PackageTags>
@@ -82,6 +82,34 @@
 
   <ItemGroup>
     <None Include=".github\copilot-instructions.md" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="bin\**" />
+    <None Remove="b\**" />
+    <None Remove="node_modules\**" />
+    <Content Remove="bin\**" />
+    <Content Remove="b\**" />
+    <Content Remove="node_modules\**" />
+    <EmbeddedResource Remove="bin\**" />
+    <EmbeddedResource Remove="b\**" />
+    <EmbeddedResource Remove="node_modules\**" />
+    <None Remove="obj\**" />
+    <None Remove="o\**" />
+    <Content Remove="obj\**" />
+    <Content Remove="o\**" />
+    <EmbeddedResource Remove="obj\**" />
+    <EmbeddedResource Remove="o\**" />
+    <BundleResource Remove="bin\**" />
+    <BundleResource Remove="b\**" />
+    <BundleResource Remove="obj\**" />
+    <BundleResource Remove="o\**" />
+    <BundleResource Remove="node_modules\**" />
+    <AndroidAsset Remove="bin\**" />
+    <AndroidAsset Remove="b\**" />
+    <AndroidAsset Remove="obj\**" />
+    <AndroidAsset Remove="o\**" />
+    <AndroidAsset Remove="node_modules\**" />
   </ItemGroup>
 
   <ItemGroup>

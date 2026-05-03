@@ -1,0 +1,6 @@
+<Project>
+  <PropertyGroup>
+    <BaseOutputPath>..\..\..\bin\tpuno-demo\</BaseOutputPath>
+    <BaseIntermediateOutputPath>..\..\..\obj\tpuno-demo\</BaseIntermediateOutputPath>
+  </PropertyGroup>
+</Project>

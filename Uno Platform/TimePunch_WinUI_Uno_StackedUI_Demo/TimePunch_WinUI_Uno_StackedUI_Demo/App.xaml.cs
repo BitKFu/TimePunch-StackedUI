@@ -1,7 +1,13 @@
+using Microsoft.UI.Xaml;
 using TimePunch_WinUI_StackedUI_Demo;
-using Uno.Resizetizer;
-
 using TimePunch_WinUI_StackedUI_Demo.Core;
+using Uno.Extensions;
+using Uno.Extensions.Configuration;
+using Uno.Extensions.Hosting;
+using Uno.Extensions.Http;
+using Uno.Extensions.Localization;
+using Uno.Extensions.Navigation.UI;
+using Uno.Resizetizer;
 
 namespace TimePunch_WinUI_Uno_StackedUI_Demo;
 
@@ -19,7 +25,7 @@ public partial class App : Application
     protected Window? MainWindow { get; private set; }
     protected IHost? Host { get; private set; }
 
-    protected async override void OnLaunched(LaunchActivatedEventArgs args)
+    protected async override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
     {
         var builder = this.CreateBuilder(args)
             // Add navigation support for toolkit controls such as TabBar and NavigationView
@@ -61,7 +67,6 @@ public partial class App : Application
                 }, enableUnoLogging: true)
                 .UseConfiguration(configure: configBuilder =>
                     configBuilder
-                        .EmbeddedSource<App>()
                         .Section<AppConfig>()
                 )
                 // Enable localization (see appsettings.json for supported languages)
@@ -84,9 +89,6 @@ public partial class App : Application
         MainWindow = builder.Window;
         DemoKernel.Instance.AppWindow = MainWindow;
 
-#if DEBUG
-        MainWindow.UseStudio();
-#endif
         MainWindow.SetWindowIcon();
 
         Host = await builder.NavigateAsync<MainWindow>();

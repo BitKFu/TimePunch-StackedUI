@@ -1,4 +1,4 @@
-﻿<Project Sdk="Uno.Sdk">
+<Project Sdk="Uno.Sdk">
   <PropertyGroup>
     <TargetFrameworks>net10.0-android;net10.0-ios;net10.0-browserwasm;net10.0-desktop</TargetFrameworks>
 
@@ -36,8 +36,24 @@
     </UnoFeatures>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)' == 'Release|net10.0-android'">
+    <PublishTrimmed>false</PublishTrimmed>
+    <RunAOTCompilation>false</RunAOTCompilation>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\TimePunch_Uno_StackedUI\TimePunch_Uno_StackedUI.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="o\**" />
+    <Compile Remove="b\**" />
+    <None Remove="o\**" />
+    <None Remove="b\**" />
+    <Content Remove="o\**" />
+    <Content Remove="b\**" />
+    <EmbeddedResource Remove="o\**" />
+    <EmbeddedResource Remove="b\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -64,9 +80,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" />
-    <PackageReference Include="Uno.WinUI.Graphics2DSK" />
-    <PackageReference Include="Uno.WinUI.Lottie" />
+    <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.2.251219" />
+    <PackageReference Include="Uno.WinUI.Graphics2DSK" Version="6.5.153" />
+    <PackageReference Include="Uno.WinUI.Lottie" Version="6.5.153" />
   </ItemGroup>
 
   <ItemGroup>
